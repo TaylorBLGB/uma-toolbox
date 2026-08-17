@@ -8,11 +8,15 @@ This is a one-time migration aid, not something you re-run routinely - once
 the data lives in Supabase, you edit it there directly.
 """
 import json
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = ROOT / "data"
 OUT_FILE = ROOT / "db" / "seed.sql"
+
+DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+WARNINGS = []
 
 
 def sql_str(v):
@@ -25,8 +29,32 @@ def sql_bool(v):
     return "true" if v else "false"
 
 
-def sql_num(v):
-    return "null" if v is None else str(v)
+def sql_num(v, context):
+    """Numeric columns only ever get null or a real number. A raw string like
+    '0.3/0' would otherwise land unquoted in the SQL as a literal division -
+    Postgres evaluates that at insert time (division by zero if the
+    denominator is 0), rather than erroring on bad syntax as you'd expect."""
+    if v is None:
+        return "null"
+    if isinstance(v, (int, float)):
+        return str(v)
+    try:
+        return str(float(v))
+    except (TypeError, ValueError):
+        WARNINGS.append(f"{context}: non-numeric value {v!r} in a numeric column -> stored as null")
+        return "null"
+
+
+def sql_date(v, context):
+    """Date columns only ever get null or an ISO date - arbitrary text (e.g.
+    a '?' placeholder for an unannounced release) fails as invalid input for
+    type date rather than being silently accepted."""
+    if v is None:
+        return "null"
+    if DATE_RE.match(str(v)):
+        return f"'{v}'"
+    WARNINGS.append(f"{context}: invalid date value {v!r} -> stored as null")
+    return "null"
 
 
 UMA_COLUMNS = [
@@ -43,18 +71,26 @@ UMA_COLUMNS = [
 def uma_row(u):
     apt = u.get("aptitude") or {}
     stat = u.get("statBonus") or {}
+    label = f"uma {u.get('name')!r} ({u.get('costume')})"
     return [
         sql_str(u.get("name")), sql_str(u.get("costume")), sql_str(u.get("version")),
         sql_bool(u.get("inGame")), sql_str(u.get("uniqueSkillName")), sql_str(u.get("uniqueCondition")),
         sql_str(u.get("preConditionNote")), sql_str(u.get("distAptitude")), sql_str(u.get("style")),
-        sql_num(u.get("targetSpeedBonus")), sql_num(u.get("accelerationBonus")), sql_num(u.get("healBonus")),
-        sql_str(u.get("uniqueEffectNote")), sql_num(u.get("duration")),
+        sql_num(u.get("targetSpeedBonus"), f"{label}.targetSpeedBonus"),
+        sql_num(u.get("accelerationBonus"), f"{label}.accelerationBonus"),
+        sql_num(u.get("healBonus"), f"{label}.healBonus"),
+        sql_str(u.get("uniqueEffectNote")),
+        sql_num(u.get("duration"), f"{label}.duration"),
         sql_str(apt.get("turf")), sql_str(apt.get("dirt")), sql_str(apt.get("sprint")),
         sql_str(apt.get("mile")), sql_str(apt.get("medium")), sql_str(apt.get("long")),
         sql_str(apt.get("front")), sql_str(apt.get("pace")), sql_str(apt.get("late")), sql_str(apt.get("end")),
-        sql_num(stat.get("spd")), sql_num(stat.get("sta")), sql_num(stat.get("pwr")),
-        sql_num(stat.get("gut")), sql_num(stat.get("wit")),
-        sql_str(u.get("note")), sql_str(u.get("release")),
+        sql_num(stat.get("spd"), f"{label}.statBonus.spd"),
+        sql_num(stat.get("sta"), f"{label}.statBonus.sta"),
+        sql_num(stat.get("pwr"), f"{label}.statBonus.pwr"),
+        sql_num(stat.get("gut"), f"{label}.statBonus.gut"),
+        sql_num(stat.get("wit"), f"{label}.statBonus.wit"),
+        sql_str(u.get("note")),
+        sql_date(u.get("release"), f"{label}.release"),
     ]
 
 
@@ -68,15 +104,27 @@ SUPPORT_COLUMNS = [
 
 
 def support_row(s):
+    label = f"support {s.get('character')!r} / {s.get('name')!r}"
     return [
         sql_str(s.get("character")), sql_str(s.get("name")), sql_bool(s.get("inGame")),
-        sql_str(s.get("type")), sql_str(s.get("grade")), sql_num(s.get("lbPips")),
-        sql_num(s.get("friendshipBonus")), sql_num(s.get("motivationEffect")), sql_num(s.get("trainingBonus")),
-        sql_num(s.get("effectMPlusTBonus")), sql_num(s.get("totalBonus")),
-        sql_num(s.get("initStat")), sql_num(s.get("initGauge")), sql_num(s.get("raceBonus")), sql_num(s.get("fanBonus")),
-        sql_num(s.get("hintLevel")), sql_num(s.get("hintFrequency")),
-        sql_num(s.get("skillPtPriority")), sql_num(s.get("skillPtBonus")),
-        sql_str(s.get("notes")), sql_num(s.get("friendshipRatio")), sql_str(s.get("release")),
+        sql_str(s.get("type")), sql_str(s.get("grade")),
+        sql_num(s.get("lbPips"), f"{label}.lbPips"),
+        sql_num(s.get("friendshipBonus"), f"{label}.friendshipBonus"),
+        sql_num(s.get("motivationEffect"), f"{label}.motivationEffect"),
+        sql_num(s.get("trainingBonus"), f"{label}.trainingBonus"),
+        sql_num(s.get("effectMPlusTBonus"), f"{label}.effectMPlusTBonus"),
+        sql_num(s.get("totalBonus"), f"{label}.totalBonus"),
+        sql_num(s.get("initStat"), f"{label}.initStat"),
+        sql_num(s.get("initGauge"), f"{label}.initGauge"),
+        sql_num(s.get("raceBonus"), f"{label}.raceBonus"),
+        sql_num(s.get("fanBonus"), f"{label}.fanBonus"),
+        sql_num(s.get("hintLevel"), f"{label}.hintLevel"),
+        sql_num(s.get("hintFrequency"), f"{label}.hintFrequency"),
+        sql_num(s.get("skillPtPriority"), f"{label}.skillPtPriority"),
+        sql_num(s.get("skillPtBonus"), f"{label}.skillPtBonus"),
+        sql_str(s.get("notes")),
+        sql_num(s.get("friendshipRatio"), f"{label}.friendshipRatio"),
+        sql_date(s.get("release"), f"{label}.release"),
     ]
 
 
@@ -104,6 +152,16 @@ def main():
 
     OUT_FILE.write_text("\n".join(parts), encoding="utf-8")
     print(f"Wrote {OUT_FILE} ({len(umas)} umas, {len(supports)} supports)")
+
+    if WARNINGS:
+        print(f"\n{len(WARNINGS)} value(s) couldn't be stored as-is and were set to null:")
+        for w in WARNINGS:
+            print(f"  - {w}")
+        print("\nThese reflect real data in the spreadsheet that doesn't fit a single number or a real")
+        print("date (e.g. a '?' placeholder for an unannounced release, a dual value like '0.3/0', or a")
+        print("cell that got auto-formatted as a date). Fix them in the spreadsheet if you want the real")
+        print("value in Supabase too - regenerating won't overwrite rows you've already loaded, so either")
+        print("re-seed from scratch or edit those specific cells directly in the Supabase Table Editor.")
 
 
 if __name__ == "__main__":
