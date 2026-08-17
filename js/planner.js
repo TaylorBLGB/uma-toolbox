@@ -34,6 +34,8 @@ let selections = {};   // slot key -> race name
 let aptitudeGrades = { ...DEFAULT_APTITUDE }; // dimension key -> letter grade (A-G)
 let fanBonusPercent = 0;
 let activeSlotKey = null;
+let selectedTrainee = null; // uma object, or null
+let includeUnreleased = false;
 
 function buildSlots() {
   slots = [];
@@ -225,6 +227,59 @@ function renderStatBadges() {
   document.getElementById("stat-badges").innerHTML = badges.join("");
 }
 
+// -------- Trainee search --------
+
+function applyTrainee(uma) {
+  selectedTrainee = uma;
+  document.getElementById("trainee-input").value = uma ? (uma.costume ? `${uma.name} — ${uma.costume}` : uma.name) : "";
+  if (uma) {
+    for (const dim of APTITUDE_DIMS) {
+      aptitudeGrades[dim.key] = uma.aptitude[dim.key] || "G";
+    }
+    saveAptitude();
+  }
+  hideTraineeSuggestions();
+  renderAll();
+}
+
+function hideTraineeSuggestions() {
+  document.getElementById("trainee-suggestions").classList.add("hidden");
+}
+
+function renderTraineeSuggestions(query) {
+  const box = document.getElementById("trainee-suggestions");
+  const q = query.trim().toLowerCase();
+
+  if (!q) {
+    box.classList.add("hidden");
+    box.innerHTML = "";
+    return;
+  }
+
+  const pool = umas.filter((u) => includeUnreleased || u.inGame);
+  const starts = pool.filter((u) => u.name.toLowerCase().startsWith(q));
+  const contains = pool.filter((u) => !u.name.toLowerCase().startsWith(q) && u.name.toLowerCase().includes(q));
+  const matches = [...starts.sort((a, b) => a.name.localeCompare(b.name)),
+                   ...contains.sort((a, b) => a.name.localeCompare(b.name))].slice(0, 25);
+
+  box.innerHTML = matches.length
+    ? matches.map((u, i) => `
+        <div class="trainee-suggestion" data-idx="${i}">
+          <span>${u.name}${u.costume ? ` <span class="filter-group-hint">— ${u.costume}</span>` : ""}</span>
+          ${u.inGame ? "" : '<span class="unreleased-tag">unreleased</span>'}
+        </div>`).join("")
+    : `<div class="trainee-suggestion-empty">No trainees match "${query}"</div>`;
+
+  box.querySelectorAll(".trainee-suggestion").forEach((el) => {
+    el.addEventListener("mousedown", (e) => {
+      e.preventDefault(); // keep focus so the click isn't lost to the input's blur handler
+      applyTrainee(matches[Number(el.dataset.idx)]);
+    });
+  });
+
+  box.classList.remove("hidden");
+}
+
 // -------- Aptitude controls --------
 
 function adjustAptitude(key, delta) {
@@ -402,14 +457,6 @@ async function init() {
     (racesBySlot[race.slot] ||= []).push(race);
   }
 
-  const traineeSelect = document.getElementById("trainee-select");
-  for (const name of [...new Set(umas.map((u) => u.name))].sort()) {
-    const opt = document.createElement("option");
-    opt.value = name;
-    opt.textContent = name;
-    traineeSelect.appendChild(opt);
-  }
-
   document.getElementById("fan-bonus").value = fanBonusPercent;
 
   renderAll();
@@ -420,15 +467,25 @@ async function init() {
     saveFanBonus();
     renderStatBadges();
   });
-  document.getElementById("trainee-select").addEventListener("change", () => {
-    const uma = umas.find((u) => u.name === traineeSelect.value);
-    if (uma) {
-      for (const dim of APTITUDE_DIMS) {
-        aptitudeGrades[dim.key] = uma.aptitude[dim.key] || "G";
-      }
-      saveAptitude();
+
+  const traineeInput = document.getElementById("trainee-input");
+  traineeInput.addEventListener("input", (e) => renderTraineeSuggestions(e.target.value));
+  traineeInput.addEventListener("focus", (e) => renderTraineeSuggestions(e.target.value));
+  traineeInput.addEventListener("blur", () => {
+    hideTraineeSuggestions();
+    if (!traineeInput.value.trim()) selectedTrainee = null;
+  });
+  traineeInput.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") { traineeInput.blur(); hideTraineeSuggestions(); }
+    if (e.key === "Enter") e.preventDefault();
+  });
+
+  document.getElementById("include-unreleased").addEventListener("change", (e) => {
+    includeUnreleased = e.target.checked;
+    // Enforce the checkbox even for an already-selected trainee, not just new searches.
+    if (!includeUnreleased && selectedTrainee && !selectedTrainee.inGame) {
+      applyTrainee(null);
     }
-    renderAll();
   });
 
   document.getElementById("reset-btn").addEventListener("click", () => {

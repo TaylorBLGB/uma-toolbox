@@ -405,6 +405,36 @@ tbody tr.expandable { cursor: pointer; }
 
 .filter-group-hint { text-transform: none; letter-spacing: 0; font-weight: 400; color: var(--text-dim); }
 
+.trainee-search { position: relative; width: 200px; }
+.trainee-search input { width: 100%; }
+
+.trainee-suggestions {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  max-height: 260px;
+  overflow-y: auto;
+  background: var(--bg-elev-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  z-index: 30;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+}
+
+.trainee-suggestion {
+  padding: 7px 10px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.trainee-suggestion:hover, .trainee-suggestion.highlighted { background: var(--bg-elev); }
+.trainee-suggestion .unreleased-tag { color: var(--warn); font-size: 0.72rem; }
+.trainee-suggestion-empty { padding: 8px 10px; font-size: 0.85rem; color: var(--text-dim); }
+
 .apt-controls {
   display: flex;
   flex-wrap: wrap;

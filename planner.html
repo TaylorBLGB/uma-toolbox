@@ -30,7 +30,11 @@
       <div class="toolbar-row">
         <div class="filter-group">
           <span class="filter-group-label">Trainee</span>
-          <select id="trainee-select"><option value="">None</option></select>
+          <div class="trainee-search">
+            <input type="text" id="trainee-input" placeholder="Search by name&hellip;" autocomplete="off">
+            <div id="trainee-suggestions" class="trainee-suggestions hidden"></div>
+          </div>
+          <label class="checkbox-row"><input type="checkbox" id="include-unreleased"> Include unreleased</label>
         </div>
         <div class="filter-group">
           <span class="filter-group-label">Max consecutive races</span>

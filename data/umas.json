@@ -1,6 +1,7 @@
 [
  {
   "name": "Agnes Tachyon",
+  "inGame": true,
   "costume": "Tach-nology",
   "version": "Default",
   "uniqueSkillName": "U=ma2",
@@ -37,6 +38,7 @@
  },
  {
   "name": "Air Groove",
+  "inGame": true,
   "costume": "Empress Road",
   "version": "Default",
   "uniqueSkillName": "Blazing Pride",
@@ -73,6 +75,7 @@
  },
  {
   "name": "Daiwa Scarlet",
+  "inGame": true,
   "costume": "Peak Blue",
   "version": "Default",
   "uniqueSkillName": "Replendent Red Ace",
@@ -109,6 +112,7 @@
  },
  {
   "name": "El Condor Pasa",
+  "inGame": true,
   "costume": "El ☆ Número 1",
   "version": "Default",
   "uniqueSkillName": "Victoria por plancha ☆",
@@ -145,6 +149,7 @@
  },
  {
   "name": "Gold Ship",
+  "inGame": true,
   "costume": "Red Strife",
   "version": "Default",
   "uniqueSkillName": "Anchors Aweigh!",
@@ -181,6 +186,7 @@
  },
  {
   "name": "Grass Wonder",
+  "inGame": true,
   "costume": "Stone-piercing Blue",
   "version": "Default",
   "uniqueSkillName": "Where There's a Will, There's a Way",
@@ -217,6 +223,7 @@
  },
  {
   "name": "Haru Urara",
+  "inGame": true,
   "costume": "Bestest Prize ♪",
   "version": "Default",
   "uniqueSkillName": "Super-Duper Climax",
@@ -253,6 +260,7 @@
  },
  {
   "name": "King Halo",
+  "inGame": true,
   "costume": "King of Emeralds",
   "version": "Default",
   "uniqueSkillName": "Prideful King",
@@ -289,6 +297,7 @@
  },
  {
   "name": "Maruzensky",
+  "inGame": true,
   "costume": "Formula R",
   "version": "Default",
   "uniqueSkillName": "Red Shift/LP1211-M",
@@ -325,6 +334,7 @@
  },
  {
   "name": "Matikanefukukitaru",
+  "inGame": true,
   "costume": "Rising ☆ Fortune",
   "version": "Default",
   "uniqueSkillName": "I See Victory in My Future!",
@@ -361,6 +371,7 @@
  },
  {
   "name": "Mayano Top Gun",
+  "inGame": true,
   "costume": "Scramble ☆ Zone",
   "version": "Default",
   "uniqueSkillName": "Flashy☆Landing",
@@ -397,6 +408,7 @@
  },
  {
   "name": "Mejiro McQueen",
+  "inGame": true,
   "costume": "Frontline Elegance",
   "version": "Default",
   "uniqueSkillName": "The Duty of Dignity Calls",
@@ -433,6 +445,7 @@
  },
  {
   "name": "Mejiro Ryan",
+  "inGame": true,
   "costume": "Down the Line",
   "version": "Default",
   "uniqueSkillName": "Let's Pump Some Iron!",
@@ -469,6 +482,7 @@
  },
  {
   "name": "Nice Nature",
+  "inGame": true,
   "costume": "Poinsettia Ribbon",
   "version": "Default",
   "uniqueSkillName": "Just a Little Farther!",
@@ -505,6 +519,7 @@
  },
  {
   "name": "Oguri Cap",
+  "inGame": true,
   "costume": "Starlight Beat",
   "version": "Default",
   "uniqueSkillName": "Triumphant Pulse",
@@ -541,6 +556,7 @@
  },
  {
   "name": "Rice Shower",
+  "inGame": true,
   "costume": "Rosy Dreams",
   "version": "Default",
   "uniqueSkillName": "Blue Rose Closer",
@@ -577,6 +593,7 @@
  },
  {
   "name": "Sakura Bakushin O",
+  "inGame": true,
   "costume": "Blossom in Learning",
   "version": "Default",
   "uniqueSkillName": "Genuis x Bakushin = Victory",
@@ -613,6 +630,7 @@
  },
  {
   "name": "Silence Suzuka",
+  "inGame": true,
   "costume": "Innocent Silence",
   "version": "Default",
   "uniqueSkillName": "The View from the Lead Is Mine!",
@@ -649,6 +667,7 @@
  },
  {
   "name": "Special Week",
+  "inGame": true,
   "costume": "Special Dreamer",
   "version": "Default",
   "uniqueSkillName": "Shooting Star",
@@ -685,6 +704,7 @@
  },
  {
   "name": "Super Creek",
+  "inGame": true,
   "costume": "Murmuring Stream",
   "version": "Default",
   "uniqueSkillName": "Pure Heart",
@@ -721,6 +741,7 @@
  },
  {
   "name": "Symboli Rudolf",
+  "inGame": true,
   "costume": "Emperor's Path",
   "version": "Default",
   "uniqueSkillName": "Behold Thine Emperor's Divine Might",
@@ -757,6 +778,7 @@
  },
  {
   "name": "Taiki Shuttle",
+  "inGame": true,
   "costume": "Wild Frontier",
   "version": "Default",
   "uniqueSkillName": "Shooting for Victory!",
@@ -793,6 +815,7 @@
  },
  {
   "name": "TM Opera O",
+  "inGame": true,
   "costume": "O Sole Suo!",
   "version": "Default",
   "uniqueSkillName": "This Dance Is for Vittoria!",
@@ -829,6 +852,7 @@
  },
  {
   "name": "Tokai Teio",
+  "inGame": true,
   "costume": "Peak Joy",
   "version": "Default",
   "uniqueSkillName": "Sky-High Teio Step",
@@ -865,6 +889,7 @@
  },
  {
   "name": "Vodka",
+  "inGame": true,
   "costume": "Wild Top Gear",
   "version": "Default",
   "uniqueSkillName": "Cut and Drive!",
@@ -901,6 +926,7 @@
  },
  {
   "name": "Winning Ticket",
+  "inGame": true,
   "costume": "Get To Winning!",
   "version": "Default",
   "uniqueSkillName": "Our Ticket to Win!",
@@ -937,6 +963,7 @@
  },
  {
   "name": "Mihono Bourbon",
+  "inGame": true,
   "costume": "MB-19890425",
   "version": "Default",
   "uniqueSkillName": "G00 1st. F∞;",
@@ -973,6 +1000,7 @@
  },
  {
   "name": "Biwa Hayahide",
+  "inGame": true,
   "costume": "pf.Winning Equation...",
   "version": "Default",
   "uniqueSkillName": "∴win Q.E.D.",
@@ -1009,6 +1037,7 @@
  },
  {
   "name": "Mejiro McQueen",
+  "inGame": true,
   "costume": "End of The Skies",
   "version": "Anime",
   "uniqueSkillName": "Legacy of the Strong",
@@ -1045,6 +1074,7 @@
  },
  {
   "name": "Tokai Teio",
+  "inGame": true,
   "costume": "Beyond the Horizon",
   "version": "Anime",
   "uniqueSkillName": "Certain Victory",
@@ -1081,6 +1111,7 @@
  },
  {
   "name": "Curren Chan",
+  "inGame": true,
   "costume": "Fille Éclair",
   "version": "Default",
   "uniqueSkillName": "#LookatCurren",
@@ -1117,6 +1148,7 @@
  },
  {
   "name": "Narita Taishin",
+  "inGame": true,
   "costume": "Nevertheless",
   "version": "Default",
   "uniqueSkillName": "Nemesis",
@@ -1153,6 +1185,7 @@
  },
  {
   "name": "Smart Falcon",
+  "inGame": true,
   "costume": "LOVE ☆ 4EVER",
   "version": "Default",
   "uniqueSkillName": "SPARKLY☆STARDOM",
@@ -1189,6 +1222,7 @@
  },
  {
   "name": "Narita Brian",
+  "inGame": true,
   "costume": "Maverick",
   "version": "Default",
   "uniqueSkillName": "Shadow Break",
@@ -1225,6 +1259,7 @@
  },
  {
   "name": "Air Groove",
+  "inGame": true,
   "costume": "Quercus Civilis",
   "version": "Wedding",
   "uniqueSkillName": "Eternal Moments",
@@ -1261,6 +1296,7 @@
  },
  {
   "name": "Mayano Top Gun",
+  "inGame": true,
   "costume": "Sunlight Bouquet",
   "version": "Wedding",
   "uniqueSkillName": "Flowery☆Maneuver",
@@ -1297,6 +1333,7 @@
  },
  {
   "name": "Seiun Sky",
+  "inGame": true,
   "costume": "Reeling in the Big One",
   "version": "Default",
   "uniqueSkillName": "Angling & Scheming",
@@ -1333,6 +1370,7 @@
  },
  {
   "name": "Hishi Amazon",
+  "inGame": true,
   "costume": "Azure Amazon",
   "version": "Default",
   "uniqueSkillName": "You and Me! One-on-One!",
@@ -1369,6 +1407,7 @@
  },
  {
   "name": "El Condor Pasa",
+  "inGame": true,
   "costume": "Kukulkan Warrior",
   "version": "Fantasy",
   "uniqueSkillName": "Condor's Fury",
@@ -1405,6 +1444,7 @@
  },
  {
   "name": "Grass Wonder",
+  "inGame": true,
   "costume": "Saintly Jade Cleric",
   "version": "Fantasy",
   "uniqueSkillName": "Superior Heal",
@@ -1441,6 +1481,7 @@
  },
  {
   "name": "Fuji Kiseki",
+  "inGame": true,
   "costume": "Shooting Star Revue",
   "version": "Default",
   "uniqueSkillName": "Lights of Vaudeville",
@@ -1477,6 +1518,7 @@
  },
  {
   "name": "Gold City",
+  "inGame": true,
   "costume": "Authentic / 1928",
   "version": "Default",
   "uniqueSkillName": "KEEP IT REAL.",
@@ -1513,6 +1555,7 @@
  },
  {
   "name": "Maruzensky",
+  "inGame": true,
   "costume": "Hot ☆ Summer Night",
   "version": "Summer",
   "uniqueSkillName": "A Kiss for Courage",
@@ -1549,6 +1592,7 @@
  },
  {
   "name": "Special Week",
+  "inGame": true,
   "costume": "Hopp'n ♪ Happy Heart",
   "version": "Summer",
   "uniqueSkillName": "Dazzl'n ♪ Diver",
@@ -1585,6 +1629,7 @@
  },
  {
   "name": "Meisho Doto",
+  "inGame": true,
   "costume": "Turbulent Blue",
   "version": "Default",
   "uniqueSkillName": "I Never Goof Up!",
@@ -1621,6 +1666,7 @@
  },
  {
   "name": "Eishin Flash",
+  "inGame": true,
   "costume": "Meisterschaft",
   "version": "Default",
   "uniqueSkillName": "Schwarzes Schwert",
@@ -1657,6 +1703,7 @@
  },
  {
   "name": "Matikanefukukitaru",
+  "inGame": true,
   "costume": "Lucky Tidings",
   "version": "Full Armor",
   "uniqueSkillName": "Bountiful Harvest",
@@ -1693,6 +1740,7 @@
  },
  {
   "name": "Hishi Akebono",
+  "inGame": true,
   "costume": "Bono ☆ Alla Moda",
   "version": "Default",
   "uniqueSkillName": "YUMMY☆SPEED!",
@@ -1729,6 +1777,7 @@
  },
  {
   "name": "Agnes Digital",
+  "inGame": true,
   "costume": "Full-Color Fangirling",
   "version": "Default",
   "uniqueSkillName": "OMG! The Final Sprint! ☆",
@@ -1765,6 +1814,7 @@
  },
  {
   "name": "Rice Shower",
+  "inGame": true,
   "costume": "Vampire Makeover!",
   "version": "Halloween",
   "uniqueSkillName": "Every Rose Has Its Fangs",
@@ -1801,6 +1851,7 @@
  },
  {
   "name": "Super Creek",
+  "inGame": true,
   "costume": "Chiffon Ribbon Mummy",
   "version": "Halloween",
   "uniqueSkillName": "Give Mummy a Hug ♡",
@@ -1837,6 +1888,7 @@
  },
  {
   "name": "Kawakami Princess",
+  "inGame": true,
   "costume": "Princess of Pink",
   "version": "Default",
   "uniqueSkillName": "A Princess Must Seize Victory!",
@@ -1873,6 +1925,7 @@
  },
  {
   "name": "Manhattan Cafe",
+  "inGame": true,
   "costume": "Creeping Shadow",
   "version": "Default",
   "uniqueSkillName": "Chasing After You",
@@ -1909,6 +1962,7 @@
  },
  {
   "name": "Gold City",
+  "inGame": true,
   "costume": "Autumn Cosmos",
   "version": "Festival",
   "uniqueSkillName": "Dancing in the Leaves",
@@ -1945,6 +1999,7 @@
  },
  {
   "name": "Symboli Rudolf",
+  "inGame": true,
   "costume": "Archer by Moonlight",
   "version": "Festival",
   "uniqueSkillName": "Arrows Whistle, Shadows Disperse",
@@ -1981,6 +2036,7 @@
  },
  {
   "name": "Tosen Jordan",
+  "inGame": true,
   "costume": "Jokester ☆ Vibes",
   "version": "Default",
   "uniqueSkillName": "Pop & Polish",
@@ -2017,6 +2073,7 @@
  },
  {
   "name": "Mejiro Dober",
+  "inGame": true,
   "costume": "Off the Line",
   "version": "Default",
   "uniqueSkillName": "Moving Past, and Beyond",
@@ -2053,6 +2110,7 @@
  },
  {
   "name": "Biwa Hayahide",
+  "inGame": true,
   "costume": "Noel Rouge Carol",
   "version": "Christmas",
   "uniqueSkillName": "Presents from X",
@@ -2089,6 +2147,7 @@
  },
  {
   "name": "Oguri Cap",
+  "inGame": true,
   "costume": "Ashen Miracle",
   "version": "Christmas",
   "uniqueSkillName": "Festive Miracle",
@@ -2125,6 +2184,7 @@
  },
  {
   "name": "Fine Motion",
+  "inGame": true,
   "costume": "Noble Seamair",
   "version": "Default",
   "uniqueSkillName": "Fairy Tale",
@@ -2161,6 +2221,7 @@
  },
  {
   "name": "Tamamo Cross",
+  "inGame": true,
   "costume": "Fast as Lightning",
   "version": "Default",
   "uniqueSkillName": "White Lightning Comin' Through!",
@@ -2197,6 +2258,7 @@
  },
  {
   "name": "Haru Urara",
+  "inGame": true,
   "costume": "New Year ♪ New Urara!",
   "version": "New Year",
   "uniqueSkillName": "114th Time's the Charm",
@@ -2233,6 +2295,7 @@
  },
  {
   "name": "TM Opera O",
+  "inGame": true,
   "costume": "New Year, Same Radiance!",
   "version": "New Year",
   "uniqueSkillName": "Barcarole of Blessings",
@@ -2269,6 +2332,7 @@
  },
  {
   "name": "Sakura Chiyono O",
+  "inGame": true,
   "costume": "Strength in Full Bloom",
   "version": "Default",
   "uniqueSkillName": "Ambition to Surpass the Sakura",
@@ -2305,6 +2369,7 @@
  },
  {
   "name": "Eishin Flash",
+  "inGame": true,
   "costume": "Collect・Chocolatier",
   "version": "Valentine",
   "uniqueSkillName": "Guten Appetit ♪",
@@ -2341,6 +2406,7 @@
  },
  {
   "name": "Mihono Bourbon",
+  "inGame": true,
   "costume": "Code Glaçage",
   "version": "Valentine",
   "uniqueSkillName": "Operation Cacao",
@@ -2377,6 +2443,7 @@
  },
  {
   "name": "Mejiro Ardan",
+  "inGame": true,
   "costume": "Clinochlore Line",
   "version": "Default",
   "uniqueSkillName": "A Lifelong Dream, A Moment's Flight",
@@ -2413,6 +2480,7 @@
  },
  {
   "name": "Admire Vega",
+  "inGame": true,
   "costume": "Starry Nocturne",
   "version": "Default",
   "uniqueSkillName": "Shooting Star of Dioskouroi",
@@ -2449,6 +2517,7 @@
  },
  {
   "name": "Kitasan Black",
+  "inGame": true,
   "costume": "Crowning Ooban",
   "version": "Default",
   "uniqueSkillName": "Victory Cheer!",
@@ -2485,6 +2554,7 @@
  },
  {
   "name": "Matikanetannhauser",
+  "inGame": true,
   "costume": "Clippety-Tippety-Clop",
   "version": "Default",
   "uniqueSkillName": "Go, Go, Mun!",
@@ -2521,6 +2591,7 @@
  },
  {
   "name": "Satono Diamond",
+  "inGame": true,
   "costume": "Natural Brilliance",
   "version": "Default",
   "uniqueSkillName": "Eternal Encompassing Shine",
@@ -2557,6 +2628,7 @@
  },
  {
   "name": "Mejiro Bright",
+  "inGame": true,
   "costume": "Brunissage Line",
   "version": "Default",
   "uniqueSkillName": "Lovely Spring Breeze",
@@ -2593,6 +2665,7 @@
  },
  {
   "name": "Fuji Kiseki",
+  "inGame": true,
   "costume": "Succès Étoile",
   "version": "Ballroom",
   "uniqueSkillName": "Ravissant",
@@ -2629,6 +2702,7 @@
  },
  {
   "name": "Seiun Sky",
+  "inGame": true,
   "costume": "Soirée de Chatons",
   "version": "Ballroom",
   "uniqueSkillName": "Break It Down!",
@@ -2665,6 +2739,7 @@
  },
  {
   "name": "Nishino Flower",
+  "inGame": true,
   "costume": "Layered Petals",
   "version": "Default",
   "uniqueSkillName": "Budding Blossom",
@@ -2701,6 +2776,7 @@
  },
  {
   "name": "Yaeno Muteki",
+  "inGame": true,
   "costume": "Blazed Head, Covered Fists",
   "version": "Default",
   "uniqueSkillName": "Peerless Dance of Flowering Flames",
@@ -2737,6 +2813,7 @@
  },
  {
   "name": "King Halo",
+  "inGame": true,
   "costume": "Noble White Cheer Attire",
   "version": "Cheerleader",
   "uniqueSkillName": "Louder! Tracen Cheer!",
@@ -2773,6 +2850,7 @@
  },
  {
   "name": "Nice Nature",
+  "inGame": true,
   "costume": "RUN＆WIN",
   "version": "Cheerleader",
   "uniqueSkillName": "Go☆Go☆Goal!",
@@ -2809,6 +2887,7 @@
  },
  {
   "name": "Ines Fujin",
+  "inGame": true,
   "costume": "All-time Fever",
   "version": "Default",
   "uniqueSkillName": "All Charged! It's Go Time!",
@@ -2845,6 +2924,7 @@
  },
  {
   "name": "Mejiro Palmer",
+  "inGame": true,
   "costume": "Line Breakthrough",
   "version": "Default",
   "uniqueSkillName": "Keep Pushing Ahead",
@@ -2881,6 +2961,7 @@
  },
  {
   "name": "Curren Chan",
+  "inGame": true,
   "costume": "Ma Chérie of the New Moon",
   "version": "Wedding",
   "uniqueSkillName": "One True Color",
@@ -2917,6 +2998,7 @@
  },
  {
   "name": "Fine Motion",
+  "inGame": true,
   "costume": "Titania",
   "version": "Wedding",
   "uniqueSkillName": "Best Day Ever",
@@ -2953,6 +3035,7 @@
  },
  {
   "name": "Inari One",
+  "inGame": true,
   "costume": "Edomurasaki",
   "version": "Default",
   "uniqueSkillName": "Now We're Cruisin'!",
@@ -2989,6 +3072,7 @@
  },
  {
   "name": "Sweep Tosho",
+  "inGame": true,
   "costume": "Platanus Witch",
   "version": "Default",
   "uniqueSkillName": "Victory belongs to me—Strelitzia! ☆",
@@ -3025,6 +3109,7 @@
  },
  {
   "name": "Mejiro Dober",
+  "inGame": true,
   "costume": "Sapphire Sojourn",
   "version": "Camping",
   "uniqueSkillName": "Wherever This Wonder Leads",
@@ -3061,6 +3146,7 @@
  },
  {
   "name": "Taiki Shuttle",
+  "inGame": true,
   "costume": "Bubblegum ☆ Memories",
   "version": "Camping",
   "uniqueSkillName": "Joyful Voyage!",
@@ -3097,6 +3183,7 @@
  },
  {
   "name": "Air Shakur",
+  "inGame": true,
   "costume": "unsigned",
   "version": "Default",
   "uniqueSkillName": "trigger:BEAT",
@@ -3133,6 +3220,7 @@
  },
  {
   "name": "Gold Ship",
+  "inGame": true,
   "costume": "RUN! RUIN! LAUNCHER!",
   "version": "Summer",
   "uniqueSkillName": "564 Escapades",
@@ -3169,6 +3257,7 @@
  },
  {
   "name": "Mejiro McQueen",
+  "inGame": true,
   "costume": "Fair Lady of the Waves",
   "version": "Summer",
   "uniqueSkillName": "Your Smile Sparkles as the Waves",
@@ -3205,6 +3294,7 @@
  },
  {
   "name": "Bamboo Memory",
+  "inGame": true,
   "costume": "Iron Ambition",
   "version": "Default",
   "uniqueSkillName": "Red-Hot Discipline!",
@@ -3241,6 +3331,7 @@
  },
  {
   "name": "Copano Rickey",
+  "inGame": true,
   "costume": "Eightfold ☆ Fortune",
   "version": "Default",
   "uniqueSkillName": "Luck Runs My Way",
@@ -3277,6 +3368,7 @@
  },
  {
   "name": "Smart Falcon",
+  "inGame": true,
   "costume": "Twilight Triumph",
   "version": "Grand Live",
   "uniqueSkillName": "α-star*",
@@ -3313,6 +3405,7 @@
  },
  {
   "name": "Narita Taishin",
+  "inGame": true,
   "costume": "Difference Engineer",
   "version": "Steampunk",
   "uniqueSkillName": "Hephaestus",
@@ -3349,6 +3442,7 @@
  },
  {
   "name": "Winning Ticket",
+  "inGame": true,
   "costume": "Dream Deliverer",
   "version": "Steampunk",
   "uniqueSkillName": "Ticket to Your Dreams!",
@@ -3385,6 +3479,7 @@
  },
  {
   "name": "Yukino Bijin",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -3421,6 +3516,7 @@
  },
  {
   "name": "Seeking the Pearl",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -3457,6 +3553,7 @@
  },
  {
   "name": "Agnes Digital",
+  "inGame": false,
   "costume": null,
   "version": "Halloween",
   "uniqueSkillName": null,
@@ -3493,6 +3590,7 @@
  },
  {
   "name": "Meisho Doto",
+  "inGame": false,
   "costume": null,
   "version": "Halloween",
   "uniqueSkillName": null,
@@ -3529,6 +3627,7 @@
  },
  {
   "name": "Aston Machan",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -3565,6 +3664,7 @@
  },
  {
   "name": "Yamanin Zephyr",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -3601,6 +3701,7 @@
  },
  {
   "name": "Inari One",
+  "inGame": false,
   "costume": null,
   "version": "Festival",
   "uniqueSkillName": null,
@@ -3637,6 +3738,7 @@
  },
  {
   "name": "Tamamo Cross",
+  "inGame": false,
   "costume": null,
   "version": "Festival",
   "uniqueSkillName": null,
@@ -3673,6 +3775,7 @@
  },
  {
   "name": "Nakayama Festa",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -3709,6 +3812,7 @@
  },
  {
   "name": "Wonder Acute",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -3745,6 +3849,7 @@
  },
  {
   "name": "Daiwa Scarlet",
+  "inGame": false,
   "costume": null,
   "version": "Christmas",
   "uniqueSkillName": null,
@@ -3781,6 +3886,7 @@
  },
  {
   "name": "Vodka",
+  "inGame": false,
   "costume": null,
   "version": "Christmas",
   "uniqueSkillName": null,
@@ -3817,6 +3923,7 @@
  },
  {
   "name": "Zenno Rob Roy",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -3853,6 +3960,7 @@
  },
  {
   "name": "Narita Brian",
+  "inGame": false,
   "costume": null,
   "version": "Blaze",
   "uniqueSkillName": null,
@@ -3889,6 +3997,7 @@
  },
  {
   "name": "Kitasan Black",
+  "inGame": false,
   "costume": null,
   "version": "New Year",
   "uniqueSkillName": null,
@@ -3925,6 +4034,7 @@
  },
  {
   "name": "Satono Diamond",
+  "inGame": false,
   "costume": null,
   "version": "New Year",
   "uniqueSkillName": null,
@@ -3961,6 +4071,7 @@
  },
  {
   "name": "Hokko Tarumae",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -3997,6 +4108,7 @@
  },
  {
   "name": "Daitaku Helios",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -4033,6 +4145,7 @@
  },
  {
   "name": "Ines Fujin",
+  "inGame": false,
   "costume": null,
   "version": "Valentine",
   "uniqueSkillName": null,
@@ -4069,6 +4182,7 @@
  },
  {
   "name": "Mejiro Ryan",
+  "inGame": false,
   "costume": null,
   "version": "Valentine",
   "uniqueSkillName": null,
@@ -4105,6 +4219,7 @@
  },
  {
   "name": "Shinko Windy",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -4141,6 +4256,7 @@
  },
  {
   "name": "Mr. C.B.",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -4177,6 +4293,7 @@
  },
  {
   "name": "Twin Turbo",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -4213,6 +4330,7 @@
  },
  {
   "name": "Daiichi Ruby",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -4249,6 +4367,7 @@
  },
  {
   "name": "Symboli Kris S",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -4285,6 +4404,7 @@
  },
  {
   "name": "Mejiro Ardan",
+  "inGame": false,
   "costume": null,
   "version": "Ballroom",
   "uniqueSkillName": null,
@@ -4321,6 +4441,7 @@
  },
  {
   "name": "Sakura Chiyono O",
+  "inGame": false,
   "costume": null,
   "version": "Ballroom",
   "uniqueSkillName": null,
@@ -4357,6 +4478,7 @@
  },
  {
   "name": "Sakura Laurel",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -4393,6 +4515,7 @@
  },
  {
   "name": "Neo Universe",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -4429,6 +4552,7 @@
  },
  {
   "name": "Matikanetannhauser",
+  "inGame": false,
   "costume": null,
   "version": "Sports Festival",
   "uniqueSkillName": null,
@@ -4465,6 +4589,7 @@
  },
  {
   "name": "Sakura Bakushin O",
+  "inGame": false,
   "costume": null,
   "version": "Sports Festival",
   "uniqueSkillName": null,
@@ -4501,6 +4626,7 @@
  },
  {
   "name": "Hishi Miracle",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -4537,6 +4663,7 @@
  },
  {
   "name": "Tanino Gimlet",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -4573,6 +4700,7 @@
  },
  {
   "name": "Hishi Amazon",
+  "inGame": false,
   "costume": null,
   "version": "Wedding",
   "uniqueSkillName": null,
@@ -4609,6 +4737,7 @@
  },
  {
   "name": "Nishino Flower",
+  "inGame": false,
   "costume": null,
   "version": "Wedding",
   "uniqueSkillName": null,
@@ -4645,6 +4774,7 @@
  },
  {
   "name": "Marvelous Sunday",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -4681,6 +4811,7 @@
  },
  {
   "name": "Bamboo Memory",
+  "inGame": false,
   "costume": null,
   "version": "Summer Trip",
   "uniqueSkillName": null,
@@ -4717,6 +4848,7 @@
  },
  {
   "name": "Tosen Jordan",
+  "inGame": false,
   "costume": null,
   "version": "Summer Trip",
   "uniqueSkillName": null,
@@ -4753,6 +4885,7 @@
  },
  {
   "name": "Katsuragi Ace",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -4789,6 +4922,7 @@
  },
  {
   "name": "Sirius Symboli",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -4825,6 +4959,7 @@
  },
  {
   "name": "Agnes Tachyon",
+  "inGame": false,
   "costume": null,
   "version": "Summer",
   "uniqueSkillName": null,
@@ -4861,6 +4996,7 @@
  },
  {
   "name": "Silence Suzuka",
+  "inGame": false,
   "costume": null,
   "version": "Summer",
   "uniqueSkillName": null,
@@ -4897,6 +5033,7 @@
  },
  {
   "name": "Narita Top Road",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -4933,6 +5070,7 @@
  },
  {
   "name": "Gold Ship",
+  "inGame": false,
   "costume": null,
   "version": "Project L'Arc",
   "uniqueSkillName": null,
@@ -4969,6 +5107,7 @@
  },
  {
   "name": "Satono Diamond",
+  "inGame": false,
   "costume": null,
   "version": "Project L'Arc",
   "uniqueSkillName": null,
@@ -5005,6 +5144,7 @@
  },
  {
   "name": "K.S.Miracle",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -5041,6 +5181,7 @@
  },
  {
   "name": "Air Shakur",
+  "inGame": false,
   "costume": null,
   "version": "Halloween",
   "uniqueSkillName": null,
@@ -5077,6 +5218,7 @@
  },
  {
   "name": "Symboli Kris S",
+  "inGame": false,
   "costume": null,
   "version": "Halloween",
   "uniqueSkillName": null,
@@ -5113,6 +5255,7 @@
  },
  {
   "name": "Mejiro Ramonu",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -5149,6 +5292,7 @@
  },
  {
   "name": "Kawakami Princess",
+  "inGame": false,
   "costume": null,
   "version": "Festival",
   "uniqueSkillName": null,
@@ -5185,6 +5329,7 @@
  },
  {
   "name": "Tokai Teio",
+  "inGame": false,
   "costume": null,
   "version": "Festival",
   "uniqueSkillName": null,
@@ -5221,6 +5366,7 @@
  },
  {
   "name": "Tap Dance City",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -5257,6 +5403,7 @@
  },
  {
   "name": "Mejiro Bright",
+  "inGame": false,
   "costume": null,
   "version": "Christmas",
   "uniqueSkillName": null,
@@ -5293,6 +5440,7 @@
  },
  {
   "name": "Mejiro Palmer",
+  "inGame": false,
   "costume": null,
   "version": "Christmas",
   "uniqueSkillName": null,
@@ -5329,6 +5477,7 @@
  },
  {
   "name": "Satono Crown",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -5365,6 +5514,7 @@
  },
  {
   "name": "Cheval Grand",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -5401,6 +5551,7 @@
  },
  {
   "name": "Kitasan Black",
+  "inGame": false,
   "costume": null,
   "version": "Anime",
   "uniqueSkillName": null,
@@ -5437,6 +5588,7 @@
  },
  {
   "name": "Nice Nature",
+  "inGame": false,
   "costume": null,
   "version": "New Year",
   "uniqueSkillName": null,
@@ -5473,6 +5625,7 @@
  },
  {
   "name": "Vivlos",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -5509,6 +5662,7 @@
  },
  {
   "name": "Manhattan Cafe",
+  "inGame": false,
   "costume": null,
   "version": "Valentine",
   "uniqueSkillName": null,
@@ -5545,6 +5699,7 @@
  },
  {
   "name": "Yukino Bijin",
+  "inGame": false,
   "costume": null,
   "version": "Valentine",
   "uniqueSkillName": null,
@@ -5581,6 +5736,7 @@
  },
  {
   "name": "Biko Pegasus",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -5617,6 +5773,7 @@
  },
  {
   "name": "Duramente",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -5653,6 +5810,7 @@
  },
  {
   "name": "Ikuno Dictus",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -5689,6 +5847,7 @@
  },
  {
   "name": "Transcend",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -5725,6 +5884,7 @@
  },
  {
   "name": "Rhein Kraft",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -5761,6 +5921,7 @@
  },
  {
   "name": "Daiichi Ruby",
+  "inGame": false,
   "costume": null,
   "version": "Ballroom",
   "uniqueSkillName": null,
@@ -5797,6 +5958,7 @@
  },
  {
   "name": "Daitaku Helios",
+  "inGame": false,
   "costume": null,
   "version": "Ballroom",
   "uniqueSkillName": null,
@@ -5833,6 +5995,7 @@
  },
  {
   "name": "Winning Ticket",
+  "inGame": false,
   "costume": null,
   "version": "U.A.F.",
   "uniqueSkillName": null,
@@ -5869,6 +6032,7 @@
  },
  {
   "name": "Sounds of Earth",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -5905,6 +6069,7 @@
  },
  {
   "name": "Super Creek",
+  "inGame": false,
   "costume": null,
   "version": "Warfare",
   "uniqueSkillName": null,
@@ -5941,6 +6106,7 @@
  },
  {
   "name": "Yaeno Muteki",
+  "inGame": false,
   "costume": null,
   "version": "Warfare",
   "uniqueSkillName": null,
@@ -5977,6 +6143,7 @@
  },
  {
   "name": "Agnes Tachyon",
+  "inGame": false,
   "costume": null,
   "version": "Alt",
   "uniqueSkillName": null,
@@ -6013,6 +6180,7 @@
  },
  {
   "name": "North Flight",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -6049,6 +6217,7 @@
  },
  {
   "name": "King Halo",
+  "inGame": false,
   "costume": null,
   "version": "Wedding",
   "uniqueSkillName": null,
@@ -6085,6 +6254,7 @@
  },
  {
   "name": "Sweep Tosho",
+  "inGame": false,
   "costume": null,
   "version": "Wedding",
   "uniqueSkillName": null,
@@ -6121,6 +6291,7 @@
  },
  {
   "name": "Jungle Pocket",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -6157,6 +6328,7 @@
  },
  {
   "name": "Dream Journey",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -6193,6 +6365,7 @@
  },
  {
   "name": "Rice Shower",
+  "inGame": false,
   "costume": null,
   "version": "Great Food Festival",
   "uniqueSkillName": null,
@@ -6229,6 +6402,7 @@
  },
  {
   "name": "Calstone Light O",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -6265,6 +6439,7 @@
  },
  {
   "name": "Eishin Flash",
+  "inGame": false,
   "costume": null,
   "version": "Summer Trip",
   "uniqueSkillName": null,
@@ -6301,6 +6476,7 @@
  },
  {
   "name": "Hokko Tarumae",
+  "inGame": false,
   "costume": null,
   "version": "Summer Trip",
   "uniqueSkillName": null,
@@ -6337,6 +6513,7 @@
  },
  {
   "name": "Gentildonna",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -6373,6 +6550,7 @@
  },
  {
   "name": "Neo Universe",
+  "inGame": false,
   "costume": null,
   "version": "Autumn",
   "uniqueSkillName": null,
@@ -6409,6 +6587,7 @@
  },
  {
   "name": "Zenno Rob Roy",
+  "inGame": false,
   "costume": null,
   "version": "Autumn",
   "uniqueSkillName": null,
@@ -6445,6 +6624,7 @@
  },
  {
   "name": "Cesario",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -6481,6 +6661,7 @@
  },
  {
   "name": "Durandal",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -6517,6 +6698,7 @@
  },
  {
   "name": "Mayano Top Gun",
+  "inGame": false,
   "costume": null,
   "version": "Halloween",
   "uniqueSkillName": null,
@@ -6553,6 +6735,7 @@
  },
  {
   "name": "Seeking the Pearl",
+  "inGame": false,
   "costume": null,
   "version": "Halloween",
   "uniqueSkillName": null,
@@ -6589,6 +6772,7 @@
  },
  {
   "name": "Bubble Gum Fellow",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -6625,6 +6809,7 @@
  },
  {
   "name": "Biwa Hayahide",
+  "inGame": false,
   "costume": null,
   "version": "Mecha",
   "uniqueSkillName": null,
@@ -6661,6 +6846,7 @@
  },
  {
   "name": "Narita Taishin",
+  "inGame": false,
   "costume": null,
   "version": "Mecha",
   "uniqueSkillName": null,
@@ -6697,6 +6883,7 @@
  },
  {
   "name": "Air Messiah",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -6733,6 +6920,7 @@
  },
  {
   "name": "Admire Vega",
+  "inGame": false,
   "costume": null,
   "version": "Christmas",
   "uniqueSkillName": null,
@@ -6769,6 +6957,7 @@
  },
  {
   "name": "Narita Top Road",
+  "inGame": false,
   "costume": null,
   "version": "Christmas",
   "uniqueSkillName": null,
@@ -6805,6 +6994,7 @@
  },
  {
   "name": "Win Variation",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -6841,6 +7031,7 @@
  },
  {
   "name": "Grass Wonder",
+  "inGame": false,
   "costume": null,
   "version": "New Year",
   "uniqueSkillName": null,
@@ -6877,6 +7068,7 @@
  },
  {
   "name": "Katsuragi Ace",
+  "inGame": false,
   "costume": null,
   "version": "New Year",
   "uniqueSkillName": null,
@@ -6913,6 +7105,7 @@
  },
  {
   "name": "Mr. C.B.",
+  "inGame": false,
   "costume": null,
   "version": "New Year",
   "uniqueSkillName": null,
@@ -6949,6 +7142,7 @@
  },
  {
   "name": "Maruzensky",
+  "inGame": false,
   "costume": null,
   "version": "New Year",
   "uniqueSkillName": null,
@@ -6985,6 +7179,7 @@
  },
  {
   "name": "Furioso",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -7021,6 +7216,7 @@
  },
  {
   "name": "Aston Machan",
+  "inGame": false,
   "costume": null,
   "version": "Valentine",
   "uniqueSkillName": null,
@@ -7057,6 +7253,7 @@
  },
  {
   "name": "Yamanin Zephyr",
+  "inGame": false,
   "costume": null,
   "version": "Valentine",
   "uniqueSkillName": null,
@@ -7093,6 +7290,7 @@
  },
  {
   "name": "Tsurumaru Tsuyoshi",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -7129,6 +7327,7 @@
  },
  {
   "name": "Orfevre",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -7165,6 +7364,7 @@
  },
  {
   "name": "Gran Alegria",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -7201,6 +7401,7 @@
  },
  {
   "name": "No Reason",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -7237,6 +7438,7 @@
  },
  {
   "name": "Tanino Gimlet",
+  "inGame": false,
   "costume": null,
   "version": "Ballroom",
   "uniqueSkillName": null,
@@ -7273,6 +7475,7 @@
  },
  {
   "name": "Tap Dance City",
+  "inGame": false,
   "costume": null,
   "version": "Ballroom",
   "uniqueSkillName": null,
@@ -7309,6 +7512,7 @@
  },
  {
   "name": "Sirius Symboli",
+  "inGame": false,
   "costume": null,
   "version": "The Twinkle Legends",
   "uniqueSkillName": null,
@@ -7345,6 +7549,7 @@
  },
  {
   "name": "Fenomeno",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -7381,6 +7586,7 @@
  },
  {
   "name": "Copano Rickey",
+  "inGame": false,
   "costume": null,
   "version": "Parade",
   "uniqueSkillName": null,
@@ -7417,6 +7623,7 @@
  },
  {
   "name": "Smart Falcon",
+  "inGame": false,
   "costume": null,
   "version": "Parade",
   "uniqueSkillName": null,
@@ -7453,6 +7660,7 @@
  },
  {
   "name": "Verxina",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -7489,6 +7697,7 @@
  },
  {
   "name": "Loves Only You",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -7525,6 +7734,7 @@
  },
  {
   "name": "Cesario",
+  "inGame": false,
   "costume": null,
   "version": "Wedding",
   "uniqueSkillName": null,
@@ -7561,6 +7771,7 @@
  },
  {
   "name": "Mejiro Ramonu",
+  "inGame": false,
   "costume": null,
   "version": "Wedding",
   "uniqueSkillName": null,
@@ -7597,6 +7808,7 @@
  },
  {
   "name": "Admire Groove",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -7633,6 +7845,7 @@
  },
  {
   "name": "Almond Eye",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -7669,6 +7882,7 @@
  },
  {
   "name": "Believe",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -7705,6 +7919,7 @@
  },
  {
   "name": "Blast Onepiece",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -7741,6 +7956,7 @@
  },
  {
   "name": "Buena Vista",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -7777,6 +7993,7 @@
  },
  {
   "name": "Cheval Grand",
+  "inGame": false,
   "costume": null,
   "version": "Summer",
   "uniqueSkillName": null,
@@ -7813,6 +8030,7 @@
  },
  {
   "name": "Chrono Genesis",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -7849,6 +8067,7 @@
  },
  {
   "name": "Curren Bouquetd'or",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -7885,6 +8104,7 @@
  },
  {
   "name": "Dantsu Flame",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -7921,6 +8141,7 @@
  },
  {
   "name": "Daring Heart",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -7957,6 +8178,7 @@
  },
  {
   "name": "Daring Tact",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -7993,6 +8215,7 @@
  },
  {
   "name": "Espoir City",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -8029,6 +8252,7 @@
  },
  {
   "name": "Fusaichi Pandora",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -8065,6 +8289,7 @@
  },
  {
   "name": "Gold City",
+  "inGame": false,
   "costume": null,
   "version": "Deserted Island",
   "uniqueSkillName": null,
@@ -8101,6 +8326,7 @@
  },
  {
   "name": "Hishi Akebono",
+  "inGame": false,
   "costume": null,
   "version": "Halloween",
   "uniqueSkillName": null,
@@ -8137,6 +8363,7 @@
  },
  {
   "name": "Hishi Miracle",
+  "inGame": false,
   "costume": null,
   "version": "Alt",
   "uniqueSkillName": null,
@@ -8173,6 +8400,7 @@
  },
  {
   "name": "Ines Fujin",
+  "inGame": false,
   "costume": null,
   "version": "Deserted Island",
   "uniqueSkillName": null,
@@ -8209,6 +8437,7 @@
  },
  {
   "name": "K.S.Miracle",
+  "inGame": false,
   "costume": null,
   "version": "Alt",
   "uniqueSkillName": null,
@@ -8245,6 +8474,7 @@
  },
  {
   "name": "Lucky Lilac",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -8281,6 +8511,7 @@
  },
  {
   "name": "Marvelous Sunday",
+  "inGame": false,
   "costume": null,
   "version": "Halloween",
   "uniqueSkillName": null,
@@ -8317,6 +8548,7 @@
  },
  {
   "name": "Rhein Kraft",
+  "inGame": false,
   "costume": null,
   "version": "Alt",
   "uniqueSkillName": null,
@@ -8353,6 +8585,7 @@
  },
  {
   "name": "Royce and Royce",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -8389,6 +8622,7 @@
  },
  {
   "name": "Sakura Chitose O",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -8425,6 +8659,7 @@
  },
  {
   "name": "Samson Big",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -8461,6 +8696,7 @@
  },
  {
   "name": "Satono Crown",
+  "inGame": false,
   "costume": null,
   "version": "Summer",
   "uniqueSkillName": null,
@@ -8497,6 +8733,7 @@
  },
  {
   "name": "Stay Gold",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -8533,6 +8770,7 @@
  },
  {
   "name": "Still in Love",
+  "inGame": false,
   "costume": null,
   "version": "Default",
   "uniqueSkillName": null,
@@ -8569,6 +8807,7 @@
  },
  {
   "name": "Tosen Jordan",
+  "inGame": false,
   "costume": null,
   "version": "Halloween",
   "uniqueSkillName": null,
@@ -8605,6 +8844,7 @@
  },
  {
   "name": "Vivlos",
+  "inGame": false,
   "costume": "Éclat d'été",
   "version": "Summer",
   "uniqueSkillName": null,
@@ -8641,6 +8881,7 @@
  },
  {
   "name": "Special Week",
+  "inGame": false,
   "costume": "Ruler of Japan",
   "version": "Commander",
   "uniqueSkillName": null,

@@ -1,12 +1,14 @@
 """
 Extracts public reference data from the source spreadsheets into JSON files
 consumed by the static site. Deliberately drops personal collection-tracking
-columns (In Game?/Want?/Have?/Use?) - those are not published.
+columns (Want?/Have?/Use?) - those are not published. "In Game?" is kept as
+`inGame` since it's a public fact (whether the character/card is released
+yet), not personal collection status.
 
 Source files are NOT part of the repo (they contain personal collection data)
 and their path differs per machine, so pass them explicitly:
 
-  python scripts/extract_data.py "path\to\Datasheet.xlsx" "path\to\RL UMA.xlsx"
+  python scripts/extract_data.py "path/to/Datasheet.xlsx" "path/to/RL UMA.xlsx"
 
 With no arguments it falls back to this machine's Downloads folder.
 """
@@ -51,6 +53,7 @@ def extract_umas():
         get = lambda col: clean(ws.cell(row=r, column=idx[col]).value) if col in idx else None
         out.append({
             "name": name,
+            "inGame": get("In Game?") == "Y",
             "costume": get("Costume"),
             "version": get("Version"),
             "uniqueSkillName": get("Ult"),
@@ -96,6 +99,7 @@ def extract_supports():
         out.append({
             "character": get("Character"),
             "name": name,
+            "inGame": get("In Game") == "Y",
             "type": get("Type"),
             "grade": get("Grade"),
             "lbPips": get("LB Pips"),

@@ -5,7 +5,9 @@ A small static site with two Umamusume Pretty Derby tools:
 - **Race Planner** (`planner.html`) — a game-accurate 3-year career grid. Click any slot to assign a race,
   or hit Auto-Fill to run a dynamic-programming optimizer that maximizes total fans subject to your
   aptitude filters and a max-consecutive-races cap (it will deliberately skip races early if that produces
-  a better long-run total). Pick a trainee to see an aptitude warning banner, and use Share to hand someone
+  a better long-run total). Search for a trainee by name (substring match) to auto-fill the aptitude grades
+  from their real stats — unreleased characters are excluded from search unless you check "Include
+  unreleased". A Fan Bonus % input shows Base Fans and Total Fans side by side. Use Share to hand someone
   else a link that loads your exact agenda. Race cells look for an image at `images/races/{urlSlug}.png`
   and fall back to a styled placeholder automatically if none exists — see `images/races/README.md`.
 - **Character & Support Database** (`database.html`) — searchable/sortable reference for trainee
@@ -17,14 +19,30 @@ as read-only.
 
 ## Updating the data
 
-The JSON files are generated from two personal spreadsheets (not included in this repo) via
-`scripts/extract_data.py`. That script deliberately drops the `In Game?/Want?/Have?/Use?` columns that
-track personal collection status — only public reference data (stats, aptitudes, race calendar) is
-published. To regenerate after editing the source spreadsheets:
+There's deliberately no in-browser editing — visitors can use the tools but can't change the underlying
+data. You have two ways to update it yourself:
+
+**Option A: edit the spreadsheet, then regenerate.** This is the source of truth and the right path for
+any real edit (new character, corrected aptitude, a whole batch of changes) since it keeps the
+spreadsheet and site in sync for next time:
 
 ```bash
-python scripts/extract_data.py
+python scripts/extract_data.py "path/to/Datasheet.xlsx" "path/to/RL UMA.xlsx"
 ```
+
+With no arguments it looks in this machine's Downloads folder for `Datasheet.xlsx` and `RL UMA (1).xlsx`.
+The script drops the `Want?/Have?/Use?` columns that track your personal collection status — only public
+reference data (stats, aptitudes, race calendar, and whether something's released yet) is published.
+
+**Option B: hand-edit the JSON directly.** For a quick one-off tweak — flipping `"inGame": false` to
+`true` the day a character releases, or adding their aptitude grades before you've updated the
+spreadsheet — `data/umas.json`, `data/supports.json`, and `data/races.json` are plain, readable JSON.
+Open one in any text editor, find the entry by name, edit the fields, save. Just remember it'll get
+overwritten next time you run Option A from the spreadsheet, so fold the same change into the spreadsheet
+eventually if you want it to stick.
+
+Either way, changes only take effect once you redeploy (see below) — editing the local file doesn't touch
+whatever's already live.
 
 ## Running locally
 

@@ -2,6 +2,7 @@
  {
   "character": "Team Sirius",
   "name": "Passing the Dream On",
+  "inGame": true,
   "type": "GRP",
   "grade": "SSR",
   "lbPips": 0,
@@ -25,6 +26,7 @@
  {
   "character": "Grass Wonder",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "GUT",
   "grade": "R",
   "lbPips": 4,
@@ -48,6 +50,7 @@
  {
   "character": "Special Week",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "GUT",
   "grade": "R",
   "lbPips": 4,
@@ -71,6 +74,7 @@
  {
   "character": "Winning Ticket",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "GUT",
   "grade": "R",
   "lbPips": 4,
@@ -94,6 +98,7 @@
  {
   "character": "Meisho Doto",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "GUT",
   "grade": "R",
   "lbPips": 4,
@@ -117,6 +122,7 @@
  {
   "character": "Ines Fujin",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "GUT",
   "grade": "R",
   "lbPips": 4,
@@ -140,6 +146,7 @@
  {
   "character": "Haru Urara",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "GUT",
   "grade": "R",
   "lbPips": 4,
@@ -163,6 +170,7 @@
  {
   "character": "Air Groove",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "GUT",
   "grade": "R",
   "lbPips": 4,
@@ -186,6 +194,7 @@
  {
   "character": "Yukino Bijin",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "GUT",
   "grade": "R",
   "lbPips": 4,
@@ -209,6 +218,7 @@
  {
   "character": "Nice Nature",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "GUT",
   "grade": "R",
   "lbPips": 4,
@@ -232,6 +242,7 @@
  {
   "character": "Air Groove",
   "name": "Nothing Escapes the Vice Prez",
+  "inGame": true,
   "type": "GUT",
   "grade": "SR",
   "lbPips": 4,
@@ -255,6 +266,7 @@
  {
   "character": "Meisho Doto",
   "name": "Fighting for Fortune",
+  "inGame": true,
   "type": "GUT",
   "grade": "SR",
   "lbPips": 4,
@@ -278,6 +290,7 @@
  {
   "character": "Nice Nature",
   "name": "It's Just Water",
+  "inGame": true,
   "type": "GUT",
   "grade": "SR",
   "lbPips": 4,
@@ -301,6 +314,7 @@
  {
   "character": "Yukino Bijin",
   "name": "City Girl 101",
+  "inGame": true,
   "type": "GUT",
   "grade": "SR",
   "lbPips": 4,
@@ -324,6 +338,7 @@
  {
   "character": "Grass Wonder",
   "name": "Fairest Fleur",
+  "inGame": true,
   "type": "GUT",
   "grade": "SSR",
   "lbPips": null,
@@ -347,6 +362,7 @@
  {
   "character": "Haru Urara",
   "name": "Urara's Day Off!",
+  "inGame": true,
   "type": "GUT",
   "grade": "SSR",
   "lbPips": 4,
@@ -370,6 +386,7 @@
  {
   "character": "Ines Fujin",
   "name": "Watch My Star Fly!",
+  "inGame": true,
   "type": "GUT",
   "grade": "SSR",
   "lbPips": 0,
@@ -393,6 +410,7 @@
  {
   "character": "Special Week",
   "name": "The Brightest Star in Japan",
+  "inGame": true,
   "type": "GUT",
   "grade": "SSR",
   "lbPips": null,
@@ -416,6 +434,7 @@
  {
   "character": "Winning Ticket",
   "name": "BNWinner!",
+  "inGame": true,
   "type": "GUT",
   "grade": "SSR",
   "lbPips": null,
@@ -439,6 +458,7 @@
  {
   "character": "Mejiro Palmer",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "GUT",
   "grade": "R",
   "lbPips": 4,
@@ -462,6 +482,7 @@
  {
   "character": "Mejiro Palmer",
   "name": "Go Ahead and Laugh",
+  "inGame": true,
   "type": "GUT",
   "grade": "SSR",
   "lbPips": null,
@@ -485,6 +506,7 @@
  {
   "character": "Matikanetannhauser",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "GUT",
   "grade": "R",
   "lbPips": 4,
@@ -508,6 +530,7 @@
  {
   "character": "Matikanetannhauser",
   "name": "Just Keep Going",
+  "inGame": true,
   "type": "GUT",
   "grade": "SSR",
   "lbPips": 4,
@@ -531,6 +554,7 @@
  {
   "character": "Seeking the Pearl",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "GUT",
   "grade": "R",
   "lbPips": 3,
@@ -554,6 +578,7 @@
  {
   "character": "Seeking the Pearl",
   "name": "The World's My Oyster",
+  "inGame": true,
   "type": "GUT",
   "grade": "SR",
   "lbPips": 2,
@@ -577,6 +602,7 @@
  {
   "character": "Hishi Akebono",
   "name": "Who Wants the FIrst Bite?",
+  "inGame": true,
   "type": "GUT",
   "grade": "SSR",
   "lbPips": null,
@@ -600,6 +626,7 @@
  {
   "character": "Hishi Akebono",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "GUT",
   "grade": "R",
   "lbPips": 4,
@@ -623,6 +650,7 @@
  {
   "character": "Mejiro Ryan",
   "name": "Winning Pitch",
+  "inGame": true,
   "type": "GUT",
   "grade": "SSR",
   "lbPips": null,
@@ -646,6 +674,7 @@
  {
   "character": "Ikuno Dictus",
   "name": "Warm Heart, Soft Steps",
+  "inGame": true,
   "type": "GUT",
   "grade": "SSR",
   "lbPips": null,
@@ -669,6 +698,7 @@
  {
   "character": "Sirius Symboli",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "GUT",
   "grade": "R",
   "lbPips": 3,
@@ -692,6 +722,7 @@
  {
   "character": "Sirius Symboli",
   "name": "The Brightest Star Shines On",
+  "inGame": true,
   "type": "GUT",
   "grade": "SR",
   "lbPips": 3,
@@ -715,6 +746,7 @@
  {
   "character": "Yukino Bijin",
   "name": "Dancing Light into the Night",
+  "inGame": true,
   "type": "GUT",
   "grade": "SSR",
   "lbPips": 4,
@@ -738,6 +770,7 @@
  {
   "character": "Tamamo Cross",
   "name": "Now Dat's What I Call Grilled Squid!",
+  "inGame": true,
   "type": "GUT",
   "grade": "SR",
   "lbPips": null,
@@ -761,6 +794,7 @@
  {
   "character": "Sakura Bakushin O",
   "name": "Super! Sonic! Flower Power!",
+  "inGame": true,
   "type": "GUT",
   "grade": "SSR",
   "lbPips": null,
@@ -784,6 +818,7 @@
  {
   "character": "Admire Vega",
   "name": "Aim for the Brightest",
+  "inGame": true,
   "type": "GUT",
   "grade": "SR",
   "lbPips": null,
@@ -807,6 +842,7 @@
  {
   "character": "Marvelous Sunday",
   "name": "A MORE MARVELOUS WORLD ☆",
+  "inGame": true,
   "type": "GUT",
   "grade": "SSR",
   "lbPips": null,
@@ -830,6 +866,7 @@
  {
   "character": "Smart Falcon",
   "name": "Almost... an Umadol?! ♡",
+  "inGame": true,
   "type": "GUT",
   "grade": "SR",
   "lbPips": 4,
@@ -853,6 +890,7 @@
  {
   "character": "Tazuna Hayakawa",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "PAL",
   "grade": "R",
   "lbPips": 4,
@@ -876,6 +914,7 @@
  {
   "character": "Aoi Kiryuin",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "PAL",
   "grade": "R",
   "lbPips": 4,
@@ -899,6 +938,7 @@
  {
   "character": "Aoi Kiryuin",
   "name": "Trainers' Teamwork",
+  "inGame": true,
   "type": "PAL",
   "grade": "SR",
   "lbPips": 4,
@@ -922,6 +962,7 @@
  {
   "character": "Tazuna Hayakawa",
   "name": "Tracen Reception",
+  "inGame": true,
   "type": "PAL",
   "grade": "SSR",
   "lbPips": 0,
@@ -945,6 +986,7 @@
  {
   "character": "Riko Kashimoto",
   "name": "Planned Perfection",
+  "inGame": true,
   "type": "PAL",
   "grade": "SSR",
   "lbPips": 2,
@@ -968,6 +1010,7 @@
  {
   "character": "Riko Kashimoto",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "PAL",
   "grade": "R",
   "lbPips": 4,
@@ -991,6 +1034,7 @@
  {
   "character": "Sasami Anshinzawa",
   "name": "This Might Sting!",
+  "inGame": true,
   "type": "PAL",
   "grade": "SSR",
   "lbPips": null,
@@ -1014,6 +1058,7 @@
  {
   "character": "Sasami Anshinzawa",
   "name": "Acupuncturist",
+  "inGame": true,
   "type": "PAL",
   "grade": "R",
   "lbPips": 0,
@@ -1037,6 +1082,7 @@
  {
   "character": "Vodka",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "PWR",
   "grade": "R",
   "lbPips": 4,
@@ -1060,6 +1106,7 @@
  {
   "character": "Mihono Bourbon",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "PWR",
   "grade": "R",
   "lbPips": 4,
@@ -1083,6 +1130,7 @@
  {
   "character": "Hishi Amazon",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "PWR",
   "grade": "R",
   "lbPips": 4,
@@ -1106,6 +1154,7 @@
  {
   "character": "El Condor Pasa",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "PWR",
   "grade": "R",
   "lbPips": 4,
@@ -1129,6 +1178,7 @@
  {
   "character": "Oguri Cap",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "PWR",
   "grade": "R",
   "lbPips": 4,
@@ -1152,6 +1202,7 @@
  {
   "character": "Smart Falcon",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "PWR",
   "grade": "R",
   "lbPips": 4,
@@ -1175,6 +1226,7 @@
  {
   "character": "Biwa Hayahide",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "PWR",
   "grade": "R",
   "lbPips": 4,
@@ -1198,6 +1250,7 @@
  {
   "character": "Agnes Digital",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "PWR",
   "grade": "R",
   "lbPips": 4,
@@ -1221,6 +1274,7 @@
  {
   "character": "Mejiro Ryan",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "PWR",
   "grade": "R",
   "lbPips": 4,
@@ -1244,6 +1298,7 @@
  {
   "character": "Hishi Amazon",
   "name": "Reach the Top!",
+  "inGame": true,
   "type": "PWR",
   "grade": "SR",
   "lbPips": 4,
@@ -1267,6 +1322,7 @@
  {
   "character": "Mejiro Ryan",
   "name": "On and Off the Court",
+  "inGame": true,
   "type": "PWR",
   "grade": "SR",
   "lbPips": 4,
@@ -1290,6 +1346,7 @@
  {
   "character": "Mihono Bourbon",
   "name": "Pal-Assisted Training",
+  "inGame": true,
   "type": "PWR",
   "grade": "SR",
   "lbPips": 4,
@@ -1313,6 +1370,7 @@
  {
   "character": "Biwa Hayahide",
   "name": "Trial Initiation",
+  "inGame": true,
   "type": "PWR",
   "grade": "SR",
   "lbPips": 4,
@@ -1336,6 +1394,7 @@
  {
   "character": "Agnes Digital",
   "name": "Digital's Recharge Station",
+  "inGame": true,
   "type": "PWR",
   "grade": "SR",
   "lbPips": 4,
@@ -1359,6 +1418,7 @@
  {
   "character": "El Condor Pasa",
   "name": "Champion's Passion",
+  "inGame": true,
   "type": "PWR",
   "grade": "SSR",
   "lbPips": 3,
@@ -1382,6 +1442,7 @@
  {
   "character": "Oguri Cap",
   "name": "Get Lots of Hugs for Me",
+  "inGame": true,
   "type": "PWR",
   "grade": "SSR",
   "lbPips": null,
@@ -1405,6 +1466,7 @@
  {
   "character": "Smart Falcon",
   "name": "My Umadol Way! ☆",
+  "inGame": true,
   "type": "PWR",
   "grade": "SSR",
   "lbPips": 3,
@@ -1428,6 +1490,7 @@
  {
   "character": "Vodka",
   "name": "Wild Rider",
+  "inGame": true,
   "type": "PWR",
   "grade": "SSR",
   "lbPips": 0,
@@ -1451,6 +1514,7 @@
  {
   "character": "Daitaku Helios",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "PWR",
   "grade": "R",
   "lbPips": 4,
@@ -1474,6 +1538,7 @@
  {
   "character": "Daitaku Helios",
   "name": "Let's Get This Party Lit!",
+  "inGame": true,
   "type": "PWR",
   "grade": "SR",
   "lbPips": 4,
@@ -1497,6 +1562,7 @@
  {
   "character": "Nishino Flower",
   "name": "Lifting Your Spirits",
+  "inGame": true,
   "type": "PWR",
   "grade": "SR",
   "lbPips": 0,
@@ -1520,6 +1586,7 @@
  {
   "character": "Yaeno Muteki",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "PWR",
   "grade": "R",
   "lbPips": 4,
@@ -1543,6 +1610,7 @@
  {
   "character": "Winning Ticket",
   "name": "Dreams Do Come True!",
+  "inGame": true,
   "type": "PWR",
   "grade": "SSR",
   "lbPips": 4,
@@ -1566,6 +1634,7 @@
  {
   "character": "Yaeno Muteki",
   "name": "Fiery Discipline",
+  "inGame": true,
   "type": "PWR",
   "grade": "SSR",
   "lbPips": null,
@@ -1589,6 +1658,7 @@
  {
   "character": "Bamboo Memory",
   "name": "Head-On Fight!",
+  "inGame": true,
   "type": "PWR",
   "grade": "SSR",
   "lbPips": null,
@@ -1612,6 +1682,7 @@
  {
   "character": "Bamboo Memory",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "PWR",
   "grade": "R",
   "lbPips": 0,
@@ -1635,6 +1706,7 @@
  {
   "character": "King Halo",
   "name": "Tonight, We Waltz",
+  "inGame": true,
   "type": "PWR",
   "grade": "SSR",
   "lbPips": null,
@@ -1658,6 +1730,7 @@
  {
   "character": "Daiwa Scarlet",
   "name": "Mini☆Vacation",
+  "inGame": true,
   "type": "PWR",
   "grade": "SSR",
   "lbPips": 4,
@@ -1681,6 +1754,7 @@
  {
   "character": "Rice Shower",
   "name": "Happiness Just around the Bend",
+  "inGame": true,
   "type": "PWR",
   "grade": "SSR",
   "lbPips": 0,
@@ -1704,6 +1778,7 @@
  {
   "character": "Fine Motion",
   "name": "Grma, Ramen ♪",
+  "inGame": true,
   "type": "PWR",
   "grade": "SR",
   "lbPips": 2,
@@ -1727,6 +1802,7 @@
  {
   "character": "Tamamo Cross",
   "name": "Beware! Halloween Night!",
+  "inGame": true,
   "type": "PWR",
   "grade": "SSR",
   "lbPips": null,
@@ -1750,6 +1826,7 @@
  {
   "character": "Daitaku Helios",
   "name": "Make! Some! NOISE!",
+  "inGame": true,
   "type": "PWR",
   "grade": "SSR",
   "lbPips": null,
@@ -1773,6 +1850,7 @@
  {
   "character": "Marvelous Sunday",
   "name": "Dazzling Day in the Snow",
+  "inGame": true,
   "type": "PWR",
   "grade": "SSR",
   "lbPips": 4,
@@ -1796,6 +1874,7 @@
  {
   "character": "Inari One",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "PWR",
   "grade": "R",
   "lbPips": null,
@@ -1819,6 +1898,7 @@
  {
   "character": "Inari One",
   "name": "Laughing through the Mud",
+  "inGame": true,
   "type": "PWR",
   "grade": "SR",
   "lbPips": 0,
@@ -1842,6 +1922,7 @@
  {
   "character": "Admire Vega",
   "name": "Lucky Star in the Sky",
+  "inGame": true,
   "type": "PWR",
   "grade": "SSR",
   "lbPips": null,
@@ -1865,6 +1946,7 @@
  {
   "character": "Admire Vega",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "PWR",
   "grade": "R",
   "lbPips": 0,
@@ -1888,6 +1970,7 @@
  {
   "character": "Agnes Digital",
   "name": "A Fan's Joy",
+  "inGame": true,
   "type": "PWR",
   "grade": "SSR",
   "lbPips": null,
@@ -1911,6 +1994,7 @@
  {
   "character": "Sakura Bakushin O",
   "name": "The Perfect Morning Greeting!",
+  "inGame": true,
   "type": "PWR",
   "grade": "SR",
   "lbPips": 0,
@@ -1934,6 +2018,7 @@
  {
   "character": "Special Week",
   "name": "At the End of the Day",
+  "inGame": true,
   "type": "PWR",
   "grade": "SR",
   "lbPips": 4,
@@ -1957,6 +2042,7 @@
  {
   "character": "Daiwa Scarlet",
   "name": "Number 1 Outfit",
+  "inGame": true,
   "type": "PWR",
   "grade": "SSR",
   "lbPips": null,
@@ -1980,6 +2066,7 @@
  {
   "character": "Silence Suzuka",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "SPD",
   "grade": "R",
   "lbPips": 4,
@@ -2003,6 +2090,7 @@
  {
   "character": "Sakura Bakushin O",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "SPD",
   "grade": "R",
   "lbPips": 4,
@@ -2026,6 +2114,7 @@
  {
   "character": "Tokai Teio",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "SPD",
   "grade": "R",
   "lbPips": 4,
@@ -2049,6 +2138,7 @@
  {
   "character": "Eishin Flash",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "SPD",
   "grade": "R",
   "lbPips": 4,
@@ -2072,6 +2162,7 @@
  {
   "character": "Maruzensky",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "SPD",
   "grade": "R",
   "lbPips": 4,
@@ -2095,6 +2186,7 @@
  {
   "character": "Biko Pegasus",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "SPD",
   "grade": "R",
   "lbPips": 4,
@@ -2118,6 +2210,7 @@
  {
   "character": "Sweep Tosho",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "SPD",
   "grade": "R",
   "lbPips": 2,
@@ -2141,6 +2234,7 @@
  {
   "character": "Nishino Flower",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "SPD",
   "grade": "R",
   "lbPips": 4,
@@ -2164,6 +2258,7 @@
  {
   "character": "Narita Taishin",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "SPD",
   "grade": "R",
   "lbPips": 4,
@@ -2187,6 +2282,7 @@
  {
   "character": "Taiki Shuttle",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "SPD",
   "grade": "R",
   "lbPips": 4,
@@ -2210,6 +2306,7 @@
  {
   "character": "Gold City",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "SPD",
   "grade": "R",
   "lbPips": 4,
@@ -2233,6 +2330,7 @@
  {
   "character": "King Halo",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "SPD",
   "grade": "R",
   "lbPips": 4,
@@ -2256,6 +2354,7 @@
  {
   "character": "Sweep Tosho",
   "name": "Lamplit Training of a Witch-to-Be",
+  "inGame": true,
   "type": "SPD",
   "grade": "SR",
   "lbPips": 4,
@@ -2279,6 +2378,7 @@
  {
   "character": "Narita Taishin",
   "name": "Poolside High Tides",
+  "inGame": true,
   "type": "SPD",
   "grade": "SR",
   "lbPips": 4,
@@ -2302,6 +2402,7 @@
  {
   "character": "Eishin Flash",
   "name": "5:00 a.m - Right on Schedule",
+  "inGame": true,
   "type": "SPD",
   "grade": "SR",
   "lbPips": 4,
@@ -2325,6 +2426,7 @@
  {
   "character": "King Halo",
   "name": "First-Rate Plan",
+  "inGame": true,
   "type": "SPD",
   "grade": "SR",
   "lbPips": 4,
@@ -2348,6 +2450,7 @@
  {
   "character": "Biko Pegasus",
   "name": "Double Carrot Punch!",
+  "inGame": true,
   "type": "SPD",
   "grade": "SSR",
   "lbPips": 0,
@@ -2371,6 +2474,7 @@
  {
   "character": "Gold City",
   "name": "Run (my) way",
+  "inGame": true,
   "type": "SPD",
   "grade": "SSR",
   "lbPips": null,
@@ -2394,6 +2498,7 @@
  {
   "character": "Nishino Flower",
   "name": "Even the Littlest Bud",
+  "inGame": true,
   "type": "SPD",
   "grade": "SSR",
   "lbPips": 0,
@@ -2417,6 +2522,7 @@
  {
   "character": "Sakura Bakushin O",
   "name": "Eat Fast! Yum Fast!",
+  "inGame": true,
   "type": "SPD",
   "grade": "SSR",
   "lbPips": null,
@@ -2440,6 +2546,7 @@
  {
   "character": "Silence Suzuka",
   "name": "Beyond This Shining Moment",
+  "inGame": true,
   "type": "SPD",
   "grade": "SSR",
   "lbPips": 0,
@@ -2463,6 +2570,7 @@
  {
   "character": "Special Week",
   "name": "The Setting Sun and Rising Stars",
+  "inGame": true,
   "type": "SPD",
   "grade": "SSR",
   "lbPips": null,
@@ -2486,6 +2594,7 @@
  {
   "character": "Tokai Teio",
   "name": "Dream Big!",
+  "inGame": true,
   "type": "SPD",
   "grade": "SSR",
   "lbPips": null,
@@ -2509,6 +2618,7 @@
  {
   "character": "Twin Turbo",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "SPD",
   "grade": "R",
   "lbPips": 4,
@@ -2532,6 +2642,7 @@
  {
   "character": "Twin Turbo",
   "name": "Turbo Booooost!",
+  "inGame": true,
   "type": "SPD",
   "grade": "SSR",
   "lbPips": 0,
@@ -2555,6 +2666,7 @@
  {
   "character": "Kitasan Black",
   "name": "Fire at My Heels!",
+  "inGame": true,
   "type": "SPD",
   "grade": "SSR",
   "lbPips": 4,
@@ -2578,6 +2690,7 @@
  {
   "character": "Kitasan Black",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "SPD",
   "grade": "R",
   "lbPips": 4,
@@ -2601,6 +2714,7 @@
  {
   "character": "Kawakami Princess",
   "name": "Princess Bride",
+  "inGame": true,
   "type": "SPD",
   "grade": "SSR",
   "lbPips": 0,
@@ -2624,6 +2738,7 @@
  {
   "character": "Kawakami Princess",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "SPD",
   "grade": "R",
   "lbPips": 3,
@@ -2647,6 +2762,7 @@
  {
   "character": "Shinko Windy",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "SPD",
   "grade": "R",
   "lbPips": 3,
@@ -2670,6 +2786,7 @@
  {
   "character": "Shinko Windy",
   "name": "///WARNING GATE///",
+  "inGame": true,
   "type": "SPD",
   "grade": "SR",
   "lbPips": 2,
@@ -2693,6 +2810,7 @@
  {
   "character": "Gold Ship",
   "name": "That Time I Became the Strongest",
+  "inGame": true,
   "type": "SPD",
   "grade": "SSR",
   "lbPips": 4,
@@ -2716,6 +2834,7 @@
  {
   "character": "Narita Brian",
   "name": "Two Pieces",
+  "inGame": true,
   "type": "SPD",
   "grade": "SSR",
   "lbPips": 4,
@@ -2739,6 +2858,7 @@
  {
   "character": "Narita Brian",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "SPD",
   "grade": "R",
   "lbPips": 4,
@@ -2762,6 +2882,7 @@
  {
   "character": "Sweep Tosho",
   "name": "It's All Mine!",
+  "inGame": true,
   "type": "SPD",
   "grade": "SSR",
   "lbPips": null,
@@ -2785,6 +2906,7 @@
  {
   "character": "Zenno Rob Roy",
   "name": "Magical Heroine",
+  "inGame": true,
   "type": "SPD",
   "grade": "SSR",
   "lbPips": null,
@@ -2808,6 +2930,7 @@
  {
   "character": "Vodka",
   "name": "An Annoying Supervisor",
+  "inGame": true,
   "type": "SPD",
   "grade": "SR",
   "lbPips": 0,
@@ -2831,6 +2954,7 @@
  {
   "character": "Mayano Top Gun",
   "name": "Party Formation",
+  "inGame": true,
   "type": "SPD",
   "grade": "SSR",
   "lbPips": null,
@@ -2854,6 +2978,7 @@
  {
   "character": "Silence Suzuka",
   "name": "Searching for Unseen Sights",
+  "inGame": true,
   "type": "SPD",
   "grade": "SSR",
   "lbPips": 0,
@@ -2877,6 +3002,7 @@
  {
   "character": "Matikanefukukitaru",
   "name": "Touching Sleeves Is Good Luck! ♪",
+  "inGame": true,
   "type": "SPD",
   "grade": "SSR",
   "lbPips": null,
@@ -2900,6 +3026,7 @@
  {
   "character": "Tosen Jordan",
   "name": "My Way",
+  "inGame": true,
   "type": "SPD",
   "grade": "SSR",
   "lbPips": 4,
@@ -2923,6 +3050,7 @@
  {
   "character": "Narita Top Road",
   "name": "Peachy Silhouette",
+  "inGame": true,
   "type": "SPD",
   "grade": "SSR",
   "lbPips": null,
@@ -2946,6 +3074,7 @@
  {
   "character": "Narita Top Road",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "SPD",
   "grade": "R",
   "lbPips": 4,
@@ -2969,6 +3098,7 @@
  {
   "character": "Curren Chan",
   "name": "Cozy Cute Memory ♪",
+  "inGame": true,
   "type": "SPD",
   "grade": "SR",
   "lbPips": 1,
@@ -2992,6 +3122,7 @@
  {
   "character": "Air Shakur",
   "name": "Mag!c Number",
+  "inGame": true,
   "type": "SPD",
   "grade": "SSR",
   "lbPips": 4,
@@ -3015,6 +3146,7 @@
  {
   "character": "Seiun Sky",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "STA",
   "grade": "R",
   "lbPips": 4,
@@ -3038,6 +3170,7 @@
  {
   "character": "Mejiro McQueen",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "STA",
   "grade": "R",
   "lbPips": 4,
@@ -3061,6 +3194,7 @@
  {
   "character": "Manhattan Cafe",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "STA",
   "grade": "R",
   "lbPips": 4,
@@ -3084,6 +3218,7 @@
  {
   "character": "Super Creek",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "STA",
   "grade": "R",
   "lbPips": 4,
@@ -3107,6 +3242,7 @@
  {
   "character": "Rice Shower",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "STA",
   "grade": "R",
   "lbPips": 4,
@@ -3130,6 +3266,7 @@
  {
   "character": "Mayano Top Gun",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "STA",
   "grade": "R",
   "lbPips": 4,
@@ -3153,6 +3290,7 @@
  {
   "character": "Tamamo Cross",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "STA",
   "grade": "R",
   "lbPips": 4,
@@ -3176,6 +3314,7 @@
  {
   "character": "Gold Ship",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "STA",
   "grade": "R",
   "lbPips": 4,
@@ -3199,6 +3338,7 @@
  {
   "character": "TM Opera O",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "STA",
   "grade": "R",
   "lbPips": 4,
@@ -3222,6 +3362,7 @@
  {
   "character": "Manhattan Cafe",
   "name": "My Solo Drawn to Raindrop Drums",
+  "inGame": true,
   "type": "STA",
   "grade": "SR",
   "lbPips": 4,
@@ -3245,6 +3386,7 @@
  {
   "character": "Mayano Top Gun",
   "name": "Cute + Cute = ?",
+  "inGame": true,
   "type": "STA",
   "grade": "SR",
   "lbPips": 4,
@@ -3268,6 +3410,7 @@
  {
   "character": "Gold Ship",
   "name": "Breakaway Battleship",
+  "inGame": true,
   "type": "STA",
   "grade": "SSR",
   "lbPips": 0,
@@ -3291,6 +3434,7 @@
  {
   "character": "Mejiro McQueen",
   "name": "Your Team Ace",
+  "inGame": true,
   "type": "STA",
   "grade": "SSR",
   "lbPips": 2,
@@ -3314,6 +3458,7 @@
  {
   "character": "Rice Shower",
   "name": "Showered in Joy",
+  "inGame": true,
   "type": "STA",
   "grade": "SSR",
   "lbPips": 3,
@@ -3337,6 +3482,7 @@
  {
   "character": "Seiun Sky",
   "name": "Foolproof Plan",
+  "inGame": true,
   "type": "STA",
   "grade": "SSR",
   "lbPips": 1,
@@ -3360,6 +3506,7 @@
  {
   "character": "Super Creek",
   "name": "Piece of Mind",
+  "inGame": true,
   "type": "STA",
   "grade": "SSR",
   "lbPips": 4,
@@ -3383,6 +3530,7 @@
  {
   "character": "Tamamo Cross",
   "name": "Split the Sky, White Lightning!",
+  "inGame": true,
   "type": "STA",
   "grade": "SSR",
   "lbPips": 1,
@@ -3406,6 +3554,7 @@
  {
   "character": "Satono Diamond",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "STA",
   "grade": "R",
   "lbPips": 4,
@@ -3429,6 +3578,7 @@
  {
   "character": "Satono Diamond",
   "name": "The Will to Overtake",
+  "inGame": true,
   "type": "STA",
   "grade": "SSR",
   "lbPips": 1,
@@ -3452,6 +3602,7 @@
  {
   "character": "Zenno Rob Roy",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "STA",
   "grade": "R",
   "lbPips": 4,
@@ -3475,6 +3626,7 @@
  {
   "character": "Zenno Rob Roy",
   "name": "The Perfect Book for You",
+  "inGame": true,
   "type": "STA",
   "grade": "SR",
   "lbPips": 4,
@@ -3498,6 +3650,7 @@
  {
   "character": "Sakura Chiyono O",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "STA",
   "grade": "R",
   "lbPips": 0,
@@ -3521,6 +3674,7 @@
  {
   "character": "Sakura Chiyono O",
   "name": "Peak Sakura Season",
+  "inGame": true,
   "type": "STA",
   "grade": "SSR",
   "lbPips": null,
@@ -3544,6 +3698,7 @@
  {
   "character": "Winning Ticket",
   "name": "Full-Blown Tantrum",
+  "inGame": true,
   "type": "STA",
   "grade": "SSR",
   "lbPips": null,
@@ -3567,6 +3722,7 @@
  {
   "character": "Tosen Jordan",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "STA",
   "grade": "R",
   "lbPips": 1,
@@ -3590,6 +3746,7 @@
  {
   "character": "Tosen Jordan",
   "name": "Turf as Nails",
+  "inGame": true,
   "type": "STA",
   "grade": "SR",
   "lbPips": 3,
@@ -3613,6 +3770,7 @@
  {
   "character": "Silence Suzuka",
   "name": "Winning Dream",
+  "inGame": true,
   "type": "STA",
   "grade": "SSR",
   "lbPips": 4,
@@ -3636,6 +3794,7 @@
  {
   "character": "Nakayama Festa",
   "name": "43, 8, 1",
+  "inGame": true,
   "type": "STA",
   "grade": "SSR",
   "lbPips": null,
@@ -3659,6 +3818,7 @@
  {
   "character": "Nakayama Festa",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "STA",
   "grade": "R",
   "lbPips": 3,
@@ -3682,6 +3842,7 @@
  {
   "character": "Narita Brian",
   "name": "The Whistling Arrow's Taunt",
+  "inGame": true,
   "type": "STA",
   "grade": "SSR",
   "lbPips": null,
@@ -3705,6 +3866,7 @@
  {
   "character": "Manhattan Cafe",
   "name": "My Solo Spun in Spiraling Runs",
+  "inGame": true,
   "type": "STA",
   "grade": "SSR",
   "lbPips": null,
@@ -3728,6 +3890,7 @@
  {
   "character": "Meisho Doto",
   "name": "Leaping into the Unknown",
+  "inGame": true,
   "type": "STA",
   "grade": "SSR",
   "lbPips": 4,
@@ -3751,6 +3914,7 @@
  {
   "character": "Mejiro Bright",
   "name": "Little by Little",
+  "inGame": true,
   "type": "STA",
   "grade": "SSR",
   "lbPips": 4,
@@ -3774,6 +3938,7 @@
  {
   "character": "Mejiro Bright",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "STA",
   "grade": "R",
   "lbPips": 1,
@@ -3797,6 +3962,7 @@
  {
   "character": "Mejiro Ryan",
   "name": "Hot Hearts and Cool Drinks",
+  "inGame": true,
   "type": "STA",
   "grade": "SR",
   "lbPips": null,
@@ -3820,6 +3986,7 @@
  {
   "character": "Symboli Rudolf",
   "name": "Enchaînement",
+  "inGame": true,
   "type": "STA",
   "grade": "SSR",
   "lbPips": null,
@@ -3843,6 +4010,7 @@
  {
   "character": "Daiwa Scarlet",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "WIT",
   "grade": "R",
   "lbPips": 4,
@@ -3866,6 +4034,7 @@
  {
   "character": "Symboli Rudolf",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "WIT",
   "grade": "R",
   "lbPips": 4,
@@ -3889,6 +4058,7 @@
  {
   "character": "Agnes Tachyon",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "WIT",
   "grade": "R",
   "lbPips": 4,
@@ -3912,6 +4082,7 @@
  {
   "character": "Marvelous Sunday",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "WIT",
   "grade": "R",
   "lbPips": 4,
@@ -3935,6 +4106,7 @@
  {
   "character": "Fuji Kiseki",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "WIT",
   "grade": "R",
   "lbPips": 4,
@@ -3958,6 +4130,7 @@
  {
   "character": "Matikanefukukitaru",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "WIT",
   "grade": "R",
   "lbPips": 4,
@@ -3981,6 +4154,7 @@
  {
   "character": "Mejiro Dober",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "WIT",
   "grade": "R",
   "lbPips": 4,
@@ -4004,6 +4178,7 @@
  {
   "character": "Fine Motion",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "WIT",
   "grade": "R",
   "lbPips": 4,
@@ -4027,6 +4202,7 @@
  {
   "character": "Air Shakur",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "WIT",
   "grade": "R",
   "lbPips": 4,
@@ -4050,6 +4226,7 @@
  {
   "character": "Agnes Tachyon",
   "name": "Experimental Studies on Subject A",
+  "inGame": true,
   "type": "WIT",
   "grade": "SR",
   "lbPips": 4,
@@ -4073,6 +4250,7 @@
  {
   "character": "Marvelous Sunday",
   "name": "A Marvelous ☆ Plan",
+  "inGame": true,
   "type": "WIT",
   "grade": "SR",
   "lbPips": 3,
@@ -4096,6 +4274,7 @@
  {
   "character": "Mejiro Dober",
   "name": "Ignore the Stares",
+  "inGame": true,
   "type": "WIT",
   "grade": "SR",
   "lbPips": 4,
@@ -4119,6 +4298,7 @@
  {
   "character": "Daiwa Scarlet",
   "name": "Nothing Hard Work Can't Solve!",
+  "inGame": true,
   "type": "WIT",
   "grade": "SR",
   "lbPips": 2,
@@ -4142,6 +4322,7 @@
  {
   "character": "Fuji Kiseki",
   "name": "Well, Look Who's Home",
+  "inGame": true,
   "type": "WIT",
   "grade": "SR",
   "lbPips": 4,
@@ -4165,6 +4346,7 @@
  {
   "character": "Matikanefukukitaru",
   "name": "Fate's Forecast",
+  "inGame": true,
   "type": "WIT",
   "grade": "SR",
   "lbPips": 4,
@@ -4188,6 +4370,7 @@
  {
   "character": "Air Shakur",
   "name": "7 More Centimeters",
+  "inGame": true,
   "type": "WIT",
   "grade": "SSR",
   "lbPips": null,
@@ -4211,6 +4394,7 @@
  {
   "character": "Fine Motion",
   "name": "Wave of Gratitude",
+  "inGame": true,
   "type": "WIT",
   "grade": "SSR",
   "lbPips": 3,
@@ -4234,6 +4418,7 @@
  {
   "character": "Ikuno Dictus",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "WIT",
   "grade": "R",
   "lbPips": 4,
@@ -4257,6 +4442,7 @@
  {
   "character": "Ikuno Dictus",
   "name": "Never Skip Warm-Ups",
+  "inGame": true,
   "type": "WIT",
   "grade": "SR",
   "lbPips": 4,
@@ -4280,6 +4466,7 @@
  {
   "character": "Nice Nature",
   "name": "Messing Around",
+  "inGame": true,
   "type": "WIT",
   "grade": "SR",
   "lbPips": 4,
@@ -4303,6 +4490,7 @@
  {
   "character": "Yukino Bijin",
   "name": "Hometown Cheers",
+  "inGame": true,
   "type": "WIT",
   "grade": "SSR",
   "lbPips": null,
@@ -4326,6 +4514,7 @@
  {
   "character": "Mejiro Dober",
   "name": "My Thoughts, My Desires",
+  "inGame": true,
   "type": "WIT",
   "grade": "SSR",
   "lbPips": 4,
@@ -4349,6 +4538,7 @@
  {
   "character": "Seiun Sky",
   "name": "Paint the Sky Red",
+  "inGame": true,
   "type": "WIT",
   "grade": "SSR",
   "lbPips": null,
@@ -4372,6 +4562,7 @@
  {
   "character": "Mejiro Ardan",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "WIT",
   "grade": "R",
   "lbPips": 1,
@@ -4395,6 +4586,7 @@
  {
   "character": "Mejiro Ardan",
   "name": "My Heart Will Go On",
+  "inGame": true,
   "type": "WIT",
   "grade": "SR",
   "lbPips": 2,
@@ -4418,6 +4610,7 @@
  {
   "character": "Nice Nature",
   "name": "Daring To Dream",
+  "inGame": true,
   "type": "WIT",
   "grade": "SSR",
   "lbPips": null,
@@ -4441,6 +4634,7 @@
  {
   "character": "Mihono Bourbon",
   "name": "The Ghost Finds Halloween Magic",
+  "inGame": true,
   "type": "WIT",
   "grade": "SSR",
   "lbPips": 4,
@@ -4464,6 +4658,7 @@
  {
   "character": "Curren Chan",
   "name": "Cutie Pie with Shining Eyes",
+  "inGame": true,
   "type": "WIT",
   "grade": "SSR",
   "lbPips": null,
@@ -4487,6 +4682,7 @@
  {
   "character": "Curren Chan",
   "name": "Tracen Academy",
+  "inGame": true,
   "type": "WIT",
   "grade": "R",
   "lbPips": 2,
@@ -4510,6 +4706,7 @@
  {
   "character": "Narita Taishin",
   "name": "Strict Shopper",
+  "inGame": true,
   "type": "WIT",
   "grade": "SSR",
   "lbPips": null,
@@ -4533,6 +4730,7 @@
  {
   "character": "Nishino Flower",
   "name": "Little Cupcakes, Big Emotions",
+  "inGame": true,
   "type": "WIT",
   "grade": "SSR",
   "lbPips": null,
@@ -4556,6 +4754,7 @@
  {
   "character": "Ines Fujin",
   "name": "You Earned It!",
+  "inGame": true,
   "type": "WIT",
   "grade": "SR",
   "lbPips": 0,
@@ -4579,6 +4778,7 @@
  {
   "character": "Satono DIamond",
   "name": "Special Dreamers!",
+  "inGame": true,
   "type": "WIT",
   "grade": "SSR",
   "lbPips": 4,
@@ -4602,6 +4802,7 @@
  {
   "character": "Sirius Symboli",
   "name": "Escorte Étoile",
+  "inGame": true,
   "type": "WIT",
   "grade": "SSR",
   "lbPips": null,
@@ -4625,6 +4826,7 @@
  {
   "character": "Sweep Tosho",
   "name": "Reckless Witch Training",
+  "inGame": true,
   "type": "WIT",
   "grade": "SR",
   "lbPips": null,
