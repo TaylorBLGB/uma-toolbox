@@ -300,11 +300,20 @@ function expectedFansForRace(race, n) {
 // can overtake a higher-base-fan race), so this evaluates every candidate at
 // every DP state instead of precomputing one best-per-slot up front.
 function runOptimizerEV() {
-  const filters = getFilters();
-  const maxStreak = Math.max(1, Number(document.getElementById("max-streak").value) || 5);
   const n = slots.length;
+  // No max-consecutive-races cap here (unlike the guaranteed-fans mode) -
+  // the declining win chance per extra consecutive race already makes long
+  // streaks self-limiting, so the DP is left free to find its own ideal
+  // streak length rather than being cut off at a fixed number. The ceiling
+  // is just "can't exceed the whole calendar," i.e. no real cap at all.
+  const maxStreak = n;
 
-  const optionsBySlot = slots.map((s) => (racesBySlot[s.key] || []).filter((r) => raceMatchesFilter(r, filters)));
+  // Every race is a candidate, not just aptitude-filtered ones - a big
+  // enough fan prize can be worth a real risk (e.g. a 90% shot at Japan Cup
+  // with a C aptitude). expectedFansForRace already uses the exact grade
+  // from the aptitude panel, so a poor match still nets a low, honest EV
+  // rather than being excluded outright.
+  const optionsBySlot = slots.map((s) => racesBySlot[s.key] || []);
 
   const dp = Array.from({ length: n + 1 }, () => new Array(maxStreak + 1).fill(0));
   const choice = Array.from({ length: n }, () => new Array(maxStreak + 1).fill(null));
@@ -382,16 +391,32 @@ function computeStats() {
   return { count, baseFans, totalFans, expectedFans, distTypeCounts };
 }
 
+function isEVMode() {
+  return document.getElementById("optimizer-mode").value === "ev";
+}
+
+function updateOptimizerModeUI() {
+  const evMode = isEVMode();
+  document.getElementById("max-streak").disabled = evMode;
+  document.getElementById("max-streak-hint").classList.toggle("hidden", !evMode);
+}
+
 function renderStatBadges() {
   const { count, baseFans, totalFans, expectedFans, distTypeCounts } = computeStats();
+  const evMode = isEVMode();
 
   const badges = [`<span class="stat-badge"><span class="n">${fmtNum(count)}</span>races</span>`];
   for (const type of DIST_TYPE_ORDER) {
     if (distTypeCounts[type]) badges.push(`<span class="stat-badge"><span class="n">${distTypeCounts[type]}</span>${type}</span>`);
   }
   badges.push(`<span class="stat-badge"><span class="n">${fmtNum(baseFans)}</span>base fans</span>`);
-  badges.push(`<span class="stat-badge highlight"><span class="n">${fmtNum(totalFans)}</span>total fans</span>`);
-  badges.push(`<span class="stat-badge" title="Win-chance-adjusted, using the current aptitude panel"><span class="n">${fmtNum(expectedFans)}</span>expected fans</span>`);
+  // Total Fans assumes every race is won, same as Base Fans - misleading
+  // once you're in the mode built specifically to account for not winning.
+  if (!evMode) {
+    badges.push(`<span class="stat-badge highlight"><span class="n">${fmtNum(totalFans)}</span>total fans</span>`);
+  }
+  const expectedClass = evMode ? "stat-badge highlight" : "stat-badge";
+  badges.push(`<span class="${expectedClass}" title="Win-chance-adjusted, using the current aptitude panel"><span class="n">${fmtNum(expectedFans)}</span>expected fans</span>`);
 
   document.getElementById("stat-badges").innerHTML = badges.join("");
 }
@@ -889,6 +914,12 @@ async function init() {
     saveSelections();
     renderAll();
   });
+
+  document.getElementById("optimizer-mode").addEventListener("change", () => {
+    updateOptimizerModeUI();
+    renderStatBadges();
+  });
+  updateOptimizerModeUI();
 
   document.getElementById("filters-toggle-btn").addEventListener("click", () => {
     document.getElementById("filters-panel").classList.toggle("hidden");

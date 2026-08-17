@@ -13,12 +13,19 @@ A small static site with Umamusume Pretty Derby tools:
     score and streak length) rather than a spread of outcomes, converted to fans via a fixed
     percent-of-base ladder (2nd=40%, 3rd=25%, ... down to 1% by mid-field). All three tables are in
     `js/planner.js`'s "Expected Value optimizer" section, verified cell-by-cell against the source charts.
-    An "Expected Fans" badge (win-adjusted, using whatever the aptitude panel currently shows) is always
-    visible regardless of mode, so you can compare a manually-built agenda's realistic odds too.
+    Unlike Guaranteed Fans mode, this one ignores both the aptitude panel's B-or-better filter (a big
+    enough prize can be worth a real risk at a low grade) and the max-consecutive-races cap (declining win
+    chance per extra race already makes long streaks self-limiting, so it's left free to find its own ideal
+    streak length — including choosing to skip a race purely to reset the streak for a better one later).
+    The aptitude panel's exact grades still drive the win-chance math either way. An "Expected Fans" badge
+    (win-adjusted, using whatever the aptitude panel currently shows) is always visible regardless of mode
+    — highlighted and replacing Total Fans while in Expected Value mode, since Total Fans assumes every
+    race is won and that's exactly what this mode doesn't assume.
 
   Search for a trainee by name (substring match) to auto-fill the aptitude grades from their real stats —
   unreleased characters are excluded from search unless you check "Include unreleased". A Fan Bonus % input
-  shows Base Fans and Total Fans side by side. Race cells look for an image keyed to the race (Supabase
+  shows Base Fans and Total Fans side by side (Guaranteed Fans mode). Race cells look for an image keyed
+  to the race (Supabase
   Storage or `images/races/{urlSlug}.png`, see below), and the trainee search shows a portrait at
   `images/trainees/{slug}.png` — both fall back to a styled placeholder (or nothing, for portraits)
   automatically if the image doesn't exist. A link-share and a 3-image agenda export (client-side
