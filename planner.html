@@ -20,7 +20,7 @@
         <button id="autofill-btn" class="primary">Auto-Fill</button>
         <select id="optimizer-mode" title="Auto-Fill optimizer mode">
           <option value="guaranteed">Guaranteed Fans</option>
-          <option value="ev">Expected Value (Experimental)</option>
+          <option value="ev">EV Mode (WIP)</option>
         </select>
         <button id="reset-btn">Reset</button>
         <button id="filters-toggle-btn">Filters</button>
@@ -39,10 +39,9 @@
           </div>
           <label class="checkbox-row"><input type="checkbox" id="include-unreleased"> Include unreleased</label>
         </div>
-        <div class="filter-group">
+        <div class="filter-group" id="max-streak-group">
           <span class="filter-group-label">Max consecutive races</span>
           <input type="number" id="max-streak" min="1" max="10" value="5" style="width:60px;">
-          <span class="filter-group-hint hidden" id="max-streak-hint">(Expected Value mode finds its own ideal streak length instead)</span>
         </div>
         <div class="filter-group">
           <span class="filter-group-label">Fan bonus</span>

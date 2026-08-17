@@ -7,20 +7,22 @@ A small static site with Umamusume Pretty Derby tools:
   - **Guaranteed Fans** (default) — maximizes total fans assuming every selected race is won, subject to
     your aptitude filters and a max-consecutive-races cap (it will deliberately skip races early if that
     produces a better long-run total, and breaks same-fan ties by aptitude).
-  - **Expected Value (Experimental)** — maximizes *realistic* expected fans using measured win-chance data:
-    win% is `110 - 10×(sum of the two relevant aptitude grade indices)`, reduced further the longer the
-    current race streak runs, and a loss lands on a specific placement (looked up by that same aptitude
-    score and streak length) rather than a spread of outcomes, converted to fans via a fixed
-    percent-of-base ladder (2nd=40%, 3rd=25%, ... down to 1% by mid-field). All three tables are in
-    `js/planner.js`'s "Expected Value optimizer" section, verified cell-by-cell against the source charts.
+  - **EV Mode (WIP)** — maximizes *realistic* expected fans using measured win-chance data: win% is
+    `110 - 10×(sum of the two relevant aptitude grade indices)`, reduced further the longer the current
+    race streak runs, and a loss lands on a specific placement (looked up by that same aptitude score and
+    streak length) rather than a spread of outcomes, converted to fans via a fixed percent-of-base ladder
+    (2nd=40%, 3rd=25%, ... down to 1% by mid-field). All three tables are in `js/planner.js`'s "Expected
+    Value optimizer" section, verified cell-by-cell against the source charts - including confirming, for a
+    real case that looked suspicious at a glance (a G1 recommended despite a poor aptitude), that its 70%
+    win chance genuinely out-values every 100%-safe alternative in that slot by the numbers, not a bug.
     Unlike Guaranteed Fans mode, this one ignores both the aptitude panel's B-or-better filter (a big
-    enough prize can be worth a real risk at a low grade) and the max-consecutive-races cap (declining win
-    chance per extra race already makes long streaks self-limiting, so it's left free to find its own ideal
-    streak length — including choosing to skip a race purely to reset the streak for a better one later).
-    The aptitude panel's exact grades still drive the win-chance math either way. An "Expected Fans" badge
-    (win-adjusted, using whatever the aptitude panel currently shows) is always visible regardless of mode
-    — highlighted and replacing Total Fans while in Expected Value mode, since Total Fans assumes every
-    race is won and that's exactly what this mode doesn't assume.
+    enough prize can be worth a real risk at a low grade) and the max-consecutive-races cap, which is
+    hidden while this mode is active (declining win chance per extra race already makes long streaks
+    self-limiting, so it's left free to find its own ideal streak length — including choosing to skip a
+    race purely to reset the streak for a better one later). The aptitude panel's exact grades still drive
+    the win-chance math either way. Base Fans and Total Fans (both of which assume every race is won) are
+    replaced by a single "Theoretical Max Fans" while this mode is active, so you have one apples-to-apples
+    ceiling to compare the always-visible, win-adjusted "Expected Fans" badge against.
 
   Search for a trainee by name (substring match) to auto-fill the aptitude grades from their real stats —
   unreleased characters are excluded from search unless you check "Include unreleased". A Fan Bonus % input

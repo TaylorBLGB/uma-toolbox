@@ -397,8 +397,7 @@ function isEVMode() {
 
 function updateOptimizerModeUI() {
   const evMode = isEVMode();
-  document.getElementById("max-streak").disabled = evMode;
-  document.getElementById("max-streak-hint").classList.toggle("hidden", !evMode);
+  document.getElementById("max-streak-group").classList.toggle("hidden", evMode);
 }
 
 function renderStatBadges() {
@@ -409,10 +408,14 @@ function renderStatBadges() {
   for (const type of DIST_TYPE_ORDER) {
     if (distTypeCounts[type]) badges.push(`<span class="stat-badge"><span class="n">${distTypeCounts[type]}</span>${type}</span>`);
   }
-  badges.push(`<span class="stat-badge"><span class="n">${fmtNum(baseFans)}</span>base fans</span>`);
-  // Total Fans assumes every race is won, same as Base Fans - misleading
-  // once you're in the mode built specifically to account for not winning.
-  if (!evMode) {
+  // Base/Total Fans both assume every race is won - misleading as the
+  // headline number in the mode built specifically to account for not
+  // winning, so EV mode shows the same figure relabeled as a ceiling to
+  // measure Expected Fans against, instead of Base Fans by itself.
+  if (evMode) {
+    badges.push(`<span class="stat-badge" title="If every selected race were won"><span class="n">${fmtNum(totalFans)}</span>theoretical max fans</span>`);
+  } else {
+    badges.push(`<span class="stat-badge"><span class="n">${fmtNum(baseFans)}</span>base fans</span>`);
     badges.push(`<span class="stat-badge highlight"><span class="n">${fmtNum(totalFans)}</span>total fans</span>`);
   }
   const expectedClass = evMode ? "stat-badge highlight" : "stat-badge";
