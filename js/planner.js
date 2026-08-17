@@ -203,13 +203,161 @@ function runOptimizer() {
   return result;
 }
 
+// -------- Expected Value optimizer (experimental) --------
+//
+// A second model of the same problem, driven by measured win-chance data
+// instead of assuming every race is a guaranteed win. Three pieces, each
+// verified against the exact tables supplied:
+//
+// 1. Win chance is linear in an "aptitude score" (sum of the two relevant
+//    grade indices, 0=A best .. 6=G worst): win% = 110 - 10*score, clamped
+//    0-100. Confirmed against all 49 cells of the win-chance chart.
+// 2. On a loss, the placement is a fixed lookup by (score, consecutive-race
+//    count) rather than a probability spread - so EV needs only two
+//    outcomes per race, not eighteen. The chart only lists 9 of the 13
+//    possible scores directly; every other score maps onto one of those 9
+//    by score equality (e.g. A/F, B/E and C/D all score 5 and are treated
+//    as one bucket - confirmed against that exact example).
+// 3. Placement converts to fans via a fixed percent-of-base ladder
+//    (2nd=40%, 3rd=25%, ... 16th-18th=1%), the same for every race
+//    regardless of field size.
+
+// score -> placement lookup for each "this race would be the Nth in a row"
+// bucket (columns from the aptitude-loss chart; scores 8-12 all share the
+// rightmost "C-G,G" column since that row only fixes the worse grade at G).
+const EV_LOSS_PLACEMENT = {
+  0:  { 1: 1, 2: 1, 3: 1, 4: 2, 5: 2, 6: 4 },
+  1:  { 1: 1, 2: 1, 3: 2, 4: 2, 5: 3, 6: 6 },
+  2:  { 1: 2, 2: 2, 3: 2, 4: 3, 5: 4, 6: 8 },
+  3:  { 1: 2, 2: 2, 3: 3, 4: 4, 5: 6, 6: 10 },
+  4:  { 1: 3, 2: 3, 3: 4, 4: 6, 5: 8, 6: 12 },
+  5:  { 1: 6, 2: 6, 3: 7, 4: 10, 5: 12, 6: 18 },
+  6:  { 1: 12, 2: 12, 3: 14, 4: 18, 5: 18, 6: 18 },
+  7:  { 1: 15, 2: 15, 3: 17, 4: 18, 5: 18, 6: 18 },
+  8:  { 1: 18, 2: 18, 3: 18, 4: 18, 5: 18, 6: 18 },
+  9:  { 1: 18, 2: 18, 3: 18, 4: 18, 5: 18, 6: 18 },
+  10: { 1: 18, 2: 18, 3: 18, 4: 18, 5: 18, 6: 18 },
+  11: { 1: 18, 2: 18, 3: 18, 4: 18, 5: 18, 6: 18 },
+  12: { 1: 18, 2: 18, 3: 18, 4: 18, 5: 18, 6: 18 },
+};
+
+const EV_CONSECUTIVE_PENALTY = { 1: 0, 2: 0, 3: 10, 4: 25, 5: 35 }; // n>=6 -> 50
+
+const EV_PLACEMENT_FAN_PCT = {
+  1: 100, 2: 40, 3: 25, 4: 15, 5: 10, 6: 9, 7: 8, 8: 7, 9: 6, 10: 5,
+  11: 4, 12: 3, 13: 2.5, 14: 2, 15: 1.5, 16: 1, 17: 1, 18: 1,
+};
+
+function aptitudeScorePair(gradeA, gradeB) {
+  const worst = APTITUDE_ORDER.length - 1; // G
+  const a = gradeA ? APTITUDE_ORDER.indexOf(gradeA) : worst;
+  const b = gradeB ? APTITUDE_ORDER.indexOf(gradeB) : worst;
+  return a + b;
+}
+
+// Same surface/distance grade resolution as aptitudeScoreForRace (best of a
+// compound distType), but returns the score directly rather than a filter
+// pass/fail, since EV mode needs the exact win chance, not just B-or-better.
+function raceAptitudeScore(race) {
+  const surfaceGrade = race.surface ? aptitudeGrades[race.surface.toLowerCase()] : null;
+  let distGrade = null;
+  if (race.distType && race.distType !== "Varies") {
+    const grades = race.distType.split("/").map((d) => aptitudeGrades[DIST_TYPE_TO_APT_KEY[d]]).filter(Boolean);
+    if (grades.length) {
+      distGrade = grades.reduce((best, g) => (APTITUDE_ORDER.indexOf(g) < APTITUDE_ORDER.indexOf(best) ? g : best));
+    }
+  }
+  return aptitudeScorePair(surfaceGrade, distGrade);
+}
+
+function winChancePercent(score) {
+  return Math.max(0, Math.min(100, 110 - 10 * score));
+}
+
+function consecutivePenaltyPercent(n) {
+  return EV_CONSECUTIVE_PENALTY[n] ?? 50; // 6+
+}
+
+function lossPlacementFor(score, n) {
+  const clampedN = Math.min(6, Math.max(1, n));
+  const bucket = EV_LOSS_PLACEMENT[Math.min(12, Math.max(0, score))];
+  return bucket[clampedN];
+}
+
+// Expected fans for running this race as the Nth consecutive race (1-based -
+// taking a race when 2 are already in a row makes this N=3, matching how
+// the consecutive-race charts are keyed).
+function expectedFansForRace(race, n) {
+  const base = race.fansGained || 0;
+  const score = raceAptitudeScore(race);
+  const winPct = Math.max(0, Math.min(100, winChancePercent(score) - consecutivePenaltyPercent(n)));
+  const lossPct = EV_PLACEMENT_FAN_PCT[lossPlacementFor(score, n)];
+  return (winPct / 100) * base + (1 - winPct / 100) * base * (lossPct / 100);
+}
+
+// Unlike the guaranteed-fans model, the best race for a slot now depends on
+// the incoming streak (win chance drops as the streak grows, so a safer bet
+// can overtake a higher-base-fan race), so this evaluates every candidate at
+// every DP state instead of precomputing one best-per-slot up front.
+function runOptimizerEV() {
+  const filters = getFilters();
+  const maxStreak = Math.max(1, Number(document.getElementById("max-streak").value) || 5);
+  const n = slots.length;
+
+  const optionsBySlot = slots.map((s) => (racesBySlot[s.key] || []).filter((r) => raceMatchesFilter(r, filters)));
+
+  const dp = Array.from({ length: n + 1 }, () => new Array(maxStreak + 1).fill(0));
+  const choice = Array.from({ length: n }, () => new Array(maxStreak + 1).fill(null));
+
+  for (let i = n - 1; i >= 0; i--) {
+    for (let s = 0; s <= maxStreak; s++) {
+      const skipVal = dp[i + 1][0];
+      let bestTakeVal = -Infinity;
+      let bestRace = null;
+
+      if (s < maxStreak) {
+        for (const race of optionsBySlot[i]) {
+          const ev = expectedFansForRace(race, s + 1) + dp[i + 1][s + 1];
+          if (ev > bestTakeVal) {
+            bestTakeVal = ev;
+            bestRace = race;
+          }
+        }
+      }
+
+      if (bestRace && bestTakeVal > skipVal) {
+        dp[i][s] = bestTakeVal;
+        choice[i][s] = bestRace;
+      } else {
+        dp[i][s] = skipVal;
+        choice[i][s] = null;
+      }
+    }
+  }
+
+  const result = {};
+  let s = 0;
+  for (let i = 0; i < n; i++) {
+    const race = choice[i][s];
+    if (race) {
+      result[slots[i].key] = race.name;
+      s += 1;
+    } else {
+      s = 0;
+    }
+  }
+  return result;
+}
+
 // -------- Stats --------
 
 const DIST_TYPE_ORDER = ["Short", "Mile", "Medium", "Long"];
 
 function computeStats() {
   let count = 0, baseFans = DEBUT_FANS + CAREER_FINALE_BONUS_FANS;
+  let expectedBaseFans = DEBUT_FANS + CAREER_FINALE_BONUS_FANS; // debut/finale fans aren't win-chance-gated
   const distTypeCounts = {};
+  let streak = 0;
 
   for (const slot of slots) {
     const raceName = selections[slot.key];
@@ -217,20 +365,25 @@ function computeStats() {
     if (race) {
       count++;
       baseFans += race.fansGained || 0;
+      streak++;
+      expectedBaseFans += expectedFansForRace(race, streak);
       if (race.distType && race.distType !== "Varies") {
         for (const d of race.distType.split("/")) {
           distTypeCounts[d] = (distTypeCounts[d] || 0) + 1;
         }
       }
+    } else {
+      streak = 0;
     }
   }
 
   const totalFans = Math.round(baseFans * (1 + fanBonusPercent / 100));
-  return { count, baseFans, totalFans, distTypeCounts };
+  const expectedFans = Math.round(expectedBaseFans * (1 + fanBonusPercent / 100));
+  return { count, baseFans, totalFans, expectedFans, distTypeCounts };
 }
 
 function renderStatBadges() {
-  const { count, baseFans, totalFans, distTypeCounts } = computeStats();
+  const { count, baseFans, totalFans, expectedFans, distTypeCounts } = computeStats();
 
   const badges = [`<span class="stat-badge"><span class="n">${fmtNum(count)}</span>races</span>`];
   for (const type of DIST_TYPE_ORDER) {
@@ -238,6 +391,7 @@ function renderStatBadges() {
   }
   badges.push(`<span class="stat-badge"><span class="n">${fmtNum(baseFans)}</span>base fans</span>`);
   badges.push(`<span class="stat-badge highlight"><span class="n">${fmtNum(totalFans)}</span>total fans</span>`);
+  badges.push(`<span class="stat-badge" title="Win-chance-adjusted, using the current aptitude panel"><span class="n">${fmtNum(expectedFans)}</span>expected fans</span>`);
 
   document.getElementById("stat-badges").innerHTML = badges.join("");
 }
@@ -730,7 +884,8 @@ async function init() {
   });
 
   document.getElementById("autofill-btn").addEventListener("click", () => {
-    selections = runOptimizer();
+    const mode = document.getElementById("optimizer-mode").value;
+    selections = mode === "ev" ? runOptimizerEV() : runOptimizer();
     saveSelections();
     renderAll();
   });

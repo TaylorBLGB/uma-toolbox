@@ -3,16 +3,27 @@
 A small static site with Umamusume Pretty Derby tools:
 
 - **Race Planner** (`planner.html`) — a game-accurate 3-year career grid. Click any slot to assign a race,
-  or hit Auto-Fill to run a dynamic-programming optimizer that maximizes total fans subject to your
-  aptitude filters and a max-consecutive-races cap (it will deliberately skip races early if that produces
-  a better long-run total, and breaks same-fan ties by aptitude). Search for a trainee by name (substring
-  match) to auto-fill the aptitude grades from their real stats — unreleased characters are excluded from
-  search unless you check "Include unreleased". A Fan Bonus % input shows Base Fans and Total Fans side by
-  side. Race cells look for an image keyed to the race (Supabase Storage or `images/races/{urlSlug}.png`,
-  see below), and the trainee search shows a portrait at `images/trainees/{slug}.png` — both fall back to
-  a styled placeholder (or nothing, for portraits) automatically if the image doesn't exist. A link-share
-  and a 3-image agenda export (client-side `<canvas>`, no server) exist in the code but are currently
-  unhooked from the toolbar — see the `init()` wiring near the bottom of `js/planner.js` to re-enable.
+  or hit Auto-Fill to run one of two optimizer modes (dropdown next to the button):
+  - **Guaranteed Fans** (default) — maximizes total fans assuming every selected race is won, subject to
+    your aptitude filters and a max-consecutive-races cap (it will deliberately skip races early if that
+    produces a better long-run total, and breaks same-fan ties by aptitude).
+  - **Expected Value (Experimental)** — maximizes *realistic* expected fans using measured win-chance data:
+    win% is `110 - 10×(sum of the two relevant aptitude grade indices)`, reduced further the longer the
+    current race streak runs, and a loss lands on a specific placement (looked up by that same aptitude
+    score and streak length) rather than a spread of outcomes, converted to fans via a fixed
+    percent-of-base ladder (2nd=40%, 3rd=25%, ... down to 1% by mid-field). All three tables are in
+    `js/planner.js`'s "Expected Value optimizer" section, verified cell-by-cell against the source charts.
+    An "Expected Fans" badge (win-adjusted, using whatever the aptitude panel currently shows) is always
+    visible regardless of mode, so you can compare a manually-built agenda's realistic odds too.
+
+  Search for a trainee by name (substring match) to auto-fill the aptitude grades from their real stats —
+  unreleased characters are excluded from search unless you check "Include unreleased". A Fan Bonus % input
+  shows Base Fans and Total Fans side by side. Race cells look for an image keyed to the race (Supabase
+  Storage or `images/races/{urlSlug}.png`, see below), and the trainee search shows a portrait at
+  `images/trainees/{slug}.png` — both fall back to a styled placeholder (or nothing, for portraits)
+  automatically if the image doesn't exist. A link-share and a 3-image agenda export (client-side
+  `<canvas>`, no server) exist in the code but are currently unhooked from the toolbar — see the `init()`
+  wiring near the bottom of `js/planner.js` to re-enable.
 
 A character/support database browser previously lived at `database.html` — it's been pulled out for now
 pending a decision on which columns it should show, but `data/umas.json` and `data/supports.json` still
