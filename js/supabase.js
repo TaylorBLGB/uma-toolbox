@@ -72,6 +72,42 @@ function reshapeSupportRow(row) {
   };
 }
 
+function reshapeRaceRow(row) {
+  return {
+    name: row.name,
+    inGame: row.in_game,
+    grade: row.grade,
+    distType: row.dist_type,
+    meters: row.meters,
+    dateIndex: row.date_index,
+    slot: row.slot,
+    phase: row.phase,
+    surface: row.surface,
+    racecourse: row.racecourse,
+    course: row.course,
+    direction: row.direction,
+    participants: row.participants,
+    timeOfDay: row.time_of_day,
+    baseFans: row.base_fans,
+    urlSlug: row.url_slug,
+    fansRequired: row.fans_required,
+    fansGained: row.fans_gained,
+  };
+}
+
+// Where a race's nameplate image lives: a Supabase Storage bucket you manage
+// yourself (upload/replace "{url_slug}.png" in the "race-images" bucket -
+// see db/schema.sql) when Supabase is enabled, otherwise the local
+// images/races/ folder. Same silent-fallback-to-CSS behavior either way if
+// the file doesn't exist.
+function raceImageUrl(urlSlug) {
+  const slug = urlSlug || "";
+  if (SUPABASE_CONFIG.enabled) {
+    return `${SUPABASE_CONFIG.url}/storage/v1/object/public/race-images/${slug}.png`;
+  }
+  return `images/races/${slug}.png`;
+}
+
 async function loadUmas() {
   if (!SUPABASE_CONFIG.enabled) return loadJSON("data/umas.json");
   // Multiple costume rows can share a name; order deterministically (released
@@ -85,4 +121,18 @@ async function loadSupports() {
   if (!SUPABASE_CONFIG.enabled) return loadJSON("data/supports.json");
   const rows = await supabaseSelect("supports", "select=*&order=character.asc,in_game.desc,id.asc");
   return rows.map(reshapeSupportRow);
+}
+
+async function loadRaces() {
+  if (!SUPABASE_CONFIG.enabled) return loadJSON("data/races.json");
+  try {
+    const rows = await supabaseSelect("races", "select=*&order=date_index.asc,name.asc");
+    return rows.map(reshapeRaceRow);
+  } catch (err) {
+    // Falls back gracefully if the races table hasn't been created yet
+    // (schema.sql was updated after umas/supports were already live) -
+    // once it exists, this picks it up automatically on the next load.
+    console.warn("Supabase races table unavailable, using bundled races.json instead:", err);
+    return loadJSON("data/races.json");
+  }
 }

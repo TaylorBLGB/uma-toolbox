@@ -72,12 +72,39 @@ create table if not exists supports (
   release_date date
 );
 
+create table if not exists races (
+  id bigint generated always as identity primary key,
+  name text not null,
+  -- Lets you add a race that exists in game data before it actually goes
+  -- live (e.g. Prix Foy) - it stays out of the planner grid until flipped.
+  in_game boolean not null default true,
+  grade text,
+  dist_type text,
+  meters integer,
+  date_index integer,
+  slot text, -- e.g. "Junior Late Jun" - one of the 72 calendar slots
+  phase text, -- Junior / Classic / Senior
+  surface text,
+  racecourse text,
+  course text,
+  direction text,
+  -- Text, not a number: some races (JBC day, for example) run several races
+  -- back to back with different fields sizes, e.g. "16/14/14/16".
+  participants text,
+  time_of_day text,
+  base_fans integer,
+  url_slug text, -- also used to look up this race's image, see below
+  fans_required integer,
+  fans_gained integer
+);
+
 -- Row Level Security: the site's public pages read with the anon key, which
 -- must only ever be able to SELECT. Editing happens exclusively through the
 -- Supabase dashboard (Table Editor), where you're authenticated as the
 -- project owner and RLS doesn't apply to you.
 alter table umas enable row level security;
 alter table supports enable row level security;
+alter table races enable row level security;
 
 drop policy if exists "Public read access" on umas;
 create policy "Public read access" on umas for select using (true);
@@ -85,5 +112,17 @@ create policy "Public read access" on umas for select using (true);
 drop policy if exists "Public read access" on supports;
 create policy "Public read access" on supports for select using (true);
 
+drop policy if exists "Public read access" on races;
+create policy "Public read access" on races for select using (true);
+
 -- No insert/update/delete policies are created for the anon/authenticated
 -- roles, which means the public API can only ever read - never write.
+
+-- Public storage bucket for race nameplate images. Files are matched to
+-- races by name: upload/replace "{url_slug}.png" (see url_slug on each race
+-- row) and it's picked up automatically - no other config needed. "Public"
+-- means anyone can view a file at its URL; only you (via the dashboard,
+-- authenticated as the project owner) can upload or replace one.
+insert into storage.buckets (id, name, public)
+values ('race-images', 'race-images', true)
+on conflict (id) do nothing;

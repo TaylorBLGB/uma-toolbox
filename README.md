@@ -5,15 +5,14 @@ A small static site with Umamusume Pretty Derby tools:
 - **Race Planner** (`planner.html`) — a game-accurate 3-year career grid. Click any slot to assign a race,
   or hit Auto-Fill to run a dynamic-programming optimizer that maximizes total fans subject to your
   aptitude filters and a max-consecutive-races cap (it will deliberately skip races early if that produces
-  a better long-run total). Search for a trainee by name (substring match) to auto-fill the aptitude grades
-  from their real stats — unreleased characters are excluded from search unless you check "Include
-  unreleased". A Fan Bonus % input shows Base Fans and Total Fans side by side. Copy Link hands someone
-  else a URL that loads your exact agenda; Download Images renders your agenda as 3 portrait PNGs (one per
-  career year, laid out as the same 4x6 tile grid as the page itself), fully client-side via `<canvas>` —
-  no server involved, mirroring the screenshot style the community already uses to share agendas. Race
-  cells look for an image at `images/races/{urlSlug}.png`, and the trainee search shows a portrait at
-  `images/trainees/{slug}.png` — both fall back to a styled placeholder (or nothing, for portraits)
-  automatically if the image doesn't exist. See `images/races/README.md` and `images/trainees/README.md`.
+  a better long-run total, and breaks same-fan ties by aptitude). Search for a trainee by name (substring
+  match) to auto-fill the aptitude grades from their real stats — unreleased characters are excluded from
+  search unless you check "Include unreleased". A Fan Bonus % input shows Base Fans and Total Fans side by
+  side. Race cells look for an image keyed to the race (Supabase Storage or `images/races/{urlSlug}.png`,
+  see below), and the trainee search shows a portrait at `images/trainees/{slug}.png` — both fall back to
+  a styled placeholder (or nothing, for portraits) automatically if the image doesn't exist. A link-share
+  and a 3-image agenda export (client-side `<canvas>`, no server) exist in the code but are currently
+  unhooked from the toolbar — see the `init()` wiring near the bottom of `js/planner.js` to re-enable.
 
 A character/support database browser previously lived at `database.html` — it's been pulled out for now
 pending a decision on which columns it should show, but `data/umas.json` and `data/supports.json` still
@@ -61,23 +60,38 @@ where I am."
 1. **Create the project.** Sign up at [supabase.com](https://supabase.com) (free tier is enough for this)
    and create a new project. This is an account-creation step only you can do.
 2. **Create the tables.** In the project's SQL Editor, run [`db/schema.sql`](db/schema.sql) — it creates
-   the `umas` and `supports` tables (one flat column per field, so every value is its own editable cell
-   later) and locks the public API to read-only via Row Level Security. Your own access through the
-   dashboard isn't affected by RLS.
+   the `umas`, `supports` and `races` tables (one flat column per field, so every value is its own editable
+   cell later), a public `race-images` Storage bucket, and locks the public API to read-only via Row Level
+   Security. Your own access through the dashboard isn't affected by RLS.
 3. **Load your current data.** Run `python scripts/generate_seed_sql.py` to (re)generate `db/seed.sql` from
-   today's `data/umas.json`/`data/supports.json`, then run that file in the same SQL Editor. This is a
-   one-time migration — once the data's in Supabase, you edit it there, not in the spreadsheet.
+   today's `data/*.json`, then run that file in the same SQL Editor. This is a one-time migration — once
+   the data's in Supabase, you edit it there, not in the spreadsheet.
 4. **Get your API credentials.** In Project Settings → API, copy the Project URL and the `anon` `public`
    key (not the `service_role` key — that one can bypass RLS and should never go in client-side code).
 5. **Wire it up.** Open `js/supabase-config.js`, paste those two values in, and set `enabled: true`.
-   Redeploy. The Race Planner now reads trainees from Supabase instead of the bundled JSON — verify by
-   editing a row in Supabase's Table Editor and confirming it shows up on the live site without a rebuild.
+   Redeploy. The Race Planner now reads from Supabase instead of the bundled JSON — verify by editing a
+   row in Supabase's Table Editor and confirming it shows up on the live site without a rebuild.
+
+If `races` doesn't exist yet when this deploys (e.g. you're adding it after already setting up
+`umas`/`supports`), the planner falls back to bundled `races.json` automatically rather than breaking —
+run step 2/3 for `races` whenever you're ready and it starts using Supabase on the next page load, no code
+change needed.
 
 **To edit data going forward:** open your project at [supabase.com](https://supabase.com) → Table Editor →
-`umas` or `supports`. It's a full spreadsheet-like grid, gated by your Supabase login, from any device. No
-custom admin page was built for this — the dashboard already does the job with zero extra code. (If you
-later want an in-site editing page instead of visiting supabase.com, that's a separate follow-up — say so
-and it can be built against the same tables.)
+`umas`, `supports`, or `races`. It's a full spreadsheet-like grid, gated by your Supabase login, from any
+device. No custom admin page was built for this — the dashboard already does the job with zero extra code.
+(If you later want an in-site editing page instead of visiting supabase.com, that's a separate follow-up —
+say so and it can be built against the same tables.)
+
+**Adding a race that isn't live yet** (e.g. one you can see in game data but hasn't launched, like Prix
+Foy): add the row in the `races` table with `in_game` set to `false` — it's excluded from the planner grid
+entirely until you flip it to `true`. Same idea as `umas`/`supports`' `in_game` flag and the "Include
+unreleased" checkbox, just without a toggle to preview it early (not needed since visitors can't see it at
+all either way).
+
+**Race images:** upload/replace a file named `{url_slug}.png` in the `race-images` bucket (Storage →
+race-images in the dashboard) — find a race's `url_slug` in the `races` table. Picked up automatically,
+no redeploy. Missing image = plain colored nameplate with the race name, so this is entirely optional.
 
 ## Running locally
 

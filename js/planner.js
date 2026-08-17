@@ -387,7 +387,7 @@ function renderSlotCell(slot) {
     const gClass = gradeBadgeClass(race.grade).replace("grade-", "");
     cell.innerHTML = `
       <div class="nameplate grade-${gClass}">
-        <img class="nameplate-img" src="images/races/${race.urlSlug || ""}.png" alt="" onerror="this.remove()">
+        <img class="nameplate-img" src="${raceImageUrl(race.urlSlug)}" alt="" onerror="this.remove()">
         <span class="nameplate-name">${race.name}</span>
       </div>`;
   } else {
@@ -629,7 +629,7 @@ async function renderPhaseCanvas(phase) {
     if (race) {
       phaseRaces++;
       phaseFans += race.fansGained || 0;
-      const img = await loadImageOrNull(`images/races/${race.urlSlug || ""}.png`);
+      const img = await loadImageOrNull(raceImageUrl(race.urlSlug));
       drawNameplateTile(ctx, x, y, tileW, tileH, race.grade, race.name, img);
     } else {
       drawBlankTile(ctx, x, y, tileW, tileH, slot.label);
@@ -681,10 +681,11 @@ async function init() {
   loadAptitude();
   loadFanBonus();
 
-  [allRaces, umas] = await Promise.all([loadJSON("data/races.json"), loadUmas()]);
+  [allRaces, umas] = await Promise.all([loadRaces(), loadUmas()]);
 
   racesBySlot = {};
   for (const race of allRaces) {
+    if (race.inGame === false) continue; // e.g. announced but not yet live (Prix Foy)
     if (race.slot === "Fin ???") continue; // career finale — not part of the regular calendar
     if (race.name === "Junior Make Debut") continue; // always happens, not a real choice - see DEBUT_FANS
     (racesBySlot[race.slot] ||= []).push(race);
