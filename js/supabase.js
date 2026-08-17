@@ -74,12 +74,15 @@ function reshapeSupportRow(row) {
 
 async function loadUmas() {
   if (!SUPABASE_CONFIG.enabled) return loadJSON("data/umas.json");
-  const rows = await supabaseSelect("umas", "select=*&order=name");
+  // Multiple costume rows can share a name; order deterministically (released
+  // first, then by id) so which one wins a same-name lookup never depends on
+  // Postgres' unspecified tie-breaking for an otherwise-equal sort key.
+  const rows = await supabaseSelect("umas", "select=*&order=name.asc,in_game.desc,id.asc");
   return rows.map(reshapeUmaRow);
 }
 
 async function loadSupports() {
   if (!SUPABASE_CONFIG.enabled) return loadJSON("data/supports.json");
-  const rows = await supabaseSelect("supports", "select=*&order=character");
+  const rows = await supabaseSelect("supports", "select=*&order=character.asc,in_game.desc,id.asc");
   return rows.map(reshapeSupportRow);
 }
