@@ -738,29 +738,11 @@ async function init() {
     document.getElementById("filters-panel").classList.toggle("hidden");
   });
 
-  document.getElementById("share-link-btn").addEventListener("click", async () => {
-    const encoded = btoa(encodeURIComponent(JSON.stringify(selections)));
-    const url = `${location.origin}${location.pathname}?agenda=${encoded}`;
-    try {
-      await navigator.clipboard.writeText(url);
-      alert("Share link copied to clipboard!");
-    } catch {
-      prompt("Copy this link:", url);
-    }
-  });
-
-  document.getElementById("share-images-btn").addEventListener("click", async (e) => {
-    const btn = e.currentTarget;
-    btn.disabled = true;
-    const original = btn.textContent;
-    btn.textContent = "Rendering…";
-    try {
-      await downloadAgendaImages();
-    } finally {
-      btn.disabled = false;
-      btn.textContent = original;
-    }
-  });
+  // Copy Link / Download Images buttons are pulled from the toolbar for now
+  // (testing phase, toolbar was wrapping to 2 lines). loadSelections() still
+  // decodes a ?agenda= URL if one's opened directly, and the image-export
+  // functions (renderPhaseCanvas etc., further up) are untouched - both are
+  // quick to re-wire if the buttons come back.
 
   document.getElementById("picker-close").addEventListener("click", closePicker);
   document.getElementById("picker-modal").addEventListener("click", (e) => {
