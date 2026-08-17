@@ -1,9 +1,18 @@
 const STORAGE_KEY = "uma-planner-selections-v2";
 const APTITUDE_STORAGE_KEY = "uma-planner-aptitude-v1";
+const FAN_BONUS_STORAGE_KEY = "uma-planner-fan-bonus-v1";
 const PHASES = ["Junior", "Classic", "Senior"];
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const HALVES = ["Early", "Late"];
 const APTITUDE_THRESHOLD = "B"; // grade at/above this counts a race as "considered"
+
+// The Junior Late Jun debut race always happens and isn't a real choice - the
+// specific race varies per run, so this is an average across the possible ones.
+const DEBUT_SLOT_KEY = "Junior Late Jun";
+const DEBUT_FANS = 1000;
+// Every trainee runs 3 fixed 30,000-fan races beyond the 72-slot calendar
+// (the Twinkle Star Climax / URA Finals races), so this is added flat.
+const CAREER_FINALE_BONUS_FANS = 90000;
 
 // Aptitude dimensions used for race filtering, mapped to the field names on a
 // uma's `aptitude` object and to the `distType` values used on races.
@@ -23,6 +32,7 @@ let slots = [];        // ordered list of { key, phase, month, half, label } for
 let racesBySlot = {};  // slot key -> [race, ...]
 let selections = {};   // slot key -> race name
 let aptitudeGrades = { ...DEFAULT_APTITUDE }; // dimension key -> letter grade (A-G)
+let fanBonusPercent = 0;
 let activeSlotKey = null;
 
 function buildSlots() {
@@ -70,6 +80,14 @@ function loadAptitude() {
 
 function saveAptitude() {
   localStorage.setItem(APTITUDE_STORAGE_KEY, JSON.stringify(aptitudeGrades));
+}
+
+function loadFanBonus() {
+  fanBonusPercent = Number(localStorage.getItem(FAN_BONUS_STORAGE_KEY)) || 0;
+}
+
+function saveFanBonus() {
+  localStorage.setItem(FAN_BONUS_STORAGE_KEY, String(fanBonusPercent));
 }
 
 function getFilters() {
@@ -160,7 +178,7 @@ function runOptimizer() {
 // -------- Stats --------
 
 function computeStats() {
-  let count = 0, distance = 0, fans = 0, g1 = 0;
+  let count = 0, baseFans = DEBUT_FANS + CAREER_FINALE_BONUS_FANS, g1 = 0;
   const distTypeCounts = {};
   let streak = 0, longestStreak = 0;
 
@@ -169,8 +187,7 @@ function computeStats() {
     const race = raceName ? getRace(slot.key, raceName) : null;
     if (race) {
       count++;
-      distance += race.meters || 0;
-      fans += race.fansGained || 0;
+      baseFans += race.fansGained || 0;
       if (race.grade === "G1") g1++;
       if (race.distType && race.distType !== "Varies") {
         for (const d of race.distType.split("/")) {
@@ -184,11 +201,12 @@ function computeStats() {
     }
   }
 
-  return { count, distance, fans, g1, distTypeCounts, longestStreak };
+  const totalFans = Math.round(baseFans * (1 + fanBonusPercent / 100));
+  return { count, baseFans, totalFans, g1, distTypeCounts, longestStreak };
 }
 
 function renderStatBadges() {
-  const { count, distance, fans, g1, distTypeCounts, longestStreak } = computeStats();
+  const { count, baseFans, totalFans, g1, distTypeCounts, longestStreak } = computeStats();
   const threshold = Number(document.getElementById("max-streak").value) || 4;
 
   const badges = [
@@ -198,8 +216,8 @@ function renderStatBadges() {
   for (const [type, n] of Object.entries(distTypeCounts).sort((a, b) => b[1] - a[1])) {
     badges.push(`<span class="stat-badge"><span class="n">${n}</span>${type}</span>`);
   }
-  badges.push(`<span class="stat-badge"><span class="n">${fmtNum(distance)}m</span>distance</span>`);
-  badges.push(`<span class="stat-badge"><span class="n">${fmtNum(fans)}</span>fans</span>`);
+  badges.push(`<span class="stat-badge"><span class="n">${fmtNum(baseFans)}</span>base fans</span>`);
+  badges.push(`<span class="stat-badge"><span class="n">${fmtNum(totalFans)}</span>total fans</span>`);
 
   const streakClass = longestStreak > threshold ? " streak-bad" : longestStreak === threshold ? " streak-warn" : "";
   badges.push(`<span class="stat-badge${streakClass}"><span class="n">${longestStreak}</span>streak</span>`);
@@ -218,8 +236,11 @@ function adjustAptitude(key, delta) {
 }
 
 function renderAptitudeControls() {
-  const container = document.getElementById("aptitude-controls");
-  container.innerHTML = "";
+  const surfaceContainer = document.getElementById("aptitude-controls-surface");
+  const distContainer = document.getElementById("aptitude-controls-dist");
+  surfaceContainer.innerHTML = "";
+  distContainer.innerHTML = "";
+
   for (const dim of APTITUDE_DIMS) {
     const grade = aptitudeGrades[dim.key];
     const active = aptitudeAtLeast(grade, APTITUDE_THRESHOLD);
@@ -235,40 +256,24 @@ function renderAptitudeControls() {
       </div>`;
     el.querySelector(".apt-up").addEventListener("click", () => adjustAptitude(dim.key, -1));
     el.querySelector(".apt-down").addEventListener("click", () => adjustAptitude(dim.key, 1));
-    container.appendChild(el);
+    (dim.kind === "surface" ? surfaceContainer : distContainer).appendChild(el);
   }
-}
-
-// -------- Trainee banner --------
-
-function renderTraineeBanner() {
-  const banner = document.getElementById("trainee-banner");
-  const name = document.getElementById("trainee-select").value;
-  if (!name) {
-    banner.className = "hidden";
-    banner.innerHTML = "";
-    return;
-  }
-  const uma = umas.find((u) => u.name === name);
-  if (!uma) { banner.className = "hidden"; return; }
-
-  // Selecting a trainee auto-fills the aptitude controls from their real grades
-  // (see the trainee-select change handler), so this flags cases where the
-  // controls have since been manually pushed better than that trainee actually is.
-  const overridden = APTITUDE_DIMS.filter((dim) => {
-    const actual = uma.aptitude[dim.key] || "G";
-    return APTITUDE_ORDER.indexOf(aptitudeGrades[dim.key]) < APTITUDE_ORDER.indexOf(actual);
-  });
-
-  banner.className = overridden.length ? "warn" : "ok";
-  banner.innerHTML = overridden.length
-    ? `<strong>${uma.name}</strong>'s real aptitude is lower than your filter in: ${overridden.map((d) => `${d.label} (actual ${uma.aptitude[d.key] || "G"})`).join(", ")}`
-    : `<strong>${uma.name}</strong> — ${APTITUDE_THRESHOLD} or higher for all planned surfaces &amp; distances`;
 }
 
 // -------- Grid rendering --------
 
 function renderSlotCell(slot) {
+  if (slot.key === DEBUT_SLOT_KEY) {
+    const cell = document.createElement("div");
+    cell.className = "slot-cell";
+    cell.innerHTML = `
+      <div class="nameplate grade-default">
+        <span class="nameplate-name">Make Debut</span>
+      </div>
+      <span class="slot-cell-label on-nameplate">${slot.label}</span>`;
+    return cell;
+  }
+
   const races = racesBySlot[slot.key] || [];
   const selectedName = selections[slot.key];
   const race = selectedName ? getRace(slot.key, selectedName) : null;
@@ -379,7 +384,6 @@ function renderAll() {
   renderAptitudeControls();
   renderGrid();
   renderStatBadges();
-  renderTraineeBanner();
 }
 
 async function init() {
@@ -387,12 +391,14 @@ async function init() {
   buildSlots();
   loadSelections();
   loadAptitude();
+  loadFanBonus();
 
   [allRaces, umas] = await Promise.all([loadJSON("data/races.json"), loadJSON("data/umas.json")]);
 
   racesBySlot = {};
   for (const race of allRaces) {
     if (race.slot === "Fin ???") continue; // career finale — not part of the regular calendar
+    if (race.name === "Junior Make Debut") continue; // always happens, not a real choice - see DEBUT_FANS
     (racesBySlot[race.slot] ||= []).push(race);
   }
 
@@ -404,9 +410,16 @@ async function init() {
     traineeSelect.appendChild(opt);
   }
 
+  document.getElementById("fan-bonus").value = fanBonusPercent;
+
   renderAll();
 
   document.getElementById("max-streak").addEventListener("input", renderStatBadges);
+  document.getElementById("fan-bonus").addEventListener("input", (e) => {
+    fanBonusPercent = Number(e.target.value) || 0;
+    saveFanBonus();
+    renderStatBadges();
+  });
   document.getElementById("trainee-select").addEventListener("change", () => {
     const uma = umas.find((u) => u.name === traineeSelect.value);
     if (uma) {

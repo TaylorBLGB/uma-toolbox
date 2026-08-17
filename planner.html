@@ -26,22 +26,33 @@
       <div class="toolbar-badges" id="stat-badges"></div>
     </div>
 
-    <div class="toolbar-row" id="filters-panel">
-      <div class="filter-group">
-        <span class="filter-group-label">Trainee</span>
-        <select id="trainee-select"><option value="">None</option></select>
+    <div id="filters-panel">
+      <div class="toolbar-row">
+        <div class="filter-group">
+          <span class="filter-group-label">Trainee</span>
+          <select id="trainee-select"><option value="">None</option></select>
+        </div>
+        <div class="filter-group">
+          <span class="filter-group-label">Max consecutive races</span>
+          <input type="number" id="max-streak" min="1" max="10" value="4" style="width:60px;">
+        </div>
+        <div class="filter-group">
+          <span class="filter-group-label">Fan bonus</span>
+          <input type="number" id="fan-bonus" min="0" max="500" value="0" style="width:60px;"> %
+        </div>
       </div>
-      <div class="filter-group">
-        <span class="filter-group-label">Aptitude <span class="filter-group-hint">(B or better counts toward races)</span></span>
-        <div class="apt-controls" id="aptitude-controls"></div>
-      </div>
-      <div class="filter-group">
-        <span class="filter-group-label">Max consecutive races</span>
-        <input type="number" id="max-streak" min="1" max="10" value="4" style="width:60px;">
+
+      <div class="apt-panel">
+        <div class="apt-section">
+          <div class="apt-section-header">Surface</div>
+          <div class="apt-controls" id="aptitude-controls-surface"></div>
+        </div>
+        <div class="apt-section">
+          <div class="apt-section-header">Distance</div>
+          <div class="apt-controls" id="aptitude-controls-dist"></div>
+        </div>
       </div>
     </div>
-
-    <div id="trainee-banner" class="hidden"></div>
   </div>
 
   <div id="planner-body">

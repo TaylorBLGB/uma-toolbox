@@ -290,8 +290,8 @@ tbody tr.expandable { cursor: pointer; }
 
 .grade-letter { font-weight: 700; }
 .gl-S { color: #ffd166; }
-.gl-A { color: #ff9ecf; }
-.gl-B { color: #a4d0ff; }
+.gl-A { color: #ff9f43; }
+.gl-B { color: #ff6fae; }
 .gl-C { color: #8be8c2; }
 .gl-D { color: #e2e88b; }
 .gl-E { color: #e0a86f; }
@@ -413,20 +413,22 @@ tbody tr.expandable { cursor: pointer; }
 
 .apt-control {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
   background: var(--bg-elev-2);
   border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 5px 8px;
+  padding: 8px 12px;
+  min-width: 70px;
 }
 
-.apt-control.active { border-color: var(--good); }
+.apt-control.active { border-color: var(--good); box-shadow: 0 0 0 1px var(--good); }
 
 .apt-label {
-  font-size: 0.8rem;
-  color: var(--text-dim);
-  min-width: 3.6em;
+  font-size: 0.78rem;
+  color: var(--accent-2);
+  font-weight: 700;
 }
 
 .apt-stepper {
@@ -447,21 +449,42 @@ tbody tr.expandable { cursor: pointer; }
 
 .apt-grade-value {
   font-weight: 800;
-  font-size: 0.9rem;
+  font-size: 1.3rem;
   min-width: 1.1em;
   text-align: center;
 }
 
-#trainee-banner {
-  border-radius: 8px;
-  padding: 10px 14px;
-  font-size: 0.88rem;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.apt-panel {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 12px;
 }
-#trainee-banner.ok { background: rgba(88,214,141,0.12); border: 1px solid var(--good); color: var(--good); }
-#trainee-banner.warn { background: rgba(255,107,107,0.12); border: 1px solid var(--bad); color: var(--bad); }
+
+@media (max-width: 620px) {
+  .apt-panel { grid-template-columns: 1fr; }
+}
+
+.apt-section {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.apt-section-header {
+  background: linear-gradient(180deg, #3f5c58, #2c4441);
+  color: #fff;
+  text-align: center;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  padding: 6px;
+  font-size: 0.85rem;
+}
+
+.apt-section .apt-controls {
+  padding: 12px;
+  justify-content: space-evenly;
+}
 
 /* -------- Phase grid -------- */
 
