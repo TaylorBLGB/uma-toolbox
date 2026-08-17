@@ -403,6 +403,55 @@ tbody tr.expandable { cursor: pointer; }
 #filters-panel { border-top: 1px solid var(--border); padding-top: 12px; }
 #filters-panel.hidden { display: none; }
 
+.filter-group-hint { text-transform: none; letter-spacing: 0; font-weight: 400; color: var(--text-dim); }
+
+.apt-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.apt-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-elev-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 5px 8px;
+}
+
+.apt-control.active { border-color: var(--good); }
+
+.apt-label {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  min-width: 3.6em;
+}
+
+.apt-stepper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.apt-btn {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 0 6px;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  cursor: pointer;
+}
+
+.apt-grade-value {
+  font-weight: 800;
+  font-size: 0.9rem;
+  min-width: 1.1em;
+  text-align: center;
+}
+
 #trainee-banner {
   border-radius: 8px;
   padding: 10px 14px;

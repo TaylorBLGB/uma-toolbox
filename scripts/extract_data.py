@@ -3,19 +3,26 @@ Extracts public reference data from the source spreadsheets into JSON files
 consumed by the static site. Deliberately drops personal collection-tracking
 columns (In Game?/Want?/Have?/Use?) - those are not published.
 
-Source files (not part of the repo, read from the user's Downloads folder):
-  - Datasheet.xlsx      -> Umas, Supports sheets
-  - RL UMA (1).xlsx     -> Race Data, Sheet28 sheets
+Source files are NOT part of the repo (they contain personal collection data)
+and their path differs per machine, so pass them explicitly:
+
+  python scripts/extract_data.py "path\to\Datasheet.xlsx" "path\to\RL UMA.xlsx"
+
+With no arguments it falls back to this machine's Downloads folder.
 """
 import datetime
 import json
 import re
+import sys
 import openpyxl
 from pathlib import Path
 
-DATASHEET = r"C:\Users\Taylor.Bradshaw\Downloads\Datasheet.xlsx"
-RLUMA = r"C:\Users\Taylor.Bradshaw\Downloads\RL UMA (1).xlsx"
+DEFAULT_DATASHEET = Path.home() / "Downloads" / "Datasheet.xlsx"
+DEFAULT_RLUMA = Path.home() / "Downloads" / "RL UMA (1).xlsx"
 OUT_DIR = Path(__file__).resolve().parent.parent / "data"
+
+DATASHEET = sys.argv[1] if len(sys.argv) > 1 else DEFAULT_DATASHEET
+RLUMA = sys.argv[2] if len(sys.argv) > 2 else DEFAULT_RLUMA
 
 
 def clean(v):

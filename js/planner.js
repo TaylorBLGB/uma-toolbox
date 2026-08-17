@@ -1,14 +1,28 @@
 const STORAGE_KEY = "uma-planner-selections-v2";
+const APTITUDE_STORAGE_KEY = "uma-planner-aptitude-v1";
 const PHASES = ["Junior", "Classic", "Senior"];
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const HALVES = ["Early", "Late"];
-const APTITUDE_THRESHOLD = "B"; // trainee banner flags anything worse than this
+const APTITUDE_THRESHOLD = "B"; // grade at/above this counts a race as "considered"
+
+// Aptitude dimensions used for race filtering, mapped to the field names on a
+// uma's `aptitude` object and to the `distType` values used on races.
+const APTITUDE_DIMS = [
+  { key: "turf", label: "Turf", kind: "surface", value: "turf" },
+  { key: "dirt", label: "Dirt", kind: "surface", value: "dirt" },
+  { key: "sprint", label: "Short", kind: "dist", value: "Short" },
+  { key: "mile", label: "Mile", kind: "dist", value: "Mile" },
+  { key: "medium", label: "Medium", kind: "dist", value: "Medium" },
+  { key: "long", label: "Long", kind: "dist", value: "Long" },
+];
+const DEFAULT_APTITUDE = { turf: "B", dirt: "G", sprint: "G", mile: "B", medium: "B", long: "B" };
 
 let allRaces = [];
 let umas = [];
 let slots = [];        // ordered list of { key, phase, month, half, label } for the 72 regular slots
 let racesBySlot = {};  // slot key -> [race, ...]
 let selections = {};   // slot key -> race name
+let aptitudeGrades = { ...DEFAULT_APTITUDE }; // dimension key -> letter grade (A-G)
 let activeSlotKey = null;
 
 function buildSlots() {
@@ -46,12 +60,27 @@ function saveSelections() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(selections));
 }
 
+function loadAptitude() {
+  try {
+    aptitudeGrades = { ...DEFAULT_APTITUDE, ...JSON.parse(localStorage.getItem(APTITUDE_STORAGE_KEY)) };
+  } catch {
+    aptitudeGrades = { ...DEFAULT_APTITUDE };
+  }
+}
+
+function saveAptitude() {
+  localStorage.setItem(APTITUDE_STORAGE_KEY, JSON.stringify(aptitudeGrades));
+}
+
 function getFilters() {
-  const checked = (name) => document.querySelector(`[data-apt="${name}"]`).checked;
-  return {
-    surfaces: new Set(["turf", "dirt"].filter((s) => checked(`surface-${s}`))),
-    distTypes: new Set(["Short", "Mile", "Medium", "Long"].filter((d) => checked(`dist-${d}`))),
-  };
+  const surfaces = new Set();
+  const distTypes = new Set();
+  for (const dim of APTITUDE_DIMS) {
+    if (!aptitudeAtLeast(aptitudeGrades[dim.key], APTITUDE_THRESHOLD)) continue;
+    if (dim.kind === "surface") surfaces.add(dim.value);
+    else distTypes.add(dim.value);
+  }
+  return { surfaces, distTypes };
 }
 
 function raceMatchesFilter(race, filters) {
@@ -178,6 +207,38 @@ function renderStatBadges() {
   document.getElementById("stat-badges").innerHTML = badges.join("");
 }
 
+// -------- Aptitude controls --------
+
+function adjustAptitude(key, delta) {
+  const idx = APTITUDE_ORDER.indexOf(aptitudeGrades[key]);
+  const clamped = Math.min(APTITUDE_ORDER.length - 1, Math.max(0, idx + delta));
+  aptitudeGrades[key] = APTITUDE_ORDER[clamped];
+  saveAptitude();
+  renderAll();
+}
+
+function renderAptitudeControls() {
+  const container = document.getElementById("aptitude-controls");
+  container.innerHTML = "";
+  for (const dim of APTITUDE_DIMS) {
+    const grade = aptitudeGrades[dim.key];
+    const active = aptitudeAtLeast(grade, APTITUDE_THRESHOLD);
+
+    const el = document.createElement("div");
+    el.className = "apt-control" + (active ? " active" : "");
+    el.innerHTML = `
+      <span class="apt-label">${dim.label}</span>
+      <div class="apt-stepper">
+        <button type="button" class="apt-btn apt-up" title="Better">&and;</button>
+        <span class="apt-grade-value ${letterClass(grade)}">${grade}</span>
+        <button type="button" class="apt-btn apt-down" title="Worse">&or;</button>
+      </div>`;
+    el.querySelector(".apt-up").addEventListener("click", () => adjustAptitude(dim.key, -1));
+    el.querySelector(".apt-down").addEventListener("click", () => adjustAptitude(dim.key, 1));
+    container.appendChild(el);
+  }
+}
+
 // -------- Trainee banner --------
 
 function renderTraineeBanner() {
@@ -191,17 +252,17 @@ function renderTraineeBanner() {
   const uma = umas.find((u) => u.name === name);
   if (!uma) { banner.className = "hidden"; return; }
 
-  const filters = getFilters();
-  const distAptitudeKey = { Short: "sprint", Mile: "mile", Medium: "medium", Long: "long" };
-  const checkedDims = [
-    ...[...filters.surfaces].map((s) => ({ key: s, label: s[0].toUpperCase() + s.slice(1), grade: uma.aptitude[s] })),
-    ...[...filters.distTypes].map((d) => ({ key: d, label: d, grade: uma.aptitude[distAptitudeKey[d]] })),
-  ];
-  const weak = checkedDims.filter((d) => !aptitudeAtLeast(d.grade, APTITUDE_THRESHOLD));
+  // Selecting a trainee auto-fills the aptitude controls from their real grades
+  // (see the trainee-select change handler), so this flags cases where the
+  // controls have since been manually pushed better than that trainee actually is.
+  const overridden = APTITUDE_DIMS.filter((dim) => {
+    const actual = uma.aptitude[dim.key] || "G";
+    return APTITUDE_ORDER.indexOf(aptitudeGrades[dim.key]) < APTITUDE_ORDER.indexOf(actual);
+  });
 
-  banner.className = weak.length ? "warn" : "ok";
-  banner.innerHTML = weak.length
-    ? `<strong>${uma.name}</strong> is below ${APTITUDE_THRESHOLD} in: ${weak.map((d) => `${d.label} (${d.grade || "—"})`).join(", ")}`
+  banner.className = overridden.length ? "warn" : "ok";
+  banner.innerHTML = overridden.length
+    ? `<strong>${uma.name}</strong>'s real aptitude is lower than your filter in: ${overridden.map((d) => `${d.label} (actual ${uma.aptitude[d.key] || "G"})`).join(", ")}`
     : `<strong>${uma.name}</strong> — ${APTITUDE_THRESHOLD} or higher for all planned surfaces &amp; distances`;
 }
 
@@ -315,6 +376,7 @@ function closePicker() {
 // -------- Wiring --------
 
 function renderAll() {
+  renderAptitudeControls();
   renderGrid();
   renderStatBadges();
   renderTraineeBanner();
@@ -324,6 +386,7 @@ async function init() {
   renderHeader("planner");
   buildSlots();
   loadSelections();
+  loadAptitude();
 
   [allRaces, umas] = await Promise.all([loadJSON("data/races.json"), loadJSON("data/umas.json")]);
 
@@ -343,9 +406,17 @@ async function init() {
 
   renderAll();
 
-  document.querySelectorAll('[data-apt]').forEach((el) => el.addEventListener("change", renderAll));
   document.getElementById("max-streak").addEventListener("input", renderStatBadges);
-  document.getElementById("trainee-select").addEventListener("change", renderTraineeBanner);
+  document.getElementById("trainee-select").addEventListener("change", () => {
+    const uma = umas.find((u) => u.name === traineeSelect.value);
+    if (uma) {
+      for (const dim of APTITUDE_DIMS) {
+        aptitudeGrades[dim.key] = uma.aptitude[dim.key] || "G";
+      }
+      saveAptitude();
+    }
+    renderAll();
+  });
 
   document.getElementById("reset-btn").addEventListener("click", () => {
     if (confirm("Clear every race you've picked?")) {

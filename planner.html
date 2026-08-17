@@ -32,16 +32,8 @@
         <select id="trainee-select"><option value="">None</option></select>
       </div>
       <div class="filter-group">
-        <span class="filter-group-label">Surface</span>
-        <label class="checkbox-row"><input type="checkbox" data-apt="surface-turf" checked> Turf</label>
-        <label class="checkbox-row"><input type="checkbox" data-apt="surface-dirt"> Dirt</label>
-      </div>
-      <div class="filter-group">
-        <span class="filter-group-label">Distance</span>
-        <label class="checkbox-row"><input type="checkbox" data-apt="dist-Short"> Short</label>
-        <label class="checkbox-row"><input type="checkbox" data-apt="dist-Mile" checked> Mile</label>
-        <label class="checkbox-row"><input type="checkbox" data-apt="dist-Medium" checked> Medium</label>
-        <label class="checkbox-row"><input type="checkbox" data-apt="dist-Long" checked> Long</label>
+        <span class="filter-group-label">Aptitude <span class="filter-group-hint">(B or better counts toward races)</span></span>
+        <div class="apt-controls" id="aptitude-controls"></div>
       </div>
       <div class="filter-group">
         <span class="filter-group-label">Max consecutive races</span>
