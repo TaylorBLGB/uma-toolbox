@@ -137,7 +137,7 @@ function bestValidRace(slotKey, filters) {
 
 function runOptimizer() {
   const filters = getFilters();
-  const maxStreak = Math.max(1, Number(document.getElementById("max-streak").value) || 4);
+  const maxStreak = Math.max(1, Number(document.getElementById("max-streak").value) || 5);
   const n = slots.length;
 
   const best = slots.map((s) => bestValidRace(s.key, filters));
@@ -483,7 +483,24 @@ function roundRectPath(ctx, x, y, w, h, r) {
   ctx.closePath();
 }
 
-function drawNameplateRow(ctx, x, y, w, h, grade, name, img) {
+function wrapText(ctx, text, maxWidth) {
+  const words = text.split(" ");
+  const lines = [];
+  let line = "";
+  for (const word of words) {
+    const test = line ? `${line} ${word}` : word;
+    if (line && ctx.measureText(test).width > maxWidth) {
+      lines.push(line);
+      line = word;
+    } else {
+      line = test;
+    }
+  }
+  if (line) lines.push(line);
+  return lines;
+}
+
+function drawNameplateTile(ctx, x, y, w, h, grade, name, img) {
   const r = 8;
   roundRectPath(ctx, x, y, w, h, r);
   const stops = EXPORT_GRADE_STOPS[grade] || EXPORT_GRADE_STOPS.default;
@@ -505,23 +522,29 @@ function drawNameplateRow(ctx, x, y, w, h, grade, name, img) {
   }
 
   ctx.fillStyle = "#ffffff";
-  ctx.font = "700 17px 'Segoe UI', sans-serif";
+  ctx.font = "700 11px 'Segoe UI', sans-serif";
   ctx.textAlign = "left";
-  ctx.textBaseline = "middle";
+  ctx.textBaseline = "alphabetic";
   ctx.shadowColor = "rgba(0,0,0,0.85)";
-  ctx.shadowBlur = 4;
-  ctx.fillText(name, x + 14, y + h / 2, w - 28);
+  ctx.shadowBlur = 3;
+  const lines = wrapText(ctx, name, w - 12).slice(0, 2);
+  const lineH = 13;
+  let ty = y + h - 7 - (lines.length - 1) * lineH;
+  for (const line of lines) {
+    ctx.fillText(line, x + 6, ty);
+    ty += lineH;
+  }
   ctx.shadowBlur = 0;
 }
 
-function drawBlankRow(ctx, x, y, w, h, label) {
+function drawBlankTile(ctx, x, y, w, h, label) {
   const r = 8;
   roundRectPath(ctx, x, y, w, h, r);
   ctx.strokeStyle = "#2c3350";
   ctx.lineWidth = 1;
   ctx.stroke();
   ctx.fillStyle = "#9aa0bd";
-  ctx.font = "600 14px 'Segoe UI', sans-serif";
+  ctx.font = "600 10px 'Segoe UI', sans-serif";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   ctx.fillText(label, x + w / 2, y + h / 2);
@@ -529,12 +552,16 @@ function drawBlankRow(ctx, x, y, w, h, label) {
 
 async function renderPhaseCanvas(phase) {
   const phaseSlots = slots.filter((s) => s.phase === phase);
-  const width = 640;
-  const rowH = 46;
-  const rowGap = 6;
+  const cols = 4, rows = 6; // mirrors the on-site phase-col-body grid
+  const width = 720;
+  const pad = 14;
+  const gap = 6;
   const headerH = 84;
   const footerH = 64;
-  const height = headerH + phaseSlots.length * (rowH + rowGap) + footerH;
+  const tileW = (width - pad * 2 - gap * (cols - 1)) / cols;
+  const tileH = tileW * 0.75; // matches the site's 4:3 slot-cell aspect ratio
+  const gridH = rows * tileH + (rows - 1) * gap;
+  const height = headerH + pad + gridH + pad + footerH;
 
   const canvas = document.createElement("canvas");
   canvas.width = width;
@@ -550,20 +577,22 @@ async function renderPhaseCanvas(phase) {
   ctx.fillStyle = headerGrad;
   ctx.fillRect(0, 0, width, headerH);
   ctx.fillStyle = "#ffffff";
-  ctx.font = "800 30px 'Segoe UI', sans-serif";
+  ctx.font = "800 28px 'Segoe UI', sans-serif";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   ctx.fillText(`${phase} Year`, width / 2, headerH / 2);
 
-  let y = headerH + rowGap;
   let phaseRaces = 0, phaseFans = 0;
-  const pad = 16;
-  const rowW = width - pad * 2;
 
-  for (const slot of phaseSlots) {
+  for (let i = 0; i < phaseSlots.length; i++) {
+    const slot = phaseSlots[i];
+    const col = i % cols;
+    const row = Math.floor(i / cols);
+    const x = pad + col * (tileW + gap);
+    const y = headerH + pad + row * (tileH + gap);
+
     if (slot.key === DEBUT_SLOT_KEY) {
-      drawNameplateRow(ctx, pad, y, rowW, rowH, "default", "Make Debut", null);
-      y += rowH + rowGap;
+      drawNameplateTile(ctx, x, y, tileW, tileH, "default", "Make Debut", null);
       continue;
     }
 
@@ -575,23 +604,23 @@ async function renderPhaseCanvas(phase) {
       phaseRaces++;
       phaseFans += race.fansGained || 0;
       const img = await loadImageOrNull(`images/races/${race.urlSlug || ""}.png`);
-      drawNameplateRow(ctx, pad, y, rowW, rowH, race.grade, race.name, img);
+      drawNameplateTile(ctx, x, y, tileW, tileH, race.grade, race.name, img);
     } else {
-      drawBlankRow(ctx, pad, y, rowW, rowH, races.length ? slot.label : `${slot.label} — training`);
+      drawBlankTile(ctx, x, y, tileW, tileH, slot.label);
     }
-    y += rowH + rowGap;
   }
 
+  const footerY = headerH + pad + gridH + pad;
   ctx.fillStyle = "#171b2e";
-  ctx.fillRect(0, y, width, footerH);
+  ctx.fillRect(0, footerY, width, footerH);
   ctx.fillStyle = "#e8eaf5";
-  ctx.font = "700 18px 'Segoe UI', sans-serif";
+  ctx.font = "700 17px 'Segoe UI', sans-serif";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.fillText(`${phaseRaces} races · ${fmtNum(phaseFans)} fans this year`, width / 2, y + footerH / 2 - 10);
-  ctx.font = "400 12px 'Segoe UI', sans-serif";
+  ctx.fillText(`${phaseRaces} races · ${fmtNum(phaseFans)} fans this year`, width / 2, footerY + footerH / 2 - 10);
+  ctx.font = "400 11px 'Segoe UI', sans-serif";
   ctx.fillStyle = "#9aa0bd";
-  ctx.fillText("Made with UmaToolbox", width / 2, y + footerH / 2 + 14);
+  ctx.fillText("Made with UmaToolbox", width / 2, footerY + footerH / 2 + 13);
 
   return canvas;
 }

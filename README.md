@@ -1,6 +1,6 @@
 # UmaToolbox
 
-A small static site with two Umamusume Pretty Derby tools:
+A small static site with Umamusume Pretty Derby tools:
 
 - **Race Planner** (`planner.html`) — a game-accurate 3-year career grid. Click any slot to assign a race,
   or hit Auto-Fill to run a dynamic-programming optimizer that maximizes total fans subject to your
@@ -9,14 +9,16 @@ A small static site with two Umamusume Pretty Derby tools:
   from their real stats — unreleased characters are excluded from search unless you check "Include
   unreleased". A Fan Bonus % input shows Base Fans and Total Fans side by side. Copy Link hands someone
   else a URL that loads your exact agenda; Download Images renders your agenda as 3 portrait PNGs (one per
-  career year), fully client-side via `<canvas>` — no server involved, mirroring the vertical per-year
-  screenshot style the community already uses to share agendas. Race cells look for an image at
-  `images/races/{urlSlug}.png`,
-  and the trainee search shows a portrait at `images/trainees/{slug}.png` — both fall back to a styled
-  placeholder (or nothing, for portraits) automatically if the image doesn't exist. See
-  `images/races/README.md` and `images/trainees/README.md`.
-- **Character & Support Database** (`database.html`) — searchable/sortable reference for trainee
-  aptitudes/stats and support card bonuses.
+  career year, laid out as the same 4x6 tile grid as the page itself), fully client-side via `<canvas>` —
+  no server involved, mirroring the screenshot style the community already uses to share agendas. Race
+  cells look for an image at `images/races/{urlSlug}.png`, and the trainee search shows a portrait at
+  `images/trainees/{slug}.png` — both fall back to a styled placeholder (or nothing, for portraits)
+  automatically if the image doesn't exist. See `images/races/README.md` and `images/trainees/README.md`.
+
+A character/support database browser previously lived at `database.html` — it's been pulled out for now
+pending a decision on which columns it should show, but `data/umas.json` and `data/supports.json` still
+exist (the planner's trainee search depends on the former) and a rebuilt version will return once that's
+settled.
 
 It's plain HTML/CSS/JS — no build step, no framework, no backend. All data lives in `data/*.json` and is
 loaded client-side with `fetch`. There is nothing here that writes anywhere, so it's safe to host publicly

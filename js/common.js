@@ -6,7 +6,6 @@ function renderHeader(active) {
       <nav class="site-nav">
         <a href="index.html" class="${active === "home" ? "active" : ""}">Home</a>
         <a href="planner.html" class="${active === "planner" ? "active" : ""}">Race Planner</a>
-        <a href="database.html" class="${active === "database" ? "active" : ""}">Database</a>
       </nav>
     </div>`;
 }
