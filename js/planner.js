@@ -129,10 +129,36 @@ function getRace(slotKey, name) {
   return (racesBySlot[slotKey] || []).find((r) => r.name === name);
 }
 
+const DIST_TYPE_TO_APT_KEY = Object.fromEntries(APTITUDE_DIMS.filter((d) => d.kind === "dist").map((d) => [d.value, d.key]));
+
+// Lower is better (0 = A). Used to break ties between same-fan races by
+// aptitude - the current trainee's actual grades if one's selected,
+// otherwise whatever the aptitude panel is set to.
+function aptitudeScoreForRace(race) {
+  const surfaceGrade = race.surface ? aptitudeGrades[race.surface.toLowerCase()] : null;
+
+  let distGrade = null;
+  if (race.distType && race.distType !== "Varies") {
+    const grades = race.distType.split("/").map((d) => aptitudeGrades[DIST_TYPE_TO_APT_KEY[d]]).filter(Boolean);
+    if (grades.length) {
+      distGrade = grades.reduce((best, g) => (APTITUDE_ORDER.indexOf(g) < APTITUDE_ORDER.indexOf(best) ? g : best));
+    }
+  }
+
+  const worst = APTITUDE_ORDER.length; // unknown aptitude counts as worse than any real grade
+  const surfaceIdx = surfaceGrade ? APTITUDE_ORDER.indexOf(surfaceGrade) : worst;
+  const distIdx = distGrade ? APTITUDE_ORDER.indexOf(distGrade) : worst;
+  return surfaceIdx + distIdx;
+}
+
 function bestValidRace(slotKey, filters) {
   const options = (racesBySlot[slotKey] || []).filter((r) => raceMatchesFilter(r, filters));
   if (options.length === 0) return null;
-  return options.reduce((best, r) => ((r.fansGained || 0) > (best.fansGained || 0) ? r : best));
+  return options.reduce((best, r) => {
+    const rFans = r.fansGained || 0, bestFans = best.fansGained || 0;
+    if (rFans !== bestFans) return rFans > bestFans ? r : best;
+    return aptitudeScoreForRace(r) < aptitudeScoreForRace(best) ? r : best;
+  });
 }
 
 function runOptimizer() {
