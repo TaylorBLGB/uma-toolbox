@@ -51,6 +51,34 @@ eventually if you want it to stick.
 Either way, changes only take effect once you redeploy (see below) — editing the local file doesn't touch
 whatever's already live.
 
+### Option C: admin database (Supabase) — edit from anywhere, no rebuild/redeploy
+
+The two options above both need you at a machine with the spreadsheet, then a redeploy. This option moves
+`umas`/`supports` into a real database you can edit from any browser, and the live site reads it directly —
+no rebuild step. It's more setup than A/B, worth it specifically because you asked for "works no matter
+where I am."
+
+1. **Create the project.** Sign up at [supabase.com](https://supabase.com) (free tier is enough for this)
+   and create a new project. This is an account-creation step only you can do.
+2. **Create the tables.** In the project's SQL Editor, run [`db/schema.sql`](db/schema.sql) — it creates
+   the `umas` and `supports` tables (one flat column per field, so every value is its own editable cell
+   later) and locks the public API to read-only via Row Level Security. Your own access through the
+   dashboard isn't affected by RLS.
+3. **Load your current data.** Run `python scripts/generate_seed_sql.py` to (re)generate `db/seed.sql` from
+   today's `data/umas.json`/`data/supports.json`, then run that file in the same SQL Editor. This is a
+   one-time migration — once the data's in Supabase, you edit it there, not in the spreadsheet.
+4. **Get your API credentials.** In Project Settings → API, copy the Project URL and the `anon` `public`
+   key (not the `service_role` key — that one can bypass RLS and should never go in client-side code).
+5. **Wire it up.** Open `js/supabase-config.js`, paste those two values in, and set `enabled: true`.
+   Redeploy. The Race Planner now reads trainees from Supabase instead of the bundled JSON — verify by
+   editing a row in Supabase's Table Editor and confirming it shows up on the live site without a rebuild.
+
+**To edit data going forward:** open your project at [supabase.com](https://supabase.com) → Table Editor →
+`umas` or `supports`. It's a full spreadsheet-like grid, gated by your Supabase login, from any device. No
+custom admin page was built for this — the dashboard already does the job with zero extra code. (If you
+later want an in-site editing page instead of visiting supabase.com, that's a separate follow-up — say so
+and it can be built against the same tables.)
+
 ## Running locally
 
 Any static file server works. A minimal HTTP/1.1 one is included (plain `python -m http.server` can

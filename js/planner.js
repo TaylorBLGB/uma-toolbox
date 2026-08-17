@@ -655,7 +655,7 @@ async function init() {
   loadAptitude();
   loadFanBonus();
 
-  [allRaces, umas] = await Promise.all([loadJSON("data/races.json"), loadJSON("data/umas.json")]);
+  [allRaces, umas] = await Promise.all([loadJSON("data/races.json"), loadUmas()]);
 
   racesBySlot = {};
   for (const race of allRaces) {
