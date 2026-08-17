@@ -37,3 +37,7 @@ function aptitudeAtLeast(grade, threshold) {
   if (gi === -1 || ti === -1) return false;
   return gi <= ti;
 }
+
+function slugify(name) {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+}

@@ -182,7 +182,6 @@ function runOptimizer() {
 function computeStats() {
   let count = 0, baseFans = DEBUT_FANS + CAREER_FINALE_BONUS_FANS, g1 = 0;
   const distTypeCounts = {};
-  let streak = 0, longestStreak = 0;
 
   for (const slot of slots) {
     const raceName = selections[slot.key];
@@ -196,20 +195,15 @@ function computeStats() {
           distTypeCounts[d] = (distTypeCounts[d] || 0) + 1;
         }
       }
-      streak++;
-      longestStreak = Math.max(longestStreak, streak);
-    } else {
-      streak = 0;
     }
   }
 
   const totalFans = Math.round(baseFans * (1 + fanBonusPercent / 100));
-  return { count, baseFans, totalFans, g1, distTypeCounts, longestStreak };
+  return { count, baseFans, totalFans, g1, distTypeCounts };
 }
 
 function renderStatBadges() {
-  const { count, baseFans, totalFans, g1, distTypeCounts, longestStreak } = computeStats();
-  const threshold = Number(document.getElementById("max-streak").value) || 4;
+  const { count, baseFans, totalFans, g1, distTypeCounts } = computeStats();
 
   const badges = [
     `<span class="stat-badge"><span class="n">${fmtNum(count)}</span>races</span>`,
@@ -219,19 +213,43 @@ function renderStatBadges() {
     badges.push(`<span class="stat-badge"><span class="n">${n}</span>${type}</span>`);
   }
   badges.push(`<span class="stat-badge"><span class="n">${fmtNum(baseFans)}</span>base fans</span>`);
-  badges.push(`<span class="stat-badge"><span class="n">${fmtNum(totalFans)}</span>total fans</span>`);
-
-  const streakClass = longestStreak > threshold ? " streak-bad" : longestStreak === threshold ? " streak-warn" : "";
-  badges.push(`<span class="stat-badge${streakClass}"><span class="n">${longestStreak}</span>streak</span>`);
+  badges.push(`<span class="stat-badge highlight"><span class="n">${fmtNum(totalFans)}</span>total fans</span>`);
 
   document.getElementById("stat-badges").innerHTML = badges.join("");
 }
 
 // -------- Trainee search --------
 
+// Trainees don't have different aptitude per costume (the source sheet just
+// underlines the grade a character's skills lean toward - not a real
+// difference), so search operates on one entry per unique name. Prefer a
+// released row's data if any costume of this trainee is released.
+function traineeIndex() {
+  const byName = new Map();
+  for (const u of umas) {
+    const existing = byName.get(u.name);
+    if (!existing || (u.inGame && !existing.inGame)) byName.set(u.name, u);
+  }
+  return [...byName.values()];
+}
+
+function traineePortraitUrl(uma) {
+  return `images/trainees/${slugify(uma.name)}.png`;
+}
+
 function applyTrainee(uma) {
   selectedTrainee = uma;
-  document.getElementById("trainee-input").value = uma ? (uma.costume ? `${uma.name} — ${uma.costume}` : uma.name) : "";
+  document.getElementById("trainee-input").value = uma ? uma.name : "";
+
+  const portrait = document.getElementById("trainee-portrait");
+  if (uma) {
+    portrait.src = traineePortraitUrl(uma);
+    portrait.classList.remove("hidden");
+  } else {
+    portrait.removeAttribute("src");
+    portrait.classList.add("hidden");
+  }
+
   if (uma) {
     for (const dim of APTITUDE_DIMS) {
       aptitudeGrades[dim.key] = uma.aptitude[dim.key] || "G";
@@ -239,7 +257,7 @@ function applyTrainee(uma) {
     saveAptitude();
   }
   hideTraineeSuggestions();
-  renderAll();
+  renderAptitudeControls();
 }
 
 function hideTraineeSuggestions() {
@@ -256,7 +274,7 @@ function renderTraineeSuggestions(query) {
     return;
   }
 
-  const pool = umas.filter((u) => includeUnreleased || u.inGame);
+  const pool = traineeIndex().filter((u) => includeUnreleased || u.inGame);
   const starts = pool.filter((u) => u.name.toLowerCase().startsWith(q));
   const contains = pool.filter((u) => !u.name.toLowerCase().startsWith(q) && u.name.toLowerCase().includes(q));
   const matches = [...starts.sort((a, b) => a.name.localeCompare(b.name)),
@@ -265,8 +283,11 @@ function renderTraineeSuggestions(query) {
   box.innerHTML = matches.length
     ? matches.map((u, i) => `
         <div class="trainee-suggestion" data-idx="${i}">
-          <span>${u.name}${u.costume ? ` <span class="filter-group-hint">— ${u.costume}</span>` : ""}</span>
-          ${u.inGame ? "" : '<span class="unreleased-tag">unreleased</span>'}
+          <img class="trainee-suggestion-portrait" src="${traineePortraitUrl(u)}" alt="" onerror="this.remove()">
+          <span class="trainee-suggestion-name">
+            <span>${u.name}</span>
+            ${u.inGame ? "" : '<span class="unreleased-tag">unreleased</span>'}
+          </span>
         </div>`).join("")
     : `<div class="trainee-suggestion-empty">No trainees match "${query}"</div>`;
 
@@ -287,7 +308,10 @@ function adjustAptitude(key, delta) {
   const clamped = Math.min(APTITUDE_ORDER.length - 1, Math.max(0, idx + delta));
   aptitudeGrades[key] = APTITUDE_ORDER[clamped];
   saveAptitude();
-  renderAll();
+  // Aptitude only affects the optimizer (on Auto-Fill) and the picker's
+  // dimming (recomputed when it opens) - the grid/stats don't depend on it,
+  // so re-render just the controls rather than tearing down race nameplates.
+  renderAptitudeControls();
 }
 
 function renderAptitudeControls() {
@@ -305,9 +329,9 @@ function renderAptitudeControls() {
     el.innerHTML = `
       <span class="apt-label">${dim.label}</span>
       <div class="apt-stepper">
-        <button type="button" class="apt-btn apt-up" title="Better">&and;</button>
+        <button type="button" class="apt-btn apt-up" aria-label="Increase ${dim.label} aptitude">&and;</button>
         <span class="apt-grade-value ${letterClass(grade)}">${grade}</span>
-        <button type="button" class="apt-btn apt-down" title="Worse">&or;</button>
+        <button type="button" class="apt-btn apt-down" aria-label="Decrease ${dim.label} aptitude">&or;</button>
       </div>`;
     el.querySelector(".apt-up").addEventListener("click", () => adjustAptitude(dim.key, -1));
     el.querySelector(".apt-down").addEventListener("click", () => adjustAptitude(dim.key, 1));
@@ -461,7 +485,6 @@ async function init() {
 
   renderAll();
 
-  document.getElementById("max-streak").addEventListener("input", renderStatBadges);
   document.getElementById("fan-bonus").addEventListener("input", (e) => {
     fanBonusPercent = Number(e.target.value) || 0;
     saveFanBonus();
@@ -473,7 +496,7 @@ async function init() {
   traineeInput.addEventListener("focus", (e) => renderTraineeSuggestions(e.target.value));
   traineeInput.addEventListener("blur", () => {
     hideTraineeSuggestions();
-    if (!traineeInput.value.trim()) selectedTrainee = null;
+    if (!traineeInput.value.trim() && selectedTrainee) applyTrainee(null);
   });
   traineeInput.addEventListener("keydown", (e) => {
     if (e.key === "Escape") { traineeInput.blur(); hideTraineeSuggestions(); }

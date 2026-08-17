@@ -8,8 +8,10 @@ A small static site with two Umamusume Pretty Derby tools:
   a better long-run total). Search for a trainee by name (substring match) to auto-fill the aptitude grades
   from their real stats — unreleased characters are excluded from search unless you check "Include
   unreleased". A Fan Bonus % input shows Base Fans and Total Fans side by side. Use Share to hand someone
-  else a link that loads your exact agenda. Race cells look for an image at `images/races/{urlSlug}.png`
-  and fall back to a styled placeholder automatically if none exists — see `images/races/README.md`.
+  else a link that loads your exact agenda. Race cells look for an image at `images/races/{urlSlug}.png`,
+  and the trainee search shows a portrait at `images/trainees/{slug}.png` — both fall back to a styled
+  placeholder (or nothing, for portraits) automatically if the image doesn't exist. See
+  `images/races/README.md` and `images/trainees/README.md`.
 - **Character & Support Database** (`database.html`) — searchable/sortable reference for trainee
   aptitudes/stats and support card bonuses.
 
