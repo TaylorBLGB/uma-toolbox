@@ -27,3 +27,13 @@ function gradeBadgeClass(grade) {
 function letterClass(letter) {
   return letter ? `gl-${letter}` : "";
 }
+
+// Best to worst. This game's aptitude scale tops out at A (no S grade in the data).
+const APTITUDE_ORDER = ["A", "B", "C", "D", "E", "F", "G"];
+
+function aptitudeAtLeast(grade, threshold) {
+  const gi = APTITUDE_ORDER.indexOf(grade);
+  const ti = APTITUDE_ORDER.indexOf(threshold);
+  if (gi === -1 || ti === -1) return false;
+  return gi <= ti;
+}

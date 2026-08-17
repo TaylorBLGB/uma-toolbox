@@ -11,40 +11,58 @@
 <main>
   <h1 class="page-title">Race Planner</h1>
   <p class="page-subtitle">
-    Pick a race for each date slot across the Junior, Classic and Senior career years. Totals update as you
-    go. Your picks are saved in this browser only (nothing is sent anywhere) — use Reset to start over.
+    Click a slot to assign a race, or use Auto-Fill to maximize total fans automatically. Your picks are
+    saved in this browser only — nothing is sent anywhere.
   </p>
 
-  <div class="planner-layout">
-    <aside class="planner-sidebar">
-      <div class="card">
-        <div class="stat-line"><span>Races selected</span><span class="v" id="stat-count">0</span></div>
-        <div class="stat-line"><span>Total distance</span><span class="v" id="stat-distance">0 m</span></div>
-        <div class="stat-line"><span>Total fans</span><span class="v" id="stat-fans">0</span></div>
-        <div class="stat-line"><span>Longest race streak</span><span class="v" id="stat-streak">0</span></div>
+  <div class="planner-toolbar card">
+    <div class="toolbar-row">
+      <div class="toolbar-actions">
+        <button id="autofill-btn" class="primary">Auto-Fill</button>
+        <button id="reset-btn">Reset</button>
+        <button id="share-btn">Share</button>
+        <button id="filters-toggle-btn">Filters</button>
       </div>
-      <div class="card">
-        <div class="filter-group-label" style="margin-bottom:8px;">Aptitude filter</div>
+      <div class="toolbar-badges" id="stat-badges"></div>
+    </div>
+
+    <div class="toolbar-row" id="filters-panel">
+      <div class="filter-group">
+        <span class="filter-group-label">Trainee</span>
+        <select id="trainee-select"><option value="">None</option></select>
+      </div>
+      <div class="filter-group">
+        <span class="filter-group-label">Surface</span>
         <label class="checkbox-row"><input type="checkbox" data-apt="surface-turf" checked> Turf</label>
         <label class="checkbox-row"><input type="checkbox" data-apt="surface-dirt"> Dirt</label>
-        <hr style="border-color: var(--border); margin: 8px 0;">
+      </div>
+      <div class="filter-group">
+        <span class="filter-group-label">Distance</span>
         <label class="checkbox-row"><input type="checkbox" data-apt="dist-Short"> Short</label>
         <label class="checkbox-row"><input type="checkbox" data-apt="dist-Mile" checked> Mile</label>
         <label class="checkbox-row"><input type="checkbox" data-apt="dist-Medium" checked> Medium</label>
         <label class="checkbox-row"><input type="checkbox" data-apt="dist-Long" checked> Long</label>
-        <p class="footnote" style="margin-top:10px; padding-top:10px; font-size:0.78rem;">
-          Races outside these aptitudes are dimmed, not hidden — you can still pick them.
-        </p>
       </div>
-      <div class="card">
-        <label class="checkbox-row" for="warn-threshold" style="margin-bottom:6px;">Warn after this many races in a row</label>
-        <input type="number" id="warn-threshold" min="1" max="10" value="4" style="width:70px;">
+      <div class="filter-group">
+        <span class="filter-group-label">Max consecutive races</span>
+        <input type="number" id="max-streak" min="1" max="10" value="4" style="width:60px;">
       </div>
-      <button id="reset-btn" style="align-self:flex-start;">Reset all picks</button>
-    </aside>
+    </div>
 
-    <div id="planner-body">
-      <p class="result-count">Loading race calendar&hellip;</p>
+    <div id="trainee-banner" class="hidden"></div>
+  </div>
+
+  <div id="planner-body">
+    <p class="result-count">Loading race calendar&hellip;</p>
+  </div>
+
+  <div id="picker-modal" class="modal-backdrop hidden">
+    <div class="modal-panel">
+      <div class="modal-header">
+        <h3 id="picker-title"></h3>
+        <button id="picker-close" aria-label="Close">&times;</button>
+      </div>
+      <div class="modal-body" id="picker-options"></div>
     </div>
   </div>
 </main>

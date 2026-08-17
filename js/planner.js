@@ -1,13 +1,15 @@
-const STORAGE_KEY = "uma-planner-selections-v1";
+const STORAGE_KEY = "uma-planner-selections-v2";
 const PHASES = ["Junior", "Classic", "Senior"];
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const HALVES = ["Early", "Late"];
+const APTITUDE_THRESHOLD = "B"; // trainee banner flags anything worse than this
 
 let allRaces = [];
-let slots = [];        // ordered list of { key, phase, label } for the 72 regular slots
+let umas = [];
+let slots = [];        // ordered list of { key, phase, month, half, label } for the 72 regular slots
 let racesBySlot = {};  // slot key -> [race, ...]
-let finalRaces = [];   // the EX/Finals races (index 97-99), shown separately
-let selections = {};   // slot key -> race name (or race name for finals key)
+let selections = {};   // slot key -> race name
+let activeSlotKey = null;
 
 function buildSlots() {
   slots = [];
@@ -15,13 +17,24 @@ function buildSlots() {
     for (const month of MONTHS) {
       for (const half of HALVES) {
         const key = `${phase} ${half} ${month}`;
-        slots.push({ key, phase, label: `${half} ${month}` });
+        slots.push({ key, phase, month, half, label: `${half} ${month}` });
       }
     }
   }
 }
 
 function loadSelections() {
+  const fromUrl = new URLSearchParams(location.search).get("agenda");
+  if (fromUrl) {
+    try {
+      selections = JSON.parse(decodeURIComponent(atob(fromUrl)));
+      saveSelections();
+      history.replaceState(null, "", location.pathname);
+      return;
+    } catch {
+      // fall through to localStorage
+    }
+  }
   try {
     selections = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
   } catch {
@@ -61,40 +74,218 @@ function raceOptionLabel(race) {
   return bits.join(" · ");
 }
 
-function renderSlotCard(slot) {
-  const races = racesBySlot[slot.key] || [];
-  const selected = selections[slot.key];
+// -------- Optimizer: DP maximizing total fans, capped by max consecutive races --------
+
+function getRace(slotKey, name) {
+  return (racesBySlot[slotKey] || []).find((r) => r.name === name);
+}
+
+function bestValidRace(slotKey, filters) {
+  const options = (racesBySlot[slotKey] || []).filter((r) => raceMatchesFilter(r, filters));
+  if (options.length === 0) return null;
+  return options.reduce((best, r) => ((r.fansGained || 0) > (best.fansGained || 0) ? r : best));
+}
+
+function runOptimizer() {
   const filters = getFilters();
+  const maxStreak = Math.max(1, Number(document.getElementById("max-streak").value) || 4);
+  const n = slots.length;
 
-  const card = document.createElement("div");
-  card.className = "slot-card" + (selected ? " has-selection" : "") + (races.length === 0 ? " empty-slot" : "");
+  const best = slots.map((s) => bestValidRace(s.key, filters));
 
-  const header = document.createElement("div");
-  header.className = "slot-header";
-  header.innerHTML = `<span class="slot-label">${slot.label}</span>`;
-  card.appendChild(header);
+  // dp[i][s] = max fans achievable from slot i..n-1, given s consecutive races selected
+  // immediately before slot i (0 <= s < maxStreak).
+  const dp = Array.from({ length: n + 1 }, () => new Array(maxStreak + 1).fill(0));
+  const choice = Array.from({ length: n }, () => new Array(maxStreak + 1).fill("skip"));
 
-  if (races.length === 0) {
-    const note = document.createElement("div");
-    note.className = "slot-empty-note";
-    note.textContent = "No races scheduled — training only.";
-    card.appendChild(note);
-    return card;
+  for (let i = n - 1; i >= 0; i--) {
+    for (let s = 0; s <= maxStreak; s++) {
+      const skipVal = dp[i + 1][0];
+      let takeVal = -Infinity;
+      if (best[i] && s < maxStreak) {
+        takeVal = (best[i].fansGained || 0) + dp[i + 1][s + 1];
+      }
+      if (takeVal > skipVal) {
+        dp[i][s] = takeVal;
+        choice[i][s] = "take";
+      } else {
+        dp[i][s] = skipVal;
+        choice[i][s] = "skip";
+      }
+    }
   }
 
-  const options = document.createElement("div");
-  options.className = "race-options";
+  const result = {};
+  let s = 0;
+  for (let i = 0; i < n; i++) {
+    if (choice[i][s] === "take") {
+      result[slots[i].key] = best[i].name;
+      s += 1;
+    } else {
+      s = 0;
+    }
+  }
+  return result;
+}
+
+// -------- Stats --------
+
+function computeStats() {
+  let count = 0, distance = 0, fans = 0, g1 = 0;
+  const distTypeCounts = {};
+  let streak = 0, longestStreak = 0;
+
+  for (const slot of slots) {
+    const raceName = selections[slot.key];
+    const race = raceName ? getRace(slot.key, raceName) : null;
+    if (race) {
+      count++;
+      distance += race.meters || 0;
+      fans += race.fansGained || 0;
+      if (race.grade === "G1") g1++;
+      if (race.distType && race.distType !== "Varies") {
+        for (const d of race.distType.split("/")) {
+          distTypeCounts[d] = (distTypeCounts[d] || 0) + 1;
+        }
+      }
+      streak++;
+      longestStreak = Math.max(longestStreak, streak);
+    } else {
+      streak = 0;
+    }
+  }
+
+  return { count, distance, fans, g1, distTypeCounts, longestStreak };
+}
+
+function renderStatBadges() {
+  const { count, distance, fans, g1, distTypeCounts, longestStreak } = computeStats();
+  const threshold = Number(document.getElementById("max-streak").value) || 4;
+
+  const badges = [
+    `<span class="stat-badge"><span class="n">${fmtNum(count)}</span>races</span>`,
+    `<span class="stat-badge"><span class="n">${fmtNum(g1)}</span>G1</span>`,
+  ];
+  for (const [type, n] of Object.entries(distTypeCounts).sort((a, b) => b[1] - a[1])) {
+    badges.push(`<span class="stat-badge"><span class="n">${n}</span>${type}</span>`);
+  }
+  badges.push(`<span class="stat-badge"><span class="n">${fmtNum(distance)}m</span>distance</span>`);
+  badges.push(`<span class="stat-badge"><span class="n">${fmtNum(fans)}</span>fans</span>`);
+
+  const streakClass = longestStreak > threshold ? " streak-bad" : longestStreak === threshold ? " streak-warn" : "";
+  badges.push(`<span class="stat-badge${streakClass}"><span class="n">${longestStreak}</span>streak</span>`);
+
+  document.getElementById("stat-badges").innerHTML = badges.join("");
+}
+
+// -------- Trainee banner --------
+
+function renderTraineeBanner() {
+  const banner = document.getElementById("trainee-banner");
+  const name = document.getElementById("trainee-select").value;
+  if (!name) {
+    banner.className = "hidden";
+    banner.innerHTML = "";
+    return;
+  }
+  const uma = umas.find((u) => u.name === name);
+  if (!uma) { banner.className = "hidden"; return; }
+
+  const filters = getFilters();
+  const distAptitudeKey = { Short: "sprint", Mile: "mile", Medium: "medium", Long: "long" };
+  const checkedDims = [
+    ...[...filters.surfaces].map((s) => ({ key: s, label: s[0].toUpperCase() + s.slice(1), grade: uma.aptitude[s] })),
+    ...[...filters.distTypes].map((d) => ({ key: d, label: d, grade: uma.aptitude[distAptitudeKey[d]] })),
+  ];
+  const weak = checkedDims.filter((d) => !aptitudeAtLeast(d.grade, APTITUDE_THRESHOLD));
+
+  banner.className = weak.length ? "warn" : "ok";
+  banner.innerHTML = weak.length
+    ? `<strong>${uma.name}</strong> is below ${APTITUDE_THRESHOLD} in: ${weak.map((d) => `${d.label} (${d.grade || "—"})`).join(", ")}`
+    : `<strong>${uma.name}</strong> — ${APTITUDE_THRESHOLD} or higher for all planned surfaces &amp; distances`;
+}
+
+// -------- Grid rendering --------
+
+function renderSlotCell(slot) {
+  const races = racesBySlot[slot.key] || [];
+  const selectedName = selections[slot.key];
+  const race = selectedName ? getRace(slot.key, selectedName) : null;
+
+  const cell = document.createElement("div");
+  cell.className = "slot-cell" + (races.length === 0 ? " empty-slot" : "");
+
+  if (race) {
+    const gClass = gradeBadgeClass(race.grade).replace("grade-", "");
+    cell.innerHTML = `
+      <div class="nameplate grade-${gClass}">
+        <img class="nameplate-img" src="images/races/${race.urlSlug || ""}.png" alt="" onerror="this.remove()">
+        <span class="nameplate-name">${race.name}</span>
+      </div>
+      <span class="slot-cell-label on-nameplate">${slot.label}</span>`;
+  } else {
+    cell.innerHTML = races.length
+      ? `<span class="plus-icon">+</span><span class="slot-cell-label">${slot.label}</span>`
+      : `<span class="slot-cell-label">${slot.label}</span>`;
+  }
+
+  if (races.length > 0) {
+    cell.addEventListener("click", () => openPicker(slot.key));
+  }
+  return cell;
+}
+
+function renderGrid() {
+  const body = document.getElementById("planner-body");
+  body.innerHTML = "";
+
+  const columns = document.createElement("div");
+  columns.className = "phase-columns";
+
+  for (const phase of PHASES) {
+    const col = document.createElement("div");
+    const header = document.createElement("div");
+    header.className = "phase-col-header";
+    header.textContent = `${phase} Year`;
+    col.appendChild(header);
+
+    const grid = document.createElement("div");
+    grid.className = "phase-col-body";
+    for (const slot of slots.filter((s) => s.phase === phase)) {
+      grid.appendChild(renderSlotCell(slot));
+    }
+    col.appendChild(grid);
+    columns.appendChild(col);
+  }
+
+  body.appendChild(columns);
+}
+
+// -------- Picker modal --------
+
+function openPicker(slotKey) {
+  activeSlotKey = slotKey;
+  const slot = slots.find((s) => s.key === slotKey);
+  const races = racesBySlot[slotKey] || [];
+  const selected = selections[slotKey];
+  const filters = getFilters();
+
+  document.getElementById("picker-title").textContent = slot.label + (slot.phase ? ` · ${slot.phase} Year` : "");
+
+  const optionsEl = document.getElementById("picker-options");
+  optionsEl.innerHTML = "";
 
   const noneBtn = document.createElement("button");
   noneBtn.type = "button";
   noneBtn.className = "none-option" + (!selected ? " selected" : "");
   noneBtn.textContent = "Skip / train";
   noneBtn.addEventListener("click", () => {
-    delete selections[slot.key];
+    delete selections[slotKey];
     saveSelections();
+    closePicker();
     renderAll();
   });
-  options.appendChild(noneBtn);
+  optionsEl.appendChild(noneBtn);
 
   for (const race of races) {
     const btn = document.createElement("button");
@@ -105,92 +296,28 @@ function renderSlotCard(slot) {
     const grade = race.grade ? `<span class="badge ${gradeBadgeClass(race.grade)}">${race.grade}</span>` : "";
     btn.innerHTML = `${grade}<span class="rname">${race.name}</span><span class="rmeta">${raceOptionLabel(race)}</span>`;
     btn.addEventListener("click", () => {
-      selections[slot.key] = isSelected ? undefined : race.name;
-      if (!selections[slot.key]) delete selections[slot.key];
+      selections[slotKey] = race.name;
       saveSelections();
+      closePicker();
       renderAll();
     });
-    options.appendChild(btn);
+    optionsEl.appendChild(btn);
   }
 
-  card.appendChild(options);
-  return card;
+  document.getElementById("picker-modal").classList.remove("hidden");
 }
 
-function computeStats() {
-  let count = 0, distance = 0, fans = 0;
-  let streak = 0, longestStreak = 0;
-
-  for (const slot of slots) {
-    const raceName = selections[slot.key];
-    const race = raceName ? (racesBySlot[slot.key] || []).find((r) => r.name === raceName) : null;
-    if (race) {
-      count++;
-      distance += race.meters || 0;
-      fans += race.fansGained || 0;
-      streak++;
-      longestStreak = Math.max(longestStreak, streak);
-    } else {
-      streak = 0;
-    }
-  }
-
-  return { count, distance, fans, longestStreak };
+function closePicker() {
+  document.getElementById("picker-modal").classList.add("hidden");
+  activeSlotKey = null;
 }
 
-function renderStats() {
-  const { count, distance, fans, longestStreak } = computeStats();
-  document.getElementById("stat-count").textContent = fmtNum(count);
-  document.getElementById("stat-distance").textContent = `${fmtNum(distance)} m`;
-  document.getElementById("stat-fans").textContent = fmtNum(fans);
-
-  const threshold = Number(document.getElementById("warn-threshold").value) || 4;
-  const streakEl = document.getElementById("stat-streak");
-  streakEl.textContent = longestStreak;
-  streakEl.className = "v" + (longestStreak > threshold ? " streak-bad" : longestStreak === threshold ? " streak-warn" : "");
-}
-
-function renderBody() {
-  const body = document.getElementById("planner-body");
-  body.innerHTML = "";
-
-  for (const phase of PHASES) {
-    const heading = document.createElement("div");
-    heading.className = "phase-heading";
-    const phaseSlots = slots.filter((s) => s.phase === phase);
-    const filled = phaseSlots.filter((s) => selections[s.key]).length;
-    heading.innerHTML = `${phase} Year <span class="phase-sub">${filled} race${filled === 1 ? "" : "s"} selected</span>`;
-    body.appendChild(heading);
-
-    for (const slot of phaseSlots) {
-      body.appendChild(renderSlotCard(slot));
-    }
-  }
-
-  const finHeading = document.createElement("div");
-  finHeading.className = "phase-heading";
-  finHeading.innerHTML = `Career Finale <span class="phase-sub">informational only — not counted in totals</span>`;
-  body.appendChild(finHeading);
-
-  const finCard = document.createElement("div");
-  finCard.className = "slot-card";
-  const finOptions = document.createElement("div");
-  finOptions.className = "race-options";
-  for (const race of finalRaces) {
-    const span = document.createElement("span");
-    span.className = "race-option off-aptitude";
-    span.style.cursor = "default";
-    const grade = `<span class="badge ${gradeBadgeClass(race.grade)}">${race.grade}</span>`;
-    span.innerHTML = `${grade}<span class="rname">${race.name}</span>`;
-    finOptions.appendChild(span);
-  }
-  finCard.appendChild(finOptions);
-  body.appendChild(finCard);
-}
+// -------- Wiring --------
 
 function renderAll() {
-  renderBody();
-  renderStats();
+  renderGrid();
+  renderStatBadges();
+  renderTraineeBanner();
 }
 
 async function init() {
@@ -198,27 +325,63 @@ async function init() {
   buildSlots();
   loadSelections();
 
-  allRaces = await loadJSON("data/races.json");
+  [allRaces, umas] = await Promise.all([loadJSON("data/races.json"), loadJSON("data/umas.json")]);
+
   racesBySlot = {};
-  finalRaces = [];
   for (const race of allRaces) {
-    if (race.slot === "Fin ???") {
-      finalRaces.push(race);
-      continue;
-    }
+    if (race.slot === "Fin ???") continue; // career finale — not part of the regular calendar
     (racesBySlot[race.slot] ||= []).push(race);
+  }
+
+  const traineeSelect = document.getElementById("trainee-select");
+  for (const name of [...new Set(umas.map((u) => u.name))].sort()) {
+    const opt = document.createElement("option");
+    opt.value = name;
+    opt.textContent = name;
+    traineeSelect.appendChild(opt);
   }
 
   renderAll();
 
   document.querySelectorAll('[data-apt]').forEach((el) => el.addEventListener("change", renderAll));
-  document.getElementById("warn-threshold").addEventListener("input", renderStats);
+  document.getElementById("max-streak").addEventListener("input", renderStatBadges);
+  document.getElementById("trainee-select").addEventListener("change", renderTraineeBanner);
+
   document.getElementById("reset-btn").addEventListener("click", () => {
     if (confirm("Clear every race you've picked?")) {
       selections = {};
       saveSelections();
       renderAll();
     }
+  });
+
+  document.getElementById("autofill-btn").addEventListener("click", () => {
+    selections = runOptimizer();
+    saveSelections();
+    renderAll();
+  });
+
+  document.getElementById("filters-toggle-btn").addEventListener("click", () => {
+    document.getElementById("filters-panel").classList.toggle("hidden");
+  });
+
+  document.getElementById("share-btn").addEventListener("click", async () => {
+    const encoded = btoa(encodeURIComponent(JSON.stringify(selections)));
+    const url = `${location.origin}${location.pathname}?agenda=${encoded}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      alert("Share link copied to clipboard!");
+    } catch {
+      prompt("Copy this link:", url);
+    }
+  });
+
+  document.getElementById("picker-close").addEventListener("click", closePicker);
+  document.getElementById("picker-modal").addEventListener("click", (e) => {
+    if (e.target.id === "picker-modal") closePicker();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closePicker();
   });
 }
 

@@ -2,8 +2,12 @@
 
 A small static site with two Umamusume Pretty Derby tools:
 
-- **Race Planner** (`planner.html`) — pick a race for every date slot across a 3-year career and see
-  live totals for fans and distance.
+- **Race Planner** (`planner.html`) — a game-accurate 3-year career grid. Click any slot to assign a race,
+  or hit Auto-Fill to run a dynamic-programming optimizer that maximizes total fans subject to your
+  aptitude filters and a max-consecutive-races cap (it will deliberately skip races early if that produces
+  a better long-run total). Pick a trainee to see an aptitude warning banner, and use Share to hand someone
+  else a link that loads your exact agenda. Race cells look for an image at `images/races/{urlSlug}.png`
+  and fall back to a styled placeholder automatically if none exists — see `images/races/README.md`.
 - **Character & Support Database** (`database.html`) — searchable/sortable reference for trainee
   aptitudes/stats and support card bonuses.
 
