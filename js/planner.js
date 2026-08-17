@@ -179,8 +179,10 @@ function runOptimizer() {
 
 // -------- Stats --------
 
+const DIST_TYPE_ORDER = ["Short", "Mile", "Medium", "Long"];
+
 function computeStats() {
-  let count = 0, baseFans = DEBUT_FANS + CAREER_FINALE_BONUS_FANS, g1 = 0;
+  let count = 0, baseFans = DEBUT_FANS + CAREER_FINALE_BONUS_FANS;
   const distTypeCounts = {};
 
   for (const slot of slots) {
@@ -189,7 +191,6 @@ function computeStats() {
     if (race) {
       count++;
       baseFans += race.fansGained || 0;
-      if (race.grade === "G1") g1++;
       if (race.distType && race.distType !== "Varies") {
         for (const d of race.distType.split("/")) {
           distTypeCounts[d] = (distTypeCounts[d] || 0) + 1;
@@ -199,18 +200,15 @@ function computeStats() {
   }
 
   const totalFans = Math.round(baseFans * (1 + fanBonusPercent / 100));
-  return { count, baseFans, totalFans, g1, distTypeCounts };
+  return { count, baseFans, totalFans, distTypeCounts };
 }
 
 function renderStatBadges() {
-  const { count, baseFans, totalFans, g1, distTypeCounts } = computeStats();
+  const { count, baseFans, totalFans, distTypeCounts } = computeStats();
 
-  const badges = [
-    `<span class="stat-badge"><span class="n">${fmtNum(count)}</span>races</span>`,
-    `<span class="stat-badge"><span class="n">${fmtNum(g1)}</span>G1</span>`,
-  ];
-  for (const [type, n] of Object.entries(distTypeCounts).sort((a, b) => b[1] - a[1])) {
-    badges.push(`<span class="stat-badge"><span class="n">${n}</span>${type}</span>`);
+  const badges = [`<span class="stat-badge"><span class="n">${fmtNum(count)}</span>races</span>`];
+  for (const type of DIST_TYPE_ORDER) {
+    if (distTypeCounts[type]) badges.push(`<span class="stat-badge"><span class="n">${distTypeCounts[type]}</span>${type}</span>`);
   }
   badges.push(`<span class="stat-badge"><span class="n">${fmtNum(baseFans)}</span>base fans</span>`);
   badges.push(`<span class="stat-badge highlight"><span class="n">${fmtNum(totalFans)}</span>total fans</span>`);
@@ -348,8 +346,7 @@ function renderSlotCell(slot) {
     cell.innerHTML = `
       <div class="nameplate grade-default">
         <span class="nameplate-name">Make Debut</span>
-      </div>
-      <span class="slot-cell-label on-nameplate">${slot.label}</span>`;
+      </div>`;
     return cell;
   }
 
@@ -366,8 +363,7 @@ function renderSlotCell(slot) {
       <div class="nameplate grade-${gClass}">
         <img class="nameplate-img" src="images/races/${race.urlSlug || ""}.png" alt="" onerror="this.remove()">
         <span class="nameplate-name">${race.name}</span>
-      </div>
-      <span class="slot-cell-label on-nameplate">${slot.label}</span>`;
+      </div>`;
   } else {
     cell.innerHTML = races.length
       ? `<span class="plus-icon">+</span><span class="slot-cell-label">${slot.label}</span>`
@@ -457,6 +453,164 @@ function closePicker() {
   activeSlotKey = null;
 }
 
+// -------- Image export (mirrors the in-game vertical per-year share screenshot) --------
+
+const EXPORT_GRADE_STOPS = {
+  G1: ["#7a1f3d", "#c9436b", "#ffb347"],
+  G2: ["#1f3d6e", "#3b6bb0"],
+  G3: ["#1f5e46", "#379a72"],
+  OP: ["#5c5320", "#a4923a"],
+  "Pre-OP": ["#5c5320", "#a4923a"],
+  default: ["#33395a", "#4a5280"],
+};
+
+function loadImageOrNull(src) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = () => resolve(null);
+    img.src = src;
+  });
+}
+
+function roundRectPath(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+function drawNameplateRow(ctx, x, y, w, h, grade, name, img) {
+  const r = 8;
+  roundRectPath(ctx, x, y, w, h, r);
+  const stops = EXPORT_GRADE_STOPS[grade] || EXPORT_GRADE_STOPS.default;
+  const grad = ctx.createLinearGradient(x, y, x + w, y + h);
+  stops.forEach((c, i) => grad.addColorStop(i / (stops.length - 1 || 1), c));
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  if (img) {
+    ctx.save();
+    roundRectPath(ctx, x, y, w, h, r);
+    ctx.clip();
+    const scale = Math.max(w / img.width, h / img.height);
+    const dw = img.width * scale, dh = img.height * scale;
+    ctx.globalAlpha = 0.55;
+    ctx.drawImage(img, x + (w - dw) / 2, y + (h - dh) / 2, dw, dh);
+    ctx.globalAlpha = 1;
+    ctx.restore();
+  }
+
+  ctx.fillStyle = "#ffffff";
+  ctx.font = "700 17px 'Segoe UI', sans-serif";
+  ctx.textAlign = "left";
+  ctx.textBaseline = "middle";
+  ctx.shadowColor = "rgba(0,0,0,0.85)";
+  ctx.shadowBlur = 4;
+  ctx.fillText(name, x + 14, y + h / 2, w - 28);
+  ctx.shadowBlur = 0;
+}
+
+function drawBlankRow(ctx, x, y, w, h, label) {
+  const r = 8;
+  roundRectPath(ctx, x, y, w, h, r);
+  ctx.strokeStyle = "#2c3350";
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  ctx.fillStyle = "#9aa0bd";
+  ctx.font = "600 14px 'Segoe UI', sans-serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(label, x + w / 2, y + h / 2);
+}
+
+async function renderPhaseCanvas(phase) {
+  const phaseSlots = slots.filter((s) => s.phase === phase);
+  const width = 640;
+  const rowH = 46;
+  const rowGap = 6;
+  const headerH = 84;
+  const footerH = 64;
+  const height = headerH + phaseSlots.length * (rowH + rowGap) + footerH;
+
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext("2d");
+
+  ctx.fillStyle = "#0f1220";
+  ctx.fillRect(0, 0, width, height);
+
+  const headerGrad = ctx.createLinearGradient(0, 0, 0, headerH);
+  headerGrad.addColorStop(0, "#b0555f");
+  headerGrad.addColorStop(1, "#8a3d47");
+  ctx.fillStyle = headerGrad;
+  ctx.fillRect(0, 0, width, headerH);
+  ctx.fillStyle = "#ffffff";
+  ctx.font = "800 30px 'Segoe UI', sans-serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(`${phase} Year`, width / 2, headerH / 2);
+
+  let y = headerH + rowGap;
+  let phaseRaces = 0, phaseFans = 0;
+  const pad = 16;
+  const rowW = width - pad * 2;
+
+  for (const slot of phaseSlots) {
+    if (slot.key === DEBUT_SLOT_KEY) {
+      drawNameplateRow(ctx, pad, y, rowW, rowH, "default", "Make Debut", null);
+      y += rowH + rowGap;
+      continue;
+    }
+
+    const races = racesBySlot[slot.key] || [];
+    const raceName = selections[slot.key];
+    const race = raceName ? getRace(slot.key, raceName) : null;
+
+    if (race) {
+      phaseRaces++;
+      phaseFans += race.fansGained || 0;
+      const img = await loadImageOrNull(`images/races/${race.urlSlug || ""}.png`);
+      drawNameplateRow(ctx, pad, y, rowW, rowH, race.grade, race.name, img);
+    } else {
+      drawBlankRow(ctx, pad, y, rowW, rowH, races.length ? slot.label : `${slot.label} — training`);
+    }
+    y += rowH + rowGap;
+  }
+
+  ctx.fillStyle = "#171b2e";
+  ctx.fillRect(0, y, width, footerH);
+  ctx.fillStyle = "#e8eaf5";
+  ctx.font = "700 18px 'Segoe UI', sans-serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(`${phaseRaces} races · ${fmtNum(phaseFans)} fans this year`, width / 2, y + footerH / 2 - 10);
+  ctx.font = "400 12px 'Segoe UI', sans-serif";
+  ctx.fillStyle = "#9aa0bd";
+  ctx.fillText("Made with UmaToolbox", width / 2, y + footerH / 2 + 14);
+
+  return canvas;
+}
+
+async function downloadAgendaImages() {
+  const canvases = [];
+  for (const phase of PHASES) {
+    canvases.push([phase, await renderPhaseCanvas(phase)]);
+  }
+  for (const [phase, canvas] of canvases) {
+    const a = document.createElement("a");
+    a.href = canvas.toDataURL("image/png");
+    a.download = `${phase.toLowerCase()}-agenda.png`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  }
+}
+
 // -------- Wiring --------
 
 function renderAll() {
@@ -529,7 +683,7 @@ async function init() {
     document.getElementById("filters-panel").classList.toggle("hidden");
   });
 
-  document.getElementById("share-btn").addEventListener("click", async () => {
+  document.getElementById("share-link-btn").addEventListener("click", async () => {
     const encoded = btoa(encodeURIComponent(JSON.stringify(selections)));
     const url = `${location.origin}${location.pathname}?agenda=${encoded}`;
     try {
@@ -537,6 +691,19 @@ async function init() {
       alert("Share link copied to clipboard!");
     } catch {
       prompt("Copy this link:", url);
+    }
+  });
+
+  document.getElementById("share-images-btn").addEventListener("click", async (e) => {
+    const btn = e.currentTarget;
+    btn.disabled = true;
+    const original = btn.textContent;
+    btn.textContent = "Rendering…";
+    try {
+      await downloadAgendaImages();
+    } finally {
+      btn.disabled = false;
+      btn.textContent = original;
     }
   });
 

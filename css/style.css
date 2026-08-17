@@ -631,16 +631,6 @@ tbody tr.expandable { cursor: pointer; }
   object-fit: cover;
 }
 
-.slot-cell .slot-cell-label.on-nameplate {
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  background: rgba(0,0,0,0.55);
-  padding: 1px 5px;
-  border-radius: 4px;
-  z-index: 1;
-}
-
 .nameplate.grade-G1 { background: linear-gradient(160deg, #7a1f3d, #c9436b 60%, #ffb347); }
 .nameplate.grade-G2 { background: linear-gradient(160deg, #1f3d6e, #3b6bb0); }
 .nameplate.grade-G3 { background: linear-gradient(160deg, #1f5e46, #379a72); }

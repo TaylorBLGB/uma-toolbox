@@ -7,8 +7,11 @@ A small static site with two Umamusume Pretty Derby tools:
   aptitude filters and a max-consecutive-races cap (it will deliberately skip races early if that produces
   a better long-run total). Search for a trainee by name (substring match) to auto-fill the aptitude grades
   from their real stats — unreleased characters are excluded from search unless you check "Include
-  unreleased". A Fan Bonus % input shows Base Fans and Total Fans side by side. Use Share to hand someone
-  else a link that loads your exact agenda. Race cells look for an image at `images/races/{urlSlug}.png`,
+  unreleased". A Fan Bonus % input shows Base Fans and Total Fans side by side. Copy Link hands someone
+  else a URL that loads your exact agenda; Download Images renders your agenda as 3 portrait PNGs (one per
+  career year), fully client-side via `<canvas>` — no server involved, mirroring the vertical per-year
+  screenshot style the community already uses to share agendas. Race cells look for an image at
+  `images/races/{urlSlug}.png`,
   and the trainee search shows a portrait at `images/trainees/{slug}.png` — both fall back to a styled
   placeholder (or nothing, for portraits) automatically if the image doesn't exist. See
   `images/races/README.md` and `images/trainees/README.md`.
