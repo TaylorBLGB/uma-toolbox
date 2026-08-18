@@ -11,8 +11,14 @@ const APTITUDE_THRESHOLD = "B"; // grade at/above this counts a race as "conside
 const DEBUT_SLOT_KEY = "Junior Late Jun";
 const DEBUT_FANS = 1000;
 // Every trainee runs 3 fixed 30,000-fan races beyond the 72-slot calendar
-// (the Twinkle Star Climax / URA Finals races), so this is added flat.
+// (the Twinkle Star Climax / URA Finals races). Guaranteed Fans mode adds
+// this flat, assuming a win like everything else in that mode. EV mode
+// computes it for real instead - see "Predicted finale category" below,
+// since these 3 races aren't guaranteed and their distType/surface (and
+// therefore win chance) is whatever type was run most during the career.
 const CAREER_FINALE_BONUS_FANS = 90000;
+const FINALE_RACE_COUNT = 3;
+const FINALE_RACE_FANS = CAREER_FINALE_BONUS_FANS / FINALE_RACE_COUNT;
 
 // Aptitude dimensions used for race filtering, mapped to the field names on a
 // uma's `aptitude` object and to the `distType` values used on races.
@@ -295,11 +301,91 @@ function expectedFansForRace(race, n) {
   return (winPct / 100) * base + (1 - winPct / 100) * base * (lossPct / 100);
 }
 
+// -------- Predicted finale category --------
+//
+// The 3 post-career finale races aren't a fixed race - they run at whatever
+// distType/surface combination was run most often across the whole selected
+// career, and (unlike Guaranteed mode's flat assumption) aren't guaranteed
+// wins either. Ties go to the shorter distance and to turf over dirt.
+//
+// distType and surface are tallied independently - "most-run distance" and
+// "most-run surface" are worked out separately, then paired, rather than
+// tallying exact (distType, surface) combinations together.
+
+function tallySelectionCategories(sel) {
+  const distCounts = { Short: 0, Mile: 0, Medium: 0, Long: 0 };
+  const surfaceCounts = { turf: 0, dirt: 0 };
+  let total = 0;
+
+  for (const slot of slots) {
+    const raceName = sel[slot.key];
+    const race = raceName ? getRace(slot.key, raceName) : null;
+    if (!race) continue;
+    if (race.distType && Object.prototype.hasOwnProperty.call(distCounts, race.distType)) {
+      distCounts[race.distType]++;
+    }
+    if (race.surface) {
+      const s = race.surface.toLowerCase();
+      if (Object.prototype.hasOwnProperty.call(surfaceCounts, s)) surfaceCounts[s]++;
+    }
+    total++;
+  }
+
+  return { distCounts, surfaceCounts, total };
+}
+
+function predictedFinaleCategory(sel) {
+  const { distCounts, surfaceCounts, total } = tallySelectionCategories(sel);
+
+  let distType = DIST_TYPE_ORDER[0];
+  for (const d of DIST_TYPE_ORDER) { // shortest-first order settles ties toward shorter
+    if (distCounts[d] > distCounts[distType]) distType = d;
+  }
+  const surface = surfaceCounts.turf >= surfaceCounts.dirt ? "turf" : "dirt"; // turf wins ties
+
+  return { distType, surface, distCounts, surfaceCounts, hasData: total > 0 };
+}
+
+function finaleExpectedFans(distType, surface) {
+  const virtualRace = { fansGained: FINALE_RACE_FANS, distType, surface };
+  let total = 0;
+  for (let n = 1; n <= FINALE_RACE_COUNT; n++) {
+    total += expectedFansForRace(virtualRace, n);
+  }
+  return total;
+}
+
 // Unlike the guaranteed-fans model, the best race for a slot now depends on
 // the incoming streak (win chance drops as the streak grows, so a safer bet
 // can overtake a higher-base-fan race), so this evaluates every candidate at
 // every DP state instead of precomputing one best-per-slot up front.
-function runOptimizerEV() {
+// Total expected fans for a full selection: debut + every picked race's EV
+// at its actual streak position + the predicted finale's EV. Used both to
+// report Expected Fans and to judge which of the optimizer's candidate
+// strategies (see runOptimizerEV below) actually comes out ahead for real.
+function totalTrueEV(sel) {
+  let total = DEBUT_FANS;
+  let streak = 0;
+  for (const slot of slots) {
+    const raceName = sel[slot.key];
+    const race = raceName ? getRace(slot.key, raceName) : null;
+    if (race) {
+      streak++;
+      total += expectedFansForRace(race, streak);
+    } else {
+      streak = 0;
+    }
+  }
+  const finale = predictedFinaleCategory(sel);
+  if (finale.hasData) total += finaleExpectedFans(finale.distType, finale.surface);
+  return total;
+}
+
+// The DP itself, optionally steered by biasFn(race) -> extra (fake) fans
+// added to a race's per-slot value purely to influence which races look
+// most attractive during the search. Never affects the EV numbers reported
+// to the user - that's always computed unbiased via totalTrueEV afterward.
+function runOptimizerEVCore(biasFn) {
   const n = slots.length;
   // No max-consecutive-races cap here (unlike the guaranteed-fans mode) -
   // the declining win chance per extra consecutive race already makes long
@@ -326,7 +412,8 @@ function runOptimizerEV() {
 
       if (s < maxStreak) {
         for (const race of optionsBySlot[i]) {
-          const ev = expectedFansForRace(race, s + 1) + dp[i + 1][s + 1];
+          const steer = biasFn ? biasFn(race) : 0;
+          const ev = expectedFansForRace(race, s + 1) + steer + dp[i + 1][s + 1];
           if (ev > bestTakeVal) {
             bestTakeVal = ev;
             bestRace = race;
@@ -358,13 +445,49 @@ function runOptimizerEV() {
   return result;
 }
 
+// Exact joint optimization - best per-slot picks AND the best resulting
+// finale category, simultaneously - would need the DP to track running
+// counts of every distType/surface combination touched so far, which blows
+// the state space up far past what's tractable. Instead this tries a
+// handful of plausible strategies (nudge the search toward each distType,
+// then each surface, plus the unsteered baseline) and keeps whichever
+// actually produces the highest true, unbiased total EV. That's guaranteed
+// to be at least as good as the plain baseline (which is always one of the
+// candidates) even when a nudge doesn't help - it just isn't guaranteed to
+// find the absolute mathematical optimum the way the regular DP is for its
+// own, simpler problem.
+const FINALE_STEER_BIAS = 1000;
+
+function runOptimizerEV() {
+  const biasFns = [
+    null, // unsteered baseline
+    (r) => (r.distType === "Short" ? FINALE_STEER_BIAS : 0),
+    (r) => (r.distType === "Mile" ? FINALE_STEER_BIAS : 0),
+    (r) => (r.distType === "Medium" ? FINALE_STEER_BIAS : 0),
+    (r) => (r.distType === "Long" ? FINALE_STEER_BIAS : 0),
+    (r) => (r.surface === "Turf" ? FINALE_STEER_BIAS : 0),
+    (r) => (r.surface === "Dirt" ? FINALE_STEER_BIAS : 0),
+  ];
+
+  let best = null, bestEV = -Infinity;
+  for (const biasFn of biasFns) {
+    const candidate = runOptimizerEVCore(biasFn);
+    const ev = totalTrueEV(candidate);
+    if (ev > bestEV) {
+      bestEV = ev;
+      best = candidate;
+    }
+  }
+  return best;
+}
+
 // -------- Stats --------
 
 const DIST_TYPE_ORDER = ["Short", "Mile", "Medium", "Long"];
 
 function computeStats() {
   let count = 0, baseFans = DEBUT_FANS + CAREER_FINALE_BONUS_FANS;
-  let expectedBaseFans = DEBUT_FANS + CAREER_FINALE_BONUS_FANS; // debut/finale fans aren't win-chance-gated
+  let expectedBaseFans = DEBUT_FANS; // debut fans aren't win-chance-gated; finale added below
   const distTypeCounts = {};
   let streak = 0;
 
@@ -386,9 +509,13 @@ function computeStats() {
     }
   }
 
+  const finale = predictedFinaleCategory(selections);
+  const finaleFans = finale.hasData ? finaleExpectedFans(finale.distType, finale.surface) : 0;
+  expectedBaseFans += finaleFans;
+
   const totalFans = Math.round(baseFans * (1 + fanBonusPercent / 100));
   const expectedFans = Math.round(expectedBaseFans * (1 + fanBonusPercent / 100));
-  return { count, baseFans, totalFans, expectedFans, distTypeCounts };
+  return { count, baseFans, totalFans, expectedFans, distTypeCounts, finale, finaleFans };
 }
 
 function isEVMode() {
@@ -717,7 +844,7 @@ function drawNameplateTile(ctx, x, y, w, h, grade, name, img) {
     ctx.save();
     roundRectPath(ctx, x, y, w, h, r);
     ctx.clip();
-    const scale = Math.max(w / img.width, h / img.height);
+    const scale = Math.min(w / img.width, h / img.height);
     const dw = img.width * scale, dh = img.height * scale;
     ctx.globalAlpha = 0.55;
     ctx.drawImage(img, x + (w - dw) / 2, y + (h - dh) / 2, dw, dh);
@@ -763,7 +890,7 @@ async function renderPhaseCanvas(phase) {
   const headerH = 84;
   const footerH = 64;
   const tileW = (width - pad * 2 - gap * (cols - 1)) / cols;
-  const tileH = tileW * 0.75; // matches the site's 4:3 slot-cell aspect ratio
+  const tileH = tileW * 0.5; // matches the site's 2:1 slot-cell aspect ratio
   const gridH = rows * tileH + (rows - 1) * gap;
   const height = headerH + pad + gridH + pad + footerH;
 
@@ -846,10 +973,33 @@ async function downloadAgendaImages() {
 
 // -------- Wiring --------
 
+function renderFinalePrediction() {
+  const el = document.getElementById("finale-prediction");
+  if (!isEVMode()) {
+    el.classList.add("hidden");
+    return;
+  }
+  el.classList.remove("hidden");
+
+  const { finale, finaleFans } = computeStats();
+  if (!finale.hasData) {
+    el.innerHTML = `<strong>Predicted finale races (3):</strong> pick a few races first to predict this`;
+    return;
+  }
+  const surfaceLabel = finale.surface === "turf" ? "Turf" : "Dirt";
+  const distCount = finale.distCounts[finale.distType];
+  const surfaceCount = finale.surfaceCounts[finale.surface];
+  el.innerHTML = `<strong>Predicted finale races (3):</strong> ${finale.distType} · ${surfaceLabel} —
+    ~${fmtNum(Math.round(finaleFans))} expected fans, based on your most-run type so far
+    (${distCount} ${finale.distType}, ${surfaceCount} ${surfaceLabel} picks). Recalculates as your
+    selections change.`;
+}
+
 function renderAll() {
   renderAptitudeControls();
   renderGrid();
   renderStatBadges();
+  renderFinalePrediction();
 }
 
 async function init() {
@@ -917,6 +1067,7 @@ async function init() {
   document.getElementById("optimizer-mode").addEventListener("change", () => {
     updateOptimizerModeUI();
     renderStatBadges();
+    renderFinalePrediction();
   });
   updateOptimizerModeUI();
 

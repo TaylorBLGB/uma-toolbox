@@ -24,6 +24,21 @@ A small static site with Umamusume Pretty Derby tools:
     replaced by a single "Theoretical Max Fans" while this mode is active, so you have one apples-to-apples
     ceiling to compare the always-visible, win-adjusted "Expected Fans" badge against.
 
+    The 3 post-career finale races aren't guaranteed either, and aren't a fixed race - they run at
+    whichever distType/surface was most common across your whole selected career (ties go to the shorter
+    distance, then to turf over dirt), tallied for distance and surface independently rather than as exact
+    combinations. A "Predicted finale races" panel shows the derived type and its expected fans live, so
+    you can check it against real runs. The optimizer factors this in too: since exactly co-optimizing
+    every regular pick against the aggregate finale outcome would require the DP to track running counts
+    of every distType/surface combination touched so far (a state space explosion), it instead runs the
+    search 7 times - once unsteered, once nudged toward each distType, once nudged toward each surface -
+    and keeps whichever run has the highest true, unbiased total EV. That's guaranteed to never do worse
+    than the plain unsteered result (which is always one of the 7 candidates), but isn't guaranteed to find
+    the absolute mathematical optimum. In testing this held up correctly and safely across several
+    constructed scenarios, though most of them didn't find room to improve on the baseline - a race's
+    individual EV and its contribution to a good finale type both come from the same aptitude grades, so
+    they're usually already pulling in the same direction rather than in tension.
+
   Search for a trainee by name (substring match) to auto-fill the aptitude grades from their real stats —
   unreleased characters are excluded from search unless you check "Include unreleased". A Fan Bonus % input
   shows Base Fans and Total Fans side by side (Guaranteed Fans mode). Race cells look for an image keyed

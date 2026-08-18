@@ -373,6 +373,13 @@ tbody tr.expandable { cursor: pointer; }
   margin-bottom: 22px;
 }
 
+#finale-prediction {
+  margin-bottom: 22px;
+  font-size: 0.9rem;
+}
+
+#finale-prediction strong { color: var(--accent-2); }
+
 .toolbar-row {
   display: flex;
   flex-wrap: wrap;
@@ -572,7 +579,7 @@ tbody tr.expandable { cursor: pointer; }
 }
 
 .slot-cell {
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 2 / 1;
   border-radius: 6px;
   border: 1px solid var(--border);
   background: var(--bg-elev-2);
@@ -628,7 +635,7 @@ tbody tr.expandable { cursor: pointer; }
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .nameplate.grade-G1 { background: linear-gradient(160deg, #7a1f3d, #c9436b 60%, #ffb347); }
