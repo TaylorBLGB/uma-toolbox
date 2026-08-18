@@ -36,6 +36,7 @@ let allRaces = [];
 let umas = [];
 let slots = [];        // ordered list of { key, phase, month, half, label } for the 72 regular slots
 let racesBySlot = {};  // slot key -> [race, ...]
+let debutRace = null;  // the "Junior Make Debut" race - excluded from racesBySlot, kept for its urlSlug
 let selections = {};   // slot key -> race name
 let aptitudeGrades = { ...DEFAULT_APTITUDE }; // dimension key -> letter grade (A-G)
 let fanBonusPercent = 0;
@@ -682,8 +683,11 @@ function renderSlotCell(slot) {
   if (slot.key === DEBUT_SLOT_KEY) {
     const cell = document.createElement("div");
     cell.className = "slot-cell";
+    const debutSlug = debutRace ? debutRace.urlSlug : null;
     cell.innerHTML = `
       <div class="nameplate grade-default">
+        <img class="nameplate-img" src="${raceImageUrl(debutSlug)}" alt=""
+             onerror="this.remove()" onload="this.closest('.nameplate').classList.add('has-image')">
         <span class="nameplate-name">Make Debut</span>
       </div>`;
     return cell;
@@ -937,7 +941,8 @@ async function renderPhaseCanvas(phase) {
     const y = headerH + pad + row * (tileH + gap);
 
     if (slot.key === DEBUT_SLOT_KEY) {
-      drawNameplateTile(ctx, x, y, tileW, tileH, "default", "Make Debut", null);
+      const debutImg = await loadImageOrNull(raceImageUrl(debutRace ? debutRace.urlSlug : null));
+      drawNameplateTile(ctx, x, y, tileW, tileH, "default", "Make Debut", debutImg);
       continue;
     }
 
@@ -1029,7 +1034,7 @@ async function init() {
   for (const race of allRaces) {
     if (race.inGame === false) continue; // e.g. announced but not yet live (Prix Foy)
     if (race.slot === "Fin ???") continue; // career finale — not part of the regular calendar
-    if (race.name === "Junior Make Debut") continue; // always happens, not a real choice - see DEBUT_FANS
+    if (race.name === "Junior Make Debut") { debutRace = race; continue; } // always happens, not a real choice - see DEBUT_FANS
     (racesBySlot[race.slot] ||= []).push(race);
   }
 
