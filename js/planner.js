@@ -484,11 +484,13 @@ function runOptimizerEV() {
 // -------- Stats --------
 
 const DIST_TYPE_ORDER = ["Short", "Mile", "Medium", "Long"];
+const SURFACE_TYPE_ORDER = ["Turf", "Dirt"];
 
 function computeStats() {
   let count = 0, baseFans = DEBUT_FANS + CAREER_FINALE_BONUS_FANS;
   let expectedBaseFans = DEBUT_FANS; // debut fans aren't win-chance-gated; finale added below
   const distTypeCounts = {};
+  const surfaceTypeCounts = {};
   let streak = 0;
 
   for (const slot of slots) {
@@ -504,6 +506,9 @@ function computeStats() {
           distTypeCounts[d] = (distTypeCounts[d] || 0) + 1;
         }
       }
+      if (race.surface) {
+        surfaceTypeCounts[race.surface] = (surfaceTypeCounts[race.surface] || 0) + 1;
+      }
     } else {
       streak = 0;
     }
@@ -515,7 +520,7 @@ function computeStats() {
 
   const totalFans = Math.round(baseFans * (1 + fanBonusPercent / 100));
   const expectedFans = Math.round(expectedBaseFans * (1 + fanBonusPercent / 100));
-  return { count, baseFans, totalFans, expectedFans, distTypeCounts, finale, finaleFans };
+  return { count, baseFans, totalFans, expectedFans, distTypeCounts, surfaceTypeCounts, finale, finaleFans };
 }
 
 function isEVMode() {
@@ -528,10 +533,13 @@ function updateOptimizerModeUI() {
 }
 
 function renderStatBadges() {
-  const { count, baseFans, totalFans, expectedFans, distTypeCounts } = computeStats();
+  const { count, baseFans, totalFans, expectedFans, distTypeCounts, surfaceTypeCounts } = computeStats();
   const evMode = isEVMode();
 
   const badges = [`<span class="stat-badge"><span class="n">${fmtNum(count)}</span>races</span>`];
+  for (const type of SURFACE_TYPE_ORDER) {
+    if (surfaceTypeCounts[type]) badges.push(`<span class="stat-badge"><span class="n">${surfaceTypeCounts[type]}</span>${type}</span>`);
+  }
   for (const type of DIST_TYPE_ORDER) {
     if (distTypeCounts[type]) badges.push(`<span class="stat-badge"><span class="n">${distTypeCounts[type]}</span>${type}</span>`);
   }
@@ -692,7 +700,8 @@ function renderSlotCell(slot) {
     const gClass = gradeBadgeClass(race.grade).replace("grade-", "");
     cell.innerHTML = `
       <div class="nameplate grade-${gClass}">
-        <img class="nameplate-img" src="${raceImageUrl(race.urlSlug)}" alt="" onerror="this.remove()">
+        <img class="nameplate-img" src="${raceImageUrl(race.urlSlug)}" alt=""
+             onerror="this.remove()" onload="this.closest('.nameplate').classList.add('has-image')">
         <span class="nameplate-name">${race.name}</span>
       </div>`;
   } else {
@@ -833,24 +842,29 @@ function wrapText(ctx, text, maxWidth) {
 
 function drawNameplateTile(ctx, x, y, w, h, grade, name, img) {
   const r = 8;
+
+  // A real image already carries the race name - the gradient + text are
+  // just a distracting border/overlay on top of it, so skip both entirely
+  // rather than blending them in, matching the live grid's behavior.
+  if (img) {
+    ctx.save();
+    roundRectPath(ctx, x, y, w, h, r);
+    ctx.clip();
+    ctx.fillStyle = "#171b2e"; // letterbox fill if the image's aspect ratio doesn't exactly match
+    ctx.fill();
+    const scale = Math.min(w / img.width, h / img.height);
+    const dw = img.width * scale, dh = img.height * scale;
+    ctx.drawImage(img, x + (w - dw) / 2, y + (h - dh) / 2, dw, dh);
+    ctx.restore();
+    return;
+  }
+
   roundRectPath(ctx, x, y, w, h, r);
   const stops = EXPORT_GRADE_STOPS[grade] || EXPORT_GRADE_STOPS.default;
   const grad = ctx.createLinearGradient(x, y, x + w, y + h);
   stops.forEach((c, i) => grad.addColorStop(i / (stops.length - 1 || 1), c));
   ctx.fillStyle = grad;
   ctx.fill();
-
-  if (img) {
-    ctx.save();
-    roundRectPath(ctx, x, y, w, h, r);
-    ctx.clip();
-    const scale = Math.min(w / img.width, h / img.height);
-    const dw = img.width * scale, dh = img.height * scale;
-    ctx.globalAlpha = 0.55;
-    ctx.drawImage(img, x + (w - dw) / 2, y + (h - dh) / 2, dw, dh);
-    ctx.globalAlpha = 1;
-    ctx.restore();
-  }
 
   ctx.fillStyle = "#ffffff";
   ctx.font = "700 11px 'Segoe UI', sans-serif";

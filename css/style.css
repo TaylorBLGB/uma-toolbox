@@ -374,7 +374,7 @@ tbody tr.expandable { cursor: pointer; }
 }
 
 #finale-prediction {
-  margin-bottom: 22px;
+  margin-top: 22px;
   font-size: 0.9rem;
 }
 
@@ -643,6 +643,12 @@ tbody tr.expandable { cursor: pointer; }
 .nameplate.grade-G3 { background: linear-gradient(160deg, #1f5e46, #379a72); }
 .nameplate.grade-OP, .nameplate.grade-Pre-OP { background: linear-gradient(160deg, #5c5320, #a4923a); }
 .nameplate.grade-default { background: linear-gradient(160deg, #33395a, #4a5280); }
+
+/* Once a real race image has loaded, the gradient + name text are just a
+   distracting border/overlay around it - the image already carries the
+   name, so both are dropped entirely rather than left showing underneath. */
+.nameplate.has-image { background: none !important; }
+.nameplate.has-image .nameplate-name { display: none; }
 
 /* -------- Picker modal -------- */
 
