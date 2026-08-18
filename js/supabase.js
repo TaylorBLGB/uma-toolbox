@@ -108,6 +108,17 @@ function raceImageUrl(urlSlug) {
   return `images/races/${slug}.png`;
 }
 
+// Same pattern for trainee portraits, matched by slugify(name) instead of a
+// stored slug column (umas has none) - see db/schema.sql's trainee-images
+// bucket for the exact filename rule.
+function traineePortraitUrl(name) {
+  const slug = slugify(name);
+  if (SUPABASE_CONFIG.enabled) {
+    return `${SUPABASE_CONFIG.url}/storage/v1/object/public/trainee-images/${slug}.png`;
+  }
+  return `images/trainees/${slug}.png`;
+}
+
 async function loadUmas() {
   if (!SUPABASE_CONFIG.enabled) return loadJSON("data/umas.json");
   // Multiple costume rows can share a name; order deterministically (released

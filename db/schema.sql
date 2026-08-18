@@ -126,3 +126,13 @@ create policy "Public read access" on races for select using (true);
 insert into storage.buckets (id, name, public)
 values ('race-images', 'race-images', true)
 on conflict (id) do nothing;
+
+-- Same idea for trainee portraits, matched by the trainee's name slugified
+-- the same way the site does it (lowercase, non-alphanumeric runs -> single
+-- hyphen, trimmed) - see slugify() in js/common.js. There's no url_slug
+-- column on umas to read it from directly; either work it out by hand
+-- (e.g. "Oguri Cap" -> "oguri-cap") or check the Network tab for the exact
+-- attempted filename on a trainee whose portrait is missing.
+insert into storage.buckets (id, name, public)
+values ('trainee-images', 'trainee-images', true)
+on conflict (id) do nothing;

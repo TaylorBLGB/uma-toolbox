@@ -439,17 +439,13 @@ function traineeIndex() {
   return [...byName.values()];
 }
 
-function traineePortraitUrl(uma) {
-  return `images/trainees/${slugify(uma.name)}.png`;
-}
-
 function applyTrainee(uma) {
   selectedTrainee = uma;
   document.getElementById("trainee-input").value = uma ? uma.name : "";
 
   const portrait = document.getElementById("trainee-portrait");
   if (uma) {
-    portrait.src = traineePortraitUrl(uma);
+    portrait.src = traineePortraitUrl(uma.name);
     portrait.classList.remove("hidden");
   } else {
     portrait.removeAttribute("src");
@@ -489,7 +485,7 @@ function renderTraineeSuggestions(query) {
   box.innerHTML = matches.length
     ? matches.map((u, i) => `
         <div class="trainee-suggestion" data-idx="${i}">
-          <img class="trainee-suggestion-portrait" src="${traineePortraitUrl(u)}" alt="" onerror="this.remove()">
+          <img class="trainee-suggestion-portrait" src="${traineePortraitUrl(u.name)}" alt="" onerror="this.remove()">
           <span class="trainee-suggestion-name">
             <span>${u.name}</span>
             ${u.inGame ? "" : '<span class="unreleased-tag">unreleased</span>'}

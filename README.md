@@ -81,8 +81,8 @@ where I am."
    and create a new project. This is an account-creation step only you can do.
 2. **Create the tables.** In the project's SQL Editor, run [`db/schema.sql`](db/schema.sql) — it creates
    the `umas`, `supports` and `races` tables (one flat column per field, so every value is its own editable
-   cell later), a public `race-images` Storage bucket, and locks the public API to read-only via Row Level
-   Security. Your own access through the dashboard isn't affected by RLS.
+   cell later), public `race-images` and `trainee-images` Storage buckets, and locks the public API to
+   read-only via Row Level Security. Your own access through the dashboard isn't affected by RLS.
 3. **Load your current data.** Run `python scripts/generate_seed_sql.py` to (re)generate `db/seed.sql` from
    today's `data/*.json`, then run that file in the same SQL Editor. This is a one-time migration — once
    the data's in Supabase, you edit it there, not in the spreadsheet.
@@ -112,6 +112,12 @@ all either way).
 **Race images:** upload/replace a file named `{url_slug}.png` in the `race-images` bucket (Storage →
 race-images in the dashboard) — find a race's `url_slug` in the `races` table. Picked up automatically,
 no redeploy. Missing image = plain colored nameplate with the race name, so this is entirely optional.
+
+**Trainee portraits:** same idea, `trainee-images` bucket, but filenames are the trainee's name slugified
+(lowercase, spaces/punctuation → hyphens, e.g. `Oguri Cap` → `oguri-cap.png`) since umas has no stored
+slug column to read from directly. If you're not sure you've got a name's slug right, open the browser's
+Network tab while searching for that trainee — the failed image request shows the exact filename the site
+tried to load. Also optional; missing portrait just doesn't show one.
 
 ## Running locally
 
