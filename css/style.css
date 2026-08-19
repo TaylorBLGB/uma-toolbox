@@ -522,6 +522,20 @@ tbody tr.expandable { cursor: pointer; }
   .apt-panel { grid-template-columns: 1fr; }
 }
 
+#aptitude-analysis-section {
+  margin-top: 14px;
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+}
+
+#aptitude-analysis-results {
+  margin-top: 12px;
+}
+
+#aptitude-analysis-results table { font-size: 0.85rem; }
+#aptitude-analysis-results .n { color: var(--accent-2); font-weight: 700; }
+#aptitude-analysis-results tr.best-upgrade td { color: var(--good); font-weight: 700; }
+
 .apt-section {
   border: 1px solid var(--border);
   border-radius: 8px;

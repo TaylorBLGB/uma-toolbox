@@ -449,29 +449,37 @@ function runOptimizerEVCore(biasFn) {
 // Exact joint optimization - best per-slot picks AND the best resulting
 // finale category, simultaneously - would need the DP to track running
 // counts of every distType/surface combination touched so far, which blows
-// the state space up far past what's tractable. Instead this tries a
-// handful of plausible strategies (nudge the search toward each distType,
-// then each surface, plus the unsteered baseline) and keeps whichever
+// the state space up far past what's tractable. Instead this tries 15
+// plausible strategies (unsteered baseline, each distType alone, each
+// surface alone, and every distType+surface pair) and keeps whichever
 // actually produces the highest true, unbiased total EV. That's guaranteed
 // to be at least as good as the plain baseline (which is always one of the
 // candidates) even when a nudge doesn't help - it just isn't guaranteed to
 // find the absolute mathematical optimum the way the regular DP is for its
 // own, simpler problem.
 const FINALE_STEER_BIAS = 1000;
+const STEER_DIST_TYPES = ["Short", "Mile", "Medium", "Long"];
+const STEER_SURFACES = ["Turf", "Dirt"];
+
+// One steering strategy per candidate: null (unsteered), each distType alone,
+// each surface alone, and every distType+surface pair - the pairs catch
+// cases a single-axis nudge can't, e.g. steering toward Short specifically
+// on Turf when Short on Dirt wouldn't suit the trainee's aptitude at all.
+function finaleSteerCandidates() {
+  const candidates = [null];
+  for (const d of STEER_DIST_TYPES) candidates.push((r) => (r.distType === d ? FINALE_STEER_BIAS : 0));
+  for (const s of STEER_SURFACES) candidates.push((r) => (r.surface === s ? FINALE_STEER_BIAS : 0));
+  for (const d of STEER_DIST_TYPES) {
+    for (const s of STEER_SURFACES) {
+      candidates.push((r) => (r.distType === d && r.surface === s ? FINALE_STEER_BIAS : 0));
+    }
+  }
+  return candidates;
+}
 
 function runOptimizerEV() {
-  const biasFns = [
-    null, // unsteered baseline
-    (r) => (r.distType === "Short" ? FINALE_STEER_BIAS : 0),
-    (r) => (r.distType === "Mile" ? FINALE_STEER_BIAS : 0),
-    (r) => (r.distType === "Medium" ? FINALE_STEER_BIAS : 0),
-    (r) => (r.distType === "Long" ? FINALE_STEER_BIAS : 0),
-    (r) => (r.surface === "Turf" ? FINALE_STEER_BIAS : 0),
-    (r) => (r.surface === "Dirt" ? FINALE_STEER_BIAS : 0),
-  ];
-
   let best = null, bestEV = -Infinity;
-  for (const biasFn of biasFns) {
+  for (const biasFn of finaleSteerCandidates()) {
     const candidate = runOptimizerEVCore(biasFn);
     const ev = totalTrueEV(candidate);
     if (ev > bestEV) {
@@ -480,6 +488,57 @@ function runOptimizerEV() {
     }
   }
   return best;
+}
+
+// -------- Aptitude upgrade analysis --------
+//
+// Best achievable true EV at the current aptitude panel, or with one
+// dimension temporarily overridden to a different grade (everything else
+// held fixed) - used to measure what a specific upgrade is actually worth,
+// in real expected fans, rather than having to test each one by hand.
+function bestEVForAptitude(overrideDim, overrideGrade) {
+  if (!overrideDim) return totalTrueEV(runOptimizerEV());
+  const saved = aptitudeGrades[overrideDim];
+  aptitudeGrades[overrideDim] = overrideGrade;
+  const ev = totalTrueEV(runOptimizerEV());
+  aptitudeGrades[overrideDim] = saved;
+  return ev;
+}
+
+// For every dimension not already at A: what's a single grade improvement
+// actually worth (in real, re-optimized expected fans), and what would
+// maxing it out to A be worth. Sorted by the single-stage gain, since
+// that's the direct answer to "which one should I raise first" - a big
+// gain-to-A spread across many stages can still be a worse next move than
+// a smaller gain that only takes one.
+function analyzeAptitudeUpgrades() {
+  const baselineEV = bestEVForAptitude(null, null);
+  const rows = [];
+
+  for (const dim of APTITUDE_DIMS) {
+    const currentGrade = aptitudeGrades[dim.key];
+    const currentIdx = APTITUDE_ORDER.indexOf(currentGrade);
+    if (currentIdx <= 0) continue; // already A - nothing to gain
+
+    const nextGrade = APTITUDE_ORDER[currentIdx - 1];
+    const evNextStage = bestEVForAptitude(dim.key, nextGrade);
+    const evAtA = bestEVForAptitude(dim.key, "A");
+    const stagesToA = currentIdx;
+
+    rows.push({
+      key: dim.key,
+      label: dim.label,
+      currentGrade,
+      nextGrade,
+      gainNextStage: evNextStage - baselineEV,
+      gainToA: evAtA - baselineEV,
+      stagesToA,
+      efficiencyToA: (evAtA - baselineEV) / stagesToA,
+    });
+  }
+
+  rows.sort((a, b) => b.gainNextStage - a.gainNextStage);
+  return { baselineEV, rows };
 }
 
 // -------- Stats --------
@@ -531,6 +590,40 @@ function isEVMode() {
 function updateOptimizerModeUI() {
   const evMode = isEVMode();
   document.getElementById("max-streak-group").classList.toggle("hidden", evMode);
+  document.getElementById("aptitude-analysis-section").classList.toggle("hidden", !evMode);
+}
+
+function renderAptitudeAnalysis({ baselineEV, rows }) {
+  const container = document.getElementById("aptitude-analysis-results");
+  if (rows.length === 0) {
+    container.innerHTML = `<p class="result-count">Every aptitude is already at A - nothing left to raise.</p>`;
+    return;
+  }
+
+  const rowsHtml = rows.map((r, i) => `
+    <tr class="${i === 0 ? "best-upgrade" : ""}">
+      <td>${r.label}</td>
+      <td>${r.currentGrade} &rarr; ${r.nextGrade}</td>
+      <td><span class="n">${r.gainNextStage >= 0 ? "+" : ""}${fmtNum(Math.round(r.gainNextStage))}</span></td>
+      <td>${r.currentGrade} &rarr; A (${r.stagesToA} stage${r.stagesToA === 1 ? "" : "s"})</td>
+      <td><span class="n">${r.gainToA >= 0 ? "+" : ""}${fmtNum(Math.round(r.gainToA))}</span></td>
+      <td>${fmtNum(Math.round(r.efficiencyToA))}/stage</td>
+    </tr>`).join("");
+
+  container.innerHTML = `
+    <p class="result-count">Baseline expected fans at current aptitude: ${fmtNum(Math.round(baselineEV))}</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>Aptitude</th><th>+1 stage</th><th>Gain</th><th>Max to A</th><th>Gain</th><th>Avg/stage to A</th>
+        </tr></thead>
+        <tbody>${rowsHtml}</tbody>
+      </table>
+    </div>
+    <p class="footnote" style="margin-top:10px;">Highlighted row is the single most valuable next stage to raise.
+    "Gain" is the real change in total expected fans after re-optimizing the whole agenda with that aptitude
+    raised - not just that one race's win chance - so a small gain-to-A spread over many stages can still be a
+    worse move than a bigger gain that only takes one.</p>`;
 }
 
 function renderStatBadges() {
@@ -1089,6 +1182,21 @@ async function init() {
     renderFinalePrediction();
   });
   updateOptimizerModeUI();
+
+  document.getElementById("analyze-aptitude-btn").addEventListener("click", async (e) => {
+    const btn = e.currentTarget;
+    btn.disabled = true;
+    const original = btn.textContent;
+    btn.textContent = "Analyzing…";
+    // Let the button repaint before the (synchronous, ~15x15 optimizer-run) analysis blocks the thread.
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    try {
+      renderAptitudeAnalysis(analyzeAptitudeUpgrades());
+    } finally {
+      btn.disabled = false;
+      btn.textContent = original;
+    }
+  });
 
   document.getElementById("filters-toggle-btn").addEventListener("click", () => {
     document.getElementById("filters-panel").classList.toggle("hidden");
