@@ -31,23 +31,40 @@ A small static site with Umamusume Pretty Derby tools:
     you can check it against real runs. The optimizer factors this in too: since exactly co-optimizing
     every regular pick against the aggregate finale outcome would require the DP to track running counts
     of every distType/surface combination touched so far (a state space explosion), it instead runs the
-    search 7 times - once unsteered, once nudged toward each distType, once nudged toward each surface -
-    and keeps whichever run has the highest true, unbiased total EV. That's guaranteed to never do worse
-    than the plain unsteered result (which is always one of the 7 candidates), but isn't guaranteed to find
-    the absolute mathematical optimum. In testing this held up correctly and safely across several
-    constructed scenarios, though most of them didn't find room to improve on the baseline - a race's
-    individual EV and its contribution to a good finale type both come from the same aptitude grades, so
-    they're usually already pulling in the same direction rather than in tension.
+    search 15 times - once unsteered, once nudged toward each distType, once nudged toward each surface,
+    and once for every distType×surface pair combined - and keeps whichever run has the highest true,
+    unbiased total EV. That's guaranteed to never do worse than the plain unsteered result (which is always
+    one of the 15 candidates), but isn't guaranteed to find the absolute mathematical optimum. In testing
+    this held up correctly and safely across several constructed scenarios, though most of them didn't find
+    room to improve on the baseline - a race's individual EV and its contribution to a good finale type both
+    come from the same aptitude grades, so they're usually already pulling in the same direction rather than
+    in tension.
+
+    A "Which aptitude is worth raising?" button (EV mode only) answers a different question: given your
+    current grades, which single aptitude is actually most worth improving? For every dimension not already
+    at A it re-runs the full optimizer twice — once with that dimension bumped one grade stage, once maxed
+    to A — and reports the real change in total expected fans each time (not just that one race's win
+    chance, the whole re-optimized agenda), sorted by biggest single-stage gain. This is what catches cases
+    like a 1-stage Mile bump out-earning a 4-stage Long climb, without having to manually test every
+    combination by hand. Since a full run is ~200 DP passes, it's a button rather than something that reruns
+    on every keystroke - but once you've run it, it silently keeps itself in sync afterwards (see below).
 
   Search for a trainee by name (substring match) to auto-fill the aptitude grades from their real stats —
-  unreleased characters are excluded from search unless you check "Include unreleased". A Fan Bonus % input
-  shows Base Fans and Total Fans side by side (Guaranteed Fans mode). Race cells look for an image keyed
-  to the race (Supabase
-  Storage or `images/races/{urlSlug}.png`, see below), and the trainee search shows a portrait at
+  unreleased characters are excluded from search unless you check "Include unreleased". Aptitude only
+  pulls through for a given character if that character's row in Supabase actually has aptitude grades
+  filled in; plenty of unreleased characters don't yet (it's a data gap, not a bug), so a blank pull-through
+  means go add that character's grades in the `umas` table. A Fan Bonus % input (defaults to 120%, the
+  in-game max, but stays editable) shows Base Fans and Total Fans side by side (Guaranteed Fans mode). Race
+  cells look for an image keyed to the race (Supabase Storage or `images/races/{urlSlug}.png`, see below)
+  and show the race's name as a hover tooltip either way, so it's still readable on a small screen or
+  narrow window even when the image itself doesn't spell it out. The trainee search shows a portrait at
   `images/trainees/{slug}.png` — both fall back to a styled placeholder (or nothing, for portraits)
-  automatically if the image doesn't exist. A link-share and a 3-image agenda export (client-side
-  `<canvas>`, no server) exist in the code but are currently unhooked from the toolbar — see the `init()`
-  wiring near the bottom of `js/planner.js` to re-enable.
+  automatically if the image doesn't exist. Changing any aptitude grade (via the steppers or by picking a
+  trainee) automatically re-runs Auto-Fill and, in EV mode, the upgrade analysis below, after a short pause
+  (debounced ~400ms so rapid clicks don't feel janky) — there's no separate button to remember to press. A
+  link-share and a 3-image agenda export (client-side `<canvas>`, no server) exist in the code but are
+  currently unhooked from the toolbar — see the `init()` wiring near the bottom of `js/planner.js` to
+  re-enable.
 
 A character/support database browser previously lived at `database.html` — it's been pulled out for now
 pending a decision on which columns it should show, but `data/umas.json` and `data/supports.json` still
@@ -137,7 +154,10 @@ tried to load. Also optional; missing portrait just doesn't show one.
 ## Running locally
 
 Any static file server works. A minimal HTTP/1.1 one is included (plain `python -m http.server` can
-reset connections under concurrent fetches for some browsers):
+reset connections under concurrent fetches for some browsers) and always sends `Cache-Control: no-store`,
+so editing a file and reloading always shows the change — without it, browsers can heuristically cache
+`.js`/`.css` files and keep serving an old version indefinitely since there's no `Cache-Control` header to
+say otherwise:
 
 ```bash
 python scripts/serve.py 8000

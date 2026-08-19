@@ -13,6 +13,13 @@ class Handler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=str(ROOT), **kwargs)
 
+    def end_headers(self):
+        # No Cache-Control at all lets Chromium apply heuristic caching and
+        # skip revalidation entirely for subresources like js/css files, so
+        # edits during local dev can silently keep serving a stale version.
+        self.send_header("Cache-Control", "no-store")
+        super().end_headers()
+
 
 if __name__ == "__main__":
     with http.server.ThreadingHTTPServer(("127.0.0.1", PORT), Handler) as httpd:

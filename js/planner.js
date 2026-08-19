@@ -39,7 +39,7 @@ let racesBySlot = {};  // slot key -> [race, ...]
 let debutRace = null;  // the "Junior Make Debut" race - excluded from racesBySlot, kept for its urlSlug
 let selections = {};   // slot key -> race name
 let aptitudeGrades = { ...DEFAULT_APTITUDE }; // dimension key -> letter grade (A-G)
-let fanBonusPercent = 0;
+let fanBonusPercent = 120; // overwritten by loadFanBonus() on init; matches its own fallback
 let activeSlotKey = null;
 let selectedTrainee = null; // uma object, or null
 let includeUnreleased = false;
@@ -92,7 +92,11 @@ function saveAptitude() {
 }
 
 function loadFanBonus() {
-  fanBonusPercent = Number(localStorage.getItem(FAN_BONUS_STORAGE_KEY)) || 0;
+  // 120% (the in-game max) is the default for a fresh visitor, but this
+  // can't just be `stored || 120` - that would also override an explicitly
+  // saved 0%, since 0 is falsy. Only fall back when nothing's stored at all.
+  const stored = localStorage.getItem(FAN_BONUS_STORAGE_KEY);
+  fanBonusPercent = stored !== null ? Number(stored) : 120;
 }
 
 function saveFanBonus() {
@@ -533,7 +537,6 @@ function analyzeAptitudeUpgrades() {
       gainNextStage: evNextStage - baselineEV,
       gainToA: evAtA - baselineEV,
       stagesToA,
-      efficiencyToA: (evAtA - baselineEV) / stagesToA,
     });
   }
 
@@ -607,7 +610,6 @@ function renderAptitudeAnalysis({ baselineEV, rows }) {
       <td><span class="n">${r.gainNextStage >= 0 ? "+" : ""}${fmtNum(Math.round(r.gainNextStage))}</span></td>
       <td>${r.currentGrade} &rarr; A (${r.stagesToA} stage${r.stagesToA === 1 ? "" : "s"})</td>
       <td><span class="n">${r.gainToA >= 0 ? "+" : ""}${fmtNum(Math.round(r.gainToA))}</span></td>
-      <td>${fmtNum(Math.round(r.efficiencyToA))}/stage</td>
     </tr>`).join("");
 
   container.innerHTML = `
@@ -615,7 +617,7 @@ function renderAptitudeAnalysis({ baselineEV, rows }) {
     <div class="table-wrap">
       <table>
         <thead><tr>
-          <th>Aptitude</th><th>+1 stage</th><th>Gain</th><th>Max to A</th><th>Gain</th><th>Avg/stage to A</th>
+          <th>Aptitude</th><th>+1 stage</th><th>Gain</th><th>Max to A</th><th>Gain</th>
         </tr></thead>
         <tbody>${rowsHtml}</tbody>
       </table>
@@ -689,6 +691,7 @@ function applyTrainee(uma) {
   }
   hideTraineeSuggestions();
   renderAptitudeControls();
+  scheduleAptitudeReaction();
 }
 
 function hideTraineeSuggestions() {
@@ -734,15 +737,35 @@ function renderTraineeSuggestions(query) {
 
 // -------- Aptitude controls --------
 
+// Re-running Auto-Fill and the (expensive, ~200-DP-run) upgrade analysis on
+// every single grade change would make rapid stepper clicks janky, so both
+// are debounced together behind one short pause after the last change.
+let aptitudeReactionTimer = null;
+
+function scheduleAptitudeReaction() {
+  if (aptitudeReactionTimer) clearTimeout(aptitudeReactionTimer);
+  aptitudeReactionTimer = setTimeout(() => {
+    aptitudeReactionTimer = null;
+
+    const mode = document.getElementById("optimizer-mode").value;
+    selections = mode === "ev" ? runOptimizerEV() : runOptimizer();
+    saveSelections();
+    renderAll();
+
+    const resultsEl = document.getElementById("aptitude-analysis-results");
+    if (isEVMode() && resultsEl.dataset.hasRun === "1") {
+      renderAptitudeAnalysis(analyzeAptitudeUpgrades());
+    }
+  }, 400);
+}
+
 function adjustAptitude(key, delta) {
   const idx = APTITUDE_ORDER.indexOf(aptitudeGrades[key]);
   const clamped = Math.min(APTITUDE_ORDER.length - 1, Math.max(0, idx + delta));
   aptitudeGrades[key] = APTITUDE_ORDER[clamped];
   saveAptitude();
-  // Aptitude only affects the optimizer (on Auto-Fill) and the picker's
-  // dimming (recomputed when it opens) - the grid/stats don't depend on it,
-  // so re-render just the controls rather than tearing down race nameplates.
-  renderAptitudeControls();
+  renderAptitudeControls(); // instant feedback on the grade itself
+  scheduleAptitudeReaction(); // agenda + analysis catch up shortly after
 }
 
 function renderAptitudeControls() {
@@ -778,7 +801,7 @@ function renderSlotCell(slot) {
     cell.className = "slot-cell";
     const debutSlug = debutRace ? debutRace.urlSlug : null;
     cell.innerHTML = `
-      <div class="nameplate grade-default">
+      <div class="nameplate grade-default" title="Junior Make Debut">
         <img class="nameplate-img" src="${raceImageUrl(debutSlug)}" alt=""
              onerror="this.remove()" onload="this.closest('.nameplate').classList.add('has-image')">
         <span class="nameplate-name">Make Debut</span>
@@ -796,7 +819,7 @@ function renderSlotCell(slot) {
   if (race) {
     const gClass = gradeBadgeClass(race.grade).replace("grade-", "");
     cell.innerHTML = `
-      <div class="nameplate grade-${gClass}">
+      <div class="nameplate grade-${gClass}" title="${race.name}">
         <img class="nameplate-img" src="${raceImageUrl(race.urlSlug)}" alt=""
              onerror="this.remove()" onload="this.closest('.nameplate').classList.add('has-image')">
         <span class="nameplate-name">${race.name}</span>
@@ -1191,6 +1214,8 @@ async function init() {
     // Let the button repaint before the (synchronous, ~15x15 optimizer-run) analysis blocks the thread.
     await new Promise((resolve) => setTimeout(resolve, 20));
     try {
+      const resultsEl = document.getElementById("aptitude-analysis-results");
+      resultsEl.dataset.hasRun = "1";
       renderAptitudeAnalysis(analyzeAptitudeUpgrades());
     } finally {
       btn.disabled = false;
