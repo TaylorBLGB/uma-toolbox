@@ -151,6 +151,22 @@ slug column to read from directly. If you're not sure you've got a name's slug r
 Network tab while searching for that trainee — the failed image request shows the exact filename the site
 tried to load. Also optional; missing portrait just doesn't show one.
 
+**Finding mismatched filenames without clicking through every race/trainee:** some races and characters
+have a real-world/GameTora name that differs from the `url_slug` (or `slugify(name)`) the site expects -
+e.g. "Milers Cup" in-game is `yomiuri-milers-cup` as a slug, and "Kyodo News Hai" used to be called
+"Tokinominoru Kinen" (the slug still uses the old name). Run:
+
+```bash
+python scripts/check_images.py
+```
+
+It lists every `races`/`umas` row with no matching file in its bucket, every uploaded file with no matching
+row, and — for the common case where a file's just named slightly differently (a typo, a hyphen in a
+different spot, an alternate romanization) — suggests which orphaned file is probably the right one, so you
+usually just need to rename the file rather than track down or re-upload anything. Needs the `storage.objects`
+list policy from `db/schema.sql` (added after `race-images`/`trainee-images` were first set up — re-run the
+bottom of that file in the SQL Editor if the script errors with a permissions message).
+
 ## Running locally
 
 Any static file server works. A minimal HTTP/1.1 one is included (plain `python -m http.server` can

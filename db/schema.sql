@@ -136,3 +136,13 @@ on conflict (id) do nothing;
 insert into storage.buckets (id, name, public)
 values ('trainee-images', 'trainee-images', true)
 on conflict (id) do nothing;
+
+-- A bucket's "public" flag only lets anyone download a file at its known
+-- URL - the separate list/metadata endpoint (used by
+-- scripts/check_images.py to spot missing or misnamed files) queries
+-- storage.objects directly, which has its own RLS and needs its own policy.
+-- This doesn't expose anything the public flag doesn't already: it lets
+-- anon see filenames in these two buckets, not read/write anything private.
+drop policy if exists "Public list access" on storage.objects;
+create policy "Public list access" on storage.objects for select
+  using (bucket_id in ('race-images', 'trainee-images'));
