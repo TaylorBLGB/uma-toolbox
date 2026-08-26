@@ -46,6 +46,38 @@ create table if not exists umas (
   release_date date
 );
 
+-- Maps a letter grade to a 1-7 point value (G worst, A best) so a character's
+-- overall distance aptitude can be scored and sorted on, e.g. to find good
+-- candidates for fan-farming builds (high across the board = cheap to raise
+-- to an all-rounder). Not read by the site - Table Editor / SQL only.
+create or replace function aptitude_grade_points(grade text)
+returns smallint
+language sql
+immutable
+as $$
+  select case grade
+    when 'A' then 7
+    when 'B' then 6
+    when 'C' then 5
+    when 'D' then 4
+    when 'E' then 3
+    when 'F' then 2
+    when 'G' then 1
+    else null
+  end;
+$$;
+
+-- Sum of the four distance aptitudes' point values (surface aptitudes
+-- deliberately excluded - this is about distance versatility specifically).
+-- Null (rather than treating a missing grade as 0) whenever any of the four
+-- isn't filled in yet, so an incomplete row can't misleadingly outrank a
+-- fully-graded one - sort descending and NULLs will fall last.
+alter table umas add column if not exists dist_aptitude_score smallint
+  generated always as (
+    aptitude_grade_points(apt_sprint) + aptitude_grade_points(apt_mile) +
+    aptitude_grade_points(apt_medium) + aptitude_grade_points(apt_long)
+  ) stored;
+
 create table if not exists supports (
   id bigint generated always as identity primary key,
   character text,
