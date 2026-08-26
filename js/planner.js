@@ -47,6 +47,13 @@ const SPARK_TIERS = [
 ];
 const MAX_SPARK_GRADE_INCREASE = SPARK_TIERS[SPARK_TIERS.length - 1].grades;
 
+// Each of the 6 sources can put at most 3 stars into exactly one aptitude.
+// Every 3-star chunk lands squarely on a tier boundary (3/6/9/12+ stars ->
+// +1/+2/+3/+4), so as long as no single aptitude soaks up more than 4
+// chunks, each chunk is worth exactly +1 grade - and with only 6 chunks to
+// spread, the best possible combined total across every aptitude is 6.
+const MAX_TOTAL_SPARK_GRADE_INCREASE = 6;
+
 // null (not 0) for an increase inheritance can't produce alone, so callers
 // can tell "no boost needed" apart from "not reachable this way".
 function starsNeededForIncrease(grades) {
@@ -542,6 +549,37 @@ function bestEVForAptitude(overrideDim, overrideGrade) {
 // actually worth (in real, re-optimized expected fans), and what would
 // maxing it out to A be worth. Sorted by the single-stage gain, since
 // that's the direct answer to "which one should I raise first" - a big
+// Flags stepper settings that have drifted past what inheritance could
+// actually deliver for this trainee - still lets you keep exploring (this
+// is exactly the kind of curiosity the steppers are for), but the upgrade
+// analysis below is only meaningful as a real plan while it stays within
+// these limits, so it's worth surfacing rather than silently going along
+// with an impossible setup.
+function aptitudeFeasibilityWarnings() {
+  if (!baseAptitudeGrades) return [];
+
+  let totalIncrease = 0;
+  const overCapped = [];
+  for (const dim of APTITUDE_DIMS) {
+    const increase = APTITUDE_ORDER.indexOf(baseAptitudeGrades[dim.key]) - APTITUDE_ORDER.indexOf(aptitudeGrades[dim.key]);
+    if (increase > 0) totalIncrease += increase;
+    if (increase > MAX_SPARK_GRADE_INCREASE) overCapped.push(dim.label);
+  }
+
+  const warnings = [];
+  if (overCapped.length) {
+    warnings.push(`${overCapped.join(", ")} ${overCapped.length === 1 ? "has" : "have"} been raised more than
+      +${MAX_SPARK_GRADE_INCREASE} grade${MAX_SPARK_GRADE_INCREASE === 1 ? "" : "s"} - inheritance caps a single
+      aptitude there, so this isn't achievable for this character no matter how many stars go into it.`);
+  }
+  if (totalIncrease > MAX_TOTAL_SPARK_GRADE_INCREASE) {
+    warnings.push(`${totalIncrease} total grade increases have been dialed in across every aptitude, but a single
+      career can deliver at most ${MAX_TOTAL_SPARK_GRADE_INCREASE} combined via inheritance (2 legacies + 4
+      sub-legacies, max 3 stars each) - some of what's shown below isn't actually achievable for this character.`);
+  }
+  return warnings;
+}
+
 // gain-to-A spread across many stages can still be a worse next move than
 // a smaller gain that only takes one.
 function analyzeAptitudeUpgrades() {
@@ -628,7 +666,9 @@ function updateOptimizerModeUI() {
 function renderAptitudeAnalysis({ baselineEV, rows }) {
   const container = document.getElementById("aptitude-analysis-results");
   if (rows.length === 0) {
-    container.innerHTML = `<p class="result-count">Every aptitude is already at A - nothing left to raise.</p>`;
+    const warningsHtml = aptitudeFeasibilityWarnings()
+      .map((w) => `<p class="apt-feasibility-warning">${w}</p>`).join("");
+    container.innerHTML = `${warningsHtml}<p class="result-count">Every aptitude is already at A - nothing left to raise.</p>`;
     return;
   }
 
@@ -641,7 +681,11 @@ function renderAptitudeAnalysis({ baselineEV, rows }) {
       <td><span class="n">${r.gainToA >= 0 ? "+" : ""}${fmtNum(Math.round(r.gainToA))}</span></td>
     </tr>`).join("");
 
+  const warningsHtml = aptitudeFeasibilityWarnings()
+    .map((w) => `<p class="apt-feasibility-warning">${w}</p>`).join("");
+
   container.innerHTML = `
+    ${warningsHtml}
     <p class="result-count">Baseline expected fans at current aptitude: ${fmtNum(Math.round(baselineEV))}</p>
     <div class="table-wrap">
       <table>

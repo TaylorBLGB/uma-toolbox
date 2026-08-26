@@ -545,6 +545,16 @@ tbody tr.expandable { cursor: pointer; }
 #aptitude-analysis-results .n { color: var(--accent-2); font-weight: 700; }
 #aptitude-analysis-results tr.best-upgrade td { color: var(--good); font-weight: 700; }
 
+.apt-feasibility-warning {
+  background: rgba(255, 107, 107, 0.1);
+  border: 1px solid var(--bad);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-bottom: 10px;
+  font-size: 0.85rem;
+  color: var(--bad);
+}
+
 .apt-section {
   border: 1px solid var(--border);
   border-radius: 8px;
