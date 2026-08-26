@@ -78,6 +78,34 @@ alter table umas add column if not exists dist_aptitude_score smallint
     aptitude_grade_points(apt_medium) + aptitude_grade_points(apt_long)
   ) stored;
 
+-- Flags characters who could realistically become true all-rounders (all
+-- four distances raised to A via inheritance alone), for spotting good
+-- fan-farming picks. Two conditions, both load-bearing:
+--   1. No distance grade is F or G - a single aptitude can only be pushed up
+--      +4 grades by inheritance sparks (1-3 stars=+1, 4-6=+2, 7-9=+3,
+--      10+=+4, capped there), so F(+4=B) or G(+4=C) can never actually
+--      reach A no matter how many stars go into it.
+--   2. dist_aptitude_score is at least 22 (28 max, i.e. all four already A) -
+--      raising all four to A needs a total of (28 - score) grade-steps, and
+--      a single career's 6 inheritance sources (2 legacies + 4 sub-legacies,
+--      max 3 stars each in one aptitude) can deliver at most 6 total
+--      grade-steps across every aptitude combined - so anything needing more
+--      than 6 total isn't achievable in one build even if each individual
+--      aptitude is under the +4 cap on its own.
+-- Can't reference dist_aptitude_score directly (a generated column can't
+-- reference another one), so the same sum is recomputed inline here.
+-- Null (not false) when data's incomplete, same reasoning as the score above.
+alter table umas add column if not exists dist_all_rounder_candidate boolean
+  generated always as (
+    case
+      when apt_sprint is null or apt_mile is null or apt_medium is null or apt_long is null then null
+      when apt_sprint in ('F', 'G') or apt_mile in ('F', 'G')
+        or apt_medium in ('F', 'G') or apt_long in ('F', 'G') then false
+      else (aptitude_grade_points(apt_sprint) + aptitude_grade_points(apt_mile) +
+            aptitude_grade_points(apt_medium) + aptitude_grade_points(apt_long)) >= 22
+    end
+  ) stored;
+
 create table if not exists supports (
   id bigint generated always as identity primary key,
   character text,
