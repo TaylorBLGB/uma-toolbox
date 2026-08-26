@@ -383,11 +383,10 @@ function predictedFinaleCategory(sel) {
 
 function finaleExpectedFans(distType, surface) {
   const virtualRace = { fansGained: FINALE_RACE_FANS, distType, surface };
-  let total = 0;
-  for (let n = 1; n <= FINALE_RACE_COUNT; n++) {
-    total += expectedFansForRace(virtualRace, n);
-  }
-  return total;
+  // A forced rest precedes each of the 3 finale races, so none of them chain
+  // into a streak with each other or with the regular season - every one
+  // runs at streak position 1 (no consecutive-race penalty), not 1/2/3.
+  return FINALE_RACE_COUNT * expectedFansForRace(virtualRace, 1);
 }
 
 // Unlike the guaranteed-fans model, the best race for a slot now depends on

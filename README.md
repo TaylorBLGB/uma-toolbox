@@ -31,7 +31,9 @@ A small static site with Umamusume Pretty Derby tools:
     The 3 post-career finale races aren't guaranteed either, and aren't a fixed race - they run at
     whichever distType/surface was most common across your whole selected career (ties go to the shorter
     distance, then to turf over dirt), tallied for distance and surface independently rather than as exact
-    combinations. A "Predicted finale races" panel shows the derived type and its expected fans live, so
+    combinations. A forced rest precedes each of the 3, so they never chain into a streak with each other
+    or with the regular season - each one's win chance is computed fresh, with no consecutive-race penalty
+    at all. A "Predicted finale races" panel shows the derived type and its expected fans live, so
     you can check it against real runs. The optimizer factors this in too: since exactly co-optimizing
     every regular pick against the aggregate finale outcome would require the DP to track running counts
     of every distType/surface combination touched so far (a state space explosion), it instead runs the
