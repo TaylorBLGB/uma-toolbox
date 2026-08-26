@@ -32,6 +32,29 @@ const APTITUDE_DIMS = [
 ];
 const DEFAULT_APTITUDE = { turf: "B", dirt: "G", sprint: "G", mile: "B", medium: "B", long: "B" };
 
+// Inheritance ("inspiration") sparks: at career start you pick 2 legacies,
+// each of which lists its own 2 sub-legacies, so up to 6 sources can each
+// contribute stars to the same aptitude spark. The game sums all of them and
+// applies a flat grade increase off that total - 1-3 stars = +1 grade,
+// 4-6 = +2, 7-9 = +3, 10+ = +4 - capped so a grade can never be pushed past
+// A this way (so +4 is the ceiling for a single aptitude, not the 6 steps
+// it'd take to go all the way from G to A).
+const SPARK_TIERS = [
+  { minStars: 1, grades: 1 },
+  { minStars: 4, grades: 2 },
+  { minStars: 7, grades: 3 },
+  { minStars: 10, grades: 4 },
+];
+const MAX_SPARK_GRADE_INCREASE = SPARK_TIERS[SPARK_TIERS.length - 1].grades;
+
+// null (not 0) for an increase inheritance can't produce alone, so callers
+// can tell "no boost needed" apart from "not reachable this way".
+function starsNeededForIncrease(grades) {
+  if (grades <= 0) return 0;
+  const tier = SPARK_TIERS.find((t) => t.grades === grades);
+  return tier ? tier.minStars : null;
+}
+
 let allRaces = [];
 let umas = [];
 let slots = [];        // ordered list of { key, phase, month, half, label } for the 72 regular slots
@@ -39,6 +62,7 @@ let racesBySlot = {};  // slot key -> [race, ...]
 let debutRace = null;  // the "Junior Make Debut" race - excluded from racesBySlot, kept for its urlSlug
 let selections = {};   // slot key -> race name
 let aptitudeGrades = { ...DEFAULT_APTITUDE }; // dimension key -> letter grade (A-G)
+let baseAptitudeGrades = null; // the selected trainee's natural grades (pre-inheritance), or null if none selected
 let fanBonusPercent = 120; // overwritten by loadFanBonus() on init; matches its own fallback
 let activeSlotKey = null;
 let selectedTrainee = null; // uma object, or null
@@ -687,7 +711,10 @@ function applyTrainee(uma) {
     for (const dim of APTITUDE_DIMS) {
       aptitudeGrades[dim.key] = uma.aptitude[dim.key] || "G";
     }
+    baseAptitudeGrades = { ...aptitudeGrades };
     saveAptitude();
+  } else {
+    baseAptitudeGrades = null;
   }
   hideTraineeSuggestions();
   renderAptitudeControls();
@@ -768,6 +795,22 @@ function adjustAptitude(key, delta) {
   scheduleAptitudeReaction(); // agenda + analysis catch up shortly after
 }
 
+// While a trainee is selected, shows how many inheritance stars would be
+// needed to raise this aptitude from its natural grade to whatever the
+// stepper is currently set to - blank once it's back at (or below) natural.
+function sparkHint(dim, grade) {
+  if (!baseAptitudeGrades) return "";
+  const increase = APTITUDE_ORDER.indexOf(baseAptitudeGrades[dim.key]) - APTITUDE_ORDER.indexOf(grade);
+  if (increase <= 0) return "";
+
+  const stars = starsNeededForIncrease(increase);
+  return stars === null
+    ? `<span class="apt-spark-hint apt-spark-unreachable"
+         title="Inheritance sparks cap at +${MAX_SPARK_GRADE_INCREASE} grades for a single aptitude, so this isn't reachable that way alone">unreachable</span>`
+    : `<span class="apt-spark-hint"
+         title="Need at least ${stars} inheritance star${stars === 1 ? "" : "s"} in ${dim.label} aptitude (summed across both legacies and their sub-legacies) to reach this from ${baseAptitudeGrades[dim.key]}">&ge;${stars}&#9733;</span>`;
+}
+
 function renderAptitudeControls() {
   const surfaceContainer = document.getElementById("aptitude-controls-surface");
   const distContainer = document.getElementById("aptitude-controls-dist");
@@ -786,7 +829,8 @@ function renderAptitudeControls() {
         <button type="button" class="apt-btn apt-up" aria-label="Increase ${dim.label} aptitude">&and;</button>
         <span class="apt-grade-value ${letterClass(grade)}">${grade}</span>
         <button type="button" class="apt-btn apt-down" aria-label="Decrease ${dim.label} aptitude">&or;</button>
-      </div>`;
+      </div>
+      ${sparkHint(dim, grade)}`;
     el.querySelector(".apt-up").addEventListener("click", () => adjustAptitude(dim.key, -1));
     el.querySelector(".apt-down").addEventListener("click", () => adjustAptitude(dim.key, 1));
     (dim.kind === "surface" ? surfaceContainer : distContainer).appendChild(el);

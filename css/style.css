@@ -511,6 +511,15 @@ tbody tr.expandable { cursor: pointer; }
   text-align: center;
 }
 
+.apt-spark-hint {
+  font-size: 0.72rem;
+  color: var(--accent-2);
+  white-space: nowrap;
+  cursor: help;
+}
+
+.apt-spark-hint.apt-spark-unreachable { color: var(--bad); }
+
 .apt-panel {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
