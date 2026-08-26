@@ -305,8 +305,14 @@ function raceAptitudeScore(race) {
   return aptitudeScorePair(surfaceGrade, distGrade);
 }
 
-function winChancePercent(score) {
-  return Math.max(0, Math.min(100, 110 - 10 * score));
+// Uncapped: a strong aptitude pair (e.g. double-A, score 0) computes to a
+// raw 110%, which isn't a real probability but does represent genuine
+// headroom - it means a consecutive-race penalty of up to 10 points is
+// fully absorbed with no real loss chance yet, rather than clamping to
+// 100% first and then knocking it straight into a loss chance. Only clamp
+// after the penalty's been subtracted (see expectedFansForRace).
+function rawWinChancePercent(score) {
+  return 110 - 10 * score;
 }
 
 function consecutivePenaltyPercent(n) {
@@ -325,7 +331,7 @@ function lossPlacementFor(score, n) {
 function expectedFansForRace(race, n) {
   const base = race.fansGained || 0;
   const score = raceAptitudeScore(race);
-  const winPct = Math.max(0, Math.min(100, winChancePercent(score) - consecutivePenaltyPercent(n)));
+  const winPct = Math.max(0, Math.min(100, rawWinChancePercent(score) - consecutivePenaltyPercent(n)));
   const lossPct = EV_PLACEMENT_FAN_PCT[lossPlacementFor(score, n)];
   return (winPct / 100) * base + (1 - winPct / 100) * base * (lossPct / 100);
 }

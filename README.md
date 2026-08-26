@@ -11,7 +11,11 @@ A small static site with Umamusume Pretty Derby tools:
     `110 - 10×(sum of the two relevant aptitude grade indices)`, reduced further the longer the current
     race streak runs, and a loss lands on a specific placement (looked up by that same aptitude score and
     streak length) rather than a spread of outcomes, converted to fans via a fixed percent-of-base ladder
-    (2nd=40%, 3rd=25%, ... down to 1% by mid-field). All three tables are in `js/planner.js`'s "Expected
+    (2nd=40%, 3rd=25%, ... down to 1% by mid-field). A strong aptitude pair (e.g. double-A) computes to a
+    raw 110%, over the 100% a real probability can be - that headroom is kept and only clamped away *after*
+    the streak penalty's subtracted, not before, so it can fully absorb a small penalty (e.g. a double-A's
+    3rd race in a row stays a true 100% win rather than getting knocked down to 90% by a penalty the raw
+    110% had room for). All three tables are in `js/planner.js`'s "Expected
     Value optimizer" section, verified cell-by-cell against the source charts - including confirming, for a
     real case that looked suspicious at a glance (a G1 recommended despite a poor aptitude), that its 70%
     win chance genuinely out-values every 100%-safe alternative in that slot by the numbers, not a bug.
